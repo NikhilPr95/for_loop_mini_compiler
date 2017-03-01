@@ -1,5 +1,7 @@
 import sys
 import copy
+import pickle
+from classes import *
 
 ### Getting input program ###
 inFile = sys.argv[1]
@@ -14,30 +16,7 @@ for line in lines:
 ####
 
 symtab = dict()
-
-class Character:
-	def set_val(self, index):
-		self.val = string[self.index]
-
-	def __init__(self, index):
-		self.index = index
-		self.set_val(self.index)
-		
-	def increment(self):
-		self.increment_mult(1)
-		
-	def increment_mult(self, inc):
-		if (self.index + inc) >= len(string):
-			return -1
-		self.index += inc
-		self.set_val(self.index)
-	
-	def decrement(self):
-		self.decrement_mult(1)
-		
-	def decrement_mult(self, dec):
-		self.index -= dec
-		self.set_val(self.index)
+token_list = []
 		
 def is_space(char):
 	return (char == ' ' or char == '\n' or char == '\r' or char == '\t')
@@ -48,19 +27,21 @@ def add_to_symtab(token):
 		
 def tokenize_and_forward(lexemeBegin, index, tok_type):
 	token = string[lexemeBegin.index : index + 1]
+	lexemeBegin.increment_mult(index + 1 - lexemeBegin.index)
 	print((tok_type, token))
 	if (tok_type == 'IDENTIFIER'):
 		add_to_symtab(token)
-	lexemeBegin.increment_mult(index + 1 - lexemeBegin.index)
+	token_list.append(Token(tok_type, token))
+	return Token(tok_type, token)
 	
 def is_valid(lexemeBegin, index):
 	return (not (index is None) and index >= lexemeBegin.index)
 		
 def start():	
-	lexemeBegin = Character(0)
+	lexemeBegin = Character(string, 0)
 	print("here ", lexemeBegin.val)
 	index = -1
-	store = Character(0)
+	store = Character(string, 0)
 	while lexemeBegin.index < len(string):
 		if is_valid(lexemeBegin, keyword(lexemeBegin.index, store)):
 			tokenize_and_forward(lexemeBegin, store.index, "KEYWORD")
@@ -80,7 +61,7 @@ def isLetter(c):
 	return c.isalpha()
 	
 def identifier(index, store):
-	ch = Character(index)
+	ch = Character(string, index)
 	if(isLetter(ch.val)):
 		ch.increment()
 		while(digit(ch.val) or isLetter(ch.val) or ch.val == '_'):
@@ -93,7 +74,7 @@ def identifier(index, store):
 		return -1 
 		
 def string_literal(index, store):
-	ch = Character(index)
+	ch = Character(string, index)
 	if (ch.val == '"'):
 		ch.increment()
 		while not(ch.val == '"'):
@@ -110,7 +91,7 @@ def string_literal(index, store):
 keywords = ['break', 'case', 'char', 'continue', 'do', 'double', 'else', 'for', 'float', 'if', 'int', 'include', 'long', 'return', 'sizeof', 'static', 'switch', 'void', 'while']
 			
 def keyword(index, store):
-	ch = Character(index)
+	ch = Character(string, index)
 	if (ch.val == 'b'):
 		ch.increment()
 		if (ch.val == 'r'):
@@ -354,3 +335,7 @@ start()
 
 print("SYMTAB -")
 print(symtab)
+print([(tok.type,tok.val) for tok in token_list])
+
+with open('tokens.pkl', 'wb') as fp:
+	pickle.dump(token_list, fp, pickle.HIGHEST_PROTOCOL)
