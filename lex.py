@@ -11,8 +11,6 @@ with open(inFile,'r') as i:
 for line in lines:
 	string += line
 
-#print(string)
-
 ####
 
 class Character:
@@ -29,7 +27,6 @@ class Character:
 	def increment_mult(self, inc):
 		if (self.index + inc) >= len(string):
 			return -1
-		#print("IN incrmult self.index, index = ", self.index, inc)
 		self.index += inc
 		self.set_val(self.index)
 	
@@ -46,7 +43,6 @@ def is_space(char):
 def tokenize_and_forward(lexemeBegin, index, tok_type):
 	token = string[lexemeBegin.index : index + 1]
 	print((tok_type, token))
-	print("token = ", token)
 	lexemeBegin.increment_mult(index + 1 - lexemeBegin.index)
 	
 def is_valid(lexemeBegin, index):
@@ -60,6 +56,8 @@ def start():
 	while lexemeBegin.index < len(string):
 		if is_valid(lexemeBegin, keyword(lexemeBegin.index, store)):
 			tokenize_and_forward(lexemeBegin, store.index, "KEYWORD")
+		elif is_valid(lexemeBegin, string_literal(lexemeBegin.index, store)):
+			tokenize_and_forward(lexemeBegin, store.index, "STRING LITERAL")
 		elif is_valid(lexemeBegin, identifier(lexemeBegin.index, store)):
 			tokenize_and_forward(lexemeBegin, store.index,"IDENTIFIER")
 		else:
@@ -67,7 +65,6 @@ def start():
 				break;
 			lexemeBegin.increment()
 
-#prabhat code		
 def digit(c):
 	return c.isdigit()
 	
@@ -76,31 +73,35 @@ def isLetter(c):
 	
 def identifier(index, store):
 	ch = Character(index)
-	#if (ch.val == 'a'):
-	#	print("in identifier with", ch.val, isLetter(ch.val))
 	if(isLetter(ch.val)):
-		#x = 0
-		#if (ch.val == 'a'):
-		#	x = 1
 		ch.increment()
-		#if x == 1:
-		#	print("After a -", ch.val, (digit(ch.val) or isLetter(ch.val) or ch.val == '_'))
 		while(digit(ch.val) or isLetter(ch.val) or ch.val == '_'):
 			ch.increment()
 		ch.decrement()
-		#if x == 1:
-		#	print("now a is ", ch.val)
 		store.index = ch.index
 		return store.index
 		
 	else:
 		return -1 
 		
-
+def string_literal(index, store):
+	ch = Character(index)
+	if (ch.val == '"'):
+		ch.increment()
+		while not(ch.val == '"'):
+			if (ch.val == '/'):
+				temp = Character(index + 1)
+				if (temp.val == '"'):
+					ch.increment()
+			ch.increment()
+		#ch.decrement()
+		store.index = ch.index
+		return store.index
+	else:
+		return -1
 keywords = ['break', 'case', 'char', 'continue', 'do', 'double', 'else', 'for', 'float', 'if', 'int', 'include', 'long', 'return', 'sizeof', 'static', 'switch', 'void', 'while']
 			
 def keyword(index, store):
-	#print("in keyword - ", index, string[index])
 	ch = Character(index)
 	if (ch.val == 'b'):
 		ch.increment()
@@ -341,5 +342,4 @@ def keyword(index, store):
 	else:
 		return -1
 						
-print ("STRING INDEX !!!!! = ", len(string))
 start()
