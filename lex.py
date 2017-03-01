@@ -14,10 +14,17 @@ for line in lines:
 	string += line
 
 ####
+#keywords = ['break', 'case', 'char', 'continue', 'do', 'double', 'else', 'for', 'float', 'if', 'int', 'include', 'long', 'return', 'sizeof', 'static', 'switch', 'void', 'while']
 
 symtab = dict()
 token_list = []
-		
+
+def digit(c):
+	return c.isdigit()
+	
+def isLetter(c):
+	return c.isalpha()
+
 def is_space(char):
 	return (char == ' ' or char == '\n' or char == '\r' or char == '\t')
 
@@ -37,29 +44,17 @@ def tokenize_and_forward(lexemeBegin, index, tok_type):
 def is_valid(lexemeBegin, index):
 	return (not (index is None) and index >= lexemeBegin.index)
 		
-def start():	
-	lexemeBegin = Character(string, 0)
-	print("here ", lexemeBegin.val)
-	index = -1
-	store = Character(string, 0)
-	while lexemeBegin.index < len(string):
-		if is_valid(lexemeBegin, keyword(lexemeBegin.index, store)):
-			tokenize_and_forward(lexemeBegin, store.index, "KEYWORD")
-		elif is_valid(lexemeBegin, string_literal(lexemeBegin.index, store)):
-			tokenize_and_forward(lexemeBegin, store.index, "STRING LITERAL")
-		elif is_valid(lexemeBegin, identifier(lexemeBegin.index, store)):
-			tokenize_and_forward(lexemeBegin, store.index,"IDENTIFIER")
-		else:
-			if lexemeBegin.index + 1 == len(string):
-				break;
-			lexemeBegin.increment()
-
-def digit(c):
-	return c.isdigit()
-	
-def isLetter(c):
-	return c.isalpha()
-	
+def number(index, store):
+	ch = Character(string, index)
+	while (digit(ch.val)):
+		ch.increment()
+	ch.decrement()
+	if ch.index >= index:
+		store.index = ch.index
+		return store.index
+	else:
+		return -1
+			
 def identifier(index, store):
 	ch = Character(string, index)
 	if(isLetter(ch.val)):
@@ -88,7 +83,6 @@ def string_literal(index, store):
 		return store.index
 	else:
 		return -1
-keywords = ['break', 'case', 'char', 'continue', 'do', 'double', 'else', 'for', 'float', 'if', 'int', 'include', 'long', 'return', 'sizeof', 'static', 'switch', 'void', 'while']
 			
 def keyword(index, store):
 	ch = Character(string, index)
@@ -330,7 +324,209 @@ def keyword(index, store):
 							return store.index	
 	else:
 		return -1
-				
+
+def check_extra(ch, store, symbol):
+	ch.increment()
+	if (ch.val == symbol):
+		store.index = ch.index
+		return store.index
+	else:
+		ch.decrement()
+		store.index = ch.index
+		return store.index		
+
+def relational_operator(index, store):
+	ch = Character(string, index)
+	if (ch.val == '<'):
+		ch.increment()
+		if (ch.val == '='):
+			store.index = ch.index
+			return store.index
+		elif (is_space(ch.val)):
+			ch.decrement()
+			store.index = ch.index
+			return store.index				
+	elif (ch.val == '>'):
+		ch.increment()
+		if (ch.val == '='):
+			store.index = ch.index
+			return store.index
+		elif (is_space(ch.val)):
+			ch.decrement()
+			store.index = ch.index
+			return store.index			
+	elif (ch.val == '='):
+		ch.increment()
+		if (ch.val == '='):
+			store.index = ch.index
+			return store.index		
+	elif (ch.val == '!'):
+		ch.increment()
+		if (ch.val == '='):
+			store.index = ch.index
+			return store.index
+
+def logical_operator(index, store):
+	ch = Character(string, index)
+	if (ch.val == '&'):
+		ch.increment()
+		if (ch.val == '&'):
+			store.index = ch.index
+			return store.index
+	elif (ch.val == '|'):
+		ch.increment()
+		if (ch.val == '|'):
+			store.index = ch.index
+			return store.index
+	elif (ch.val == '!'):
+		store.index = ch.index
+		return store.index
+
+def bitwise_operator(index, store):
+	ch = Character(string, index)
+	if (ch.val == '&'):
+		store.index = ch.index
+		return store.index
+	elif (ch.val == '|'):
+		store.index = ch.index
+		return store.index
+	elif (ch.val == '^'):
+		store.index = ch.index
+		return store.index
+	elif (ch.val == '~'):
+		store.index = ch.index
+		return store.index
+	elif (ch.val == '<'):
+		ch.increment()
+		if (ch.val == '<'):
+			store.index = ch.index
+			return store.index
+	elif (ch.val == '>'):
+		ch.increment()
+		if (ch.val == '>'):
+			store.index = ch.index
+			return store.index
+	
+def arithmetic_operator(index, store):
+	ch = Character(string, index)
+	if (ch.val == '+'):
+		return check_extra(ch, store, '+')
+	elif (ch.val == '-'):
+		return check_extra(ch, store, '-')
+	elif (ch.val == '*'):
+		store.index = ch.index
+		return store.index
+	elif (ch.val == '\\'):
+		store.index = ch.index
+		return store.index
+	elif (ch.val == '%'):
+		store.index = ch.index
+		return store.index
+
+def assignment_operator(index, store):
+	ch = Character(string, index)
+	if (ch.val == '='):
+		store.index = ch.index
+		return store.index
+	elif (ch.val == '+'):
+		ch.increment()
+		if (ch.val == '='):
+			store.index = ch.index
+			return store.index
+	elif (ch.val == '-'):
+		ch.increment()
+		if (ch.val == '='):
+			store.index = ch.index
+			return store.index
+	elif (ch.val == '*'):
+		ch.increment()
+		if (ch.val == '='):
+			store.index = ch.index
+			return store.index
+	elif (ch.val == '/'):
+		ch.increment()
+		if (ch.val == '='):
+			store.index = ch.index
+			return store.index
+	elif (ch.val == '%'):
+		ch.increment()
+		if (ch.val == '='):
+			store.index = ch.index
+			return store.index
+	elif (ch.val == '&'):
+		ch.increment()
+		if (ch.val == '='):
+			store.index = ch.index
+			return store.index
+	elif (ch.val == '^'):
+		ch.increment()
+		if (ch.val == '='):
+			store.index = ch.index
+			return store.index
+	elif (ch.val == '|'):
+		ch.increment()
+		if (ch.val == '='):
+			store.index = ch.index
+			return store.index
+	elif (ch.val == '<'):
+		ch.increment()
+		if ch.val == '<':
+			ch.increment()
+			if (ch.val == '='):
+				store.index = ch.index
+				return store.index
+	#elif not match_string(ch, store, '<<='):
+	#	match_string(ch, store, '>>=')
+	#"""
+	elif (ch.val == '>'):
+		ch.increment()
+		if ch.val == '>':
+			ch.increment()
+			if (ch.val == '='):
+				store.index = ch.index
+				return store.index
+	#"""
+	
+def match_string(ch, store, string):
+	i = 0
+	while (i < len(string) and ch.val == string[i]):
+		ch.increment()
+		i += 1
+	print("I EQEQWEL", i)
+	if (i == len(string)):
+		store.index = ch.index
+		return store.index
+	else:
+		return -1
+def start():
+	lexemeBegin = Character(string, 0)
+	print("here ", lexemeBegin.val)
+	index = -1
+	store = Character(string, 0)
+	while lexemeBegin.index < len(string):
+		if is_valid(lexemeBegin, keyword(lexemeBegin.index, store)):
+			tokenize_and_forward(lexemeBegin, store.index, "KEYWORD")
+		elif is_valid(lexemeBegin, string_literal(lexemeBegin.index, store)):
+			tokenize_and_forward(lexemeBegin, store.index, "STRING LITERAL")
+		elif is_valid(lexemeBegin, number(lexemeBegin.index, store)):
+			tokenize_and_forward(lexemeBegin, store.index, "NUMBER")
+		elif is_valid(lexemeBegin, relational_operator(lexemeBegin.index, store)):
+			tokenize_and_forward(lexemeBegin, store.index, "RELATIONAL OPERATOR")
+		elif is_valid(lexemeBegin, assignment_operator(lexemeBegin.index, store)):
+			tokenize_and_forward(lexemeBegin, store.index, "ASSIGNMENT OPERATOR")
+		elif is_valid(lexemeBegin, arithmetic_operator(lexemeBegin.index, store)):
+			tokenize_and_forward(lexemeBegin, store.index, "ARITHMETIC OPERATOR")
+		elif is_valid(lexemeBegin, logical_operator(lexemeBegin.index, store)):
+			tokenize_and_forward(lexemeBegin, store.index, "LOGICAL OPERATOR")
+		elif is_valid(lexemeBegin, bitwise_operator(lexemeBegin.index, store)):
+			tokenize_and_forward(lexemeBegin, store.index, "BITWISE OPERATOR")
+		elif is_valid(lexemeBegin, identifier(lexemeBegin.index, store)):
+			tokenize_and_forward(lexemeBegin, store.index,"IDENTIFIER")
+		else:
+			if lexemeBegin.index + 1 == len(string):
+				break;
+			lexemeBegin.increment()
+		
 start()
 
 print("SYMTAB -")
