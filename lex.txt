@@ -44,13 +44,24 @@ def is_space(char):
 	return (char == ' ' or char == '\n' or char == '\r' or char == '\t')
 
 def tokenize_and_forward(lexemeBegin, index, tok_type):
+	#print("in tokenize and forward for ", lexemeBegin.index, index)
 	token = string[lexemeBegin.index : index + 1]
 	print((tok_type, token))
-	print("token = ", token)
-	lexemeBegin.increment_mult(index + 1 - lexemeBegin.index)
+	#print("indices - ", lexemeBegin.index, index)
+	lexemeBegin.increment_mult(index - lexemeBegin.index)
+	#print("incremented indices - ", lexemeBegin.index, index)
 	
 def is_valid(lexemeBegin, index):
-	return (not (index is None) and index >= lexemeBegin.index)
+	#print("in valid for  ", lexemeBegin.index, index)
+	#, " string = ", string[lexemeBegin.index:index])
+	
+	#if (not index is None):
+	#	print("index > lexeme ", index > lexemeBegin.index)
+	#else:
+	#	print("index = none")
+	
+	#print("ISVALID ? ", (not (index is None) and index > lexemeBegin.index))
+	return (not (index is None) and index > lexemeBegin.index)
 		
 def start():	
 	lexemeBegin = Character(0)
@@ -58,6 +69,7 @@ def start():
 	index = -1
 	store = Character(0)
 	while lexemeBegin.index < len(string):
+		#print("lexemeBegin.index ", lexemeBegin.index)
 		if is_valid(lexemeBegin, keyword(lexemeBegin.index, store)):
 			tokenize_and_forward(lexemeBegin, store.index, "KEYWORD")
 		elif is_valid(lexemeBegin, identifier(lexemeBegin.index, store)):
@@ -76,20 +88,11 @@ def isLetter(c):
 	
 def identifier(index, store):
 	ch = Character(index)
-	#if (ch.val == 'a'):
-	#	print("in identifier with", ch.val, isLetter(ch.val))
 	if(isLetter(ch.val)):
-		#x = 0
-		#if (ch.val == 'a'):
-		#	x = 1
 		ch.increment()
-		#if x == 1:
-		#	print("After a -", ch.val, (digit(ch.val) or isLetter(ch.val) or ch.val == '_'))
 		while(digit(ch.val) or isLetter(ch.val) or ch.val == '_'):
 			ch.increment()
 		ch.decrement()
-		#if x == 1:
-		#	print("now a is ", ch.val)
 		store.index = ch.index
 		return store.index
 		
