@@ -13,6 +13,8 @@ for line in lines:
 
 ####
 
+symtab = dict()
+
 class Character:
 	def set_val(self, index):
 		self.val = string[self.index]
@@ -40,9 +42,15 @@ class Character:
 def is_space(char):
 	return (char == ' ' or char == '\n' or char == '\r' or char == '\t')
 
+def add_to_symtab(token):
+	if not token in symtab:
+		symtab[token] = None
+		
 def tokenize_and_forward(lexemeBegin, index, tok_type):
 	token = string[lexemeBegin.index : index + 1]
 	print((tok_type, token))
+	if (tok_type == 'IDENTIFIER'):
+		add_to_symtab(token)
 	lexemeBegin.increment_mult(index + 1 - lexemeBegin.index)
 	
 def is_valid(lexemeBegin, index):
@@ -341,5 +349,8 @@ def keyword(index, store):
 							return store.index	
 	else:
 		return -1
-						
+				
 start()
+
+print("SYMTAB -")
+print(symtab)
