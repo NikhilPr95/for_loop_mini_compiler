@@ -1,11 +1,13 @@
 import pickle
+import itertools
 from classes import *
 with open('tokens.pkl', 'rb') as fp:
 		token_list = pickle.load(fp)
 
-print(token_list)
+#print(token_list)
+
 """
-PROG -> S
+PROG -> STATEMENT
 
 STATEMENT -> FOR_LOOP | IF_COND | ASSIGN | DECL | STATEMENT STATEMENT
 
@@ -23,5 +25,10 @@ DECL -> TYPE IDENTIFIER ;
 #def program(token_list):
 	
 #def statement():
+
+
+def get_next(token_list, token):
+	return token_list[token_list.index(token) + 1]
 	
-#print next(token_list)
+def get_prev(token_list, token):
+	return token_list[token_list.index(token) - 1]
