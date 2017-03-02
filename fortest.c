@@ -1,5 +1,8 @@
 int i = 5;
 
+break; double
+case char 
+continue xx / uus
 i >>= 10
 j < 5
 a << 2
