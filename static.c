@@ -2,6 +2,9 @@
 
 int main(){
 	
+	/* Hello * */
+	int a;
+	/*Hello *** aaevee ***./ */
 	
 	static int c = 5;
 	
