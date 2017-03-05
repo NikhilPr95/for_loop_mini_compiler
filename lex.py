@@ -4,19 +4,23 @@ import pickle
 from classes import *
 
 ### Getting input program ###
-inFile = sys.argv[1]
-string = ""
+def get_program():
+	string = ""
+	inFile = sys.argv[1]
 
-with open(inFile,'r') as i:
-    lines = i.readlines()
-	
-for line in lines:
-	string += line
+	with open(inFile,'r') as i:
+		lines = i.readlines()
+		
+	for line in lines:
+		string += line
+
+	return string
 
 ####
 #keywords = ['break', 'case', 'char', 'continue', 'do', 'double', 'else', 'for', 'float', 'if', 'int', 'include', 'long', 'return', 'sizeof', 'static', 'switch', 'void', 'while']
 
 symtab = dict()
+comment_list = []
 token_list = []
 spaces = ['\n','\r','\t',' ']
 
@@ -234,33 +238,82 @@ def punctuation(index, store):
 		if match_string(ch, store, symbol):
 			return store.index
 		
+# [/][*][^*]*[*]+([^/*][^*]*[*]+)*/
+def comment(index, store):
+	ch = Character(string, index)
+	if (ch.val == '/'):
+		ch.increment()
+		if (ch.val == '*'):
+			ch.increment()
+			while (ch.val != '*'):
+				ch.increment()
+			if (ch.val == '*'):
+				ch.increment()
+				while (ch.val == '*'):
+					ch.increment()
+				temp = Character(string, ch.index)
+				valid = True
+				while (valid):
+					ch= Character(string, temp.index)
+					if (temp.val not in ['/','*']):
+						temp.increment()
+						while (temp.val != '*'):
+							temp.increment()
+						if (temp.val == '*'):
+							temp.increment()
+						else:
+							valid = False							
+						while (temp.val == '*'):
+							temp.increment()
+					else:
+						valid = False
+				if (ch.val == '/'):
+					store.index = ch.index
+					return store.index
+	
+def remove_comments(string):
+	str = ""
+	str += string[:comment_list[0]]
+	for index in range(1, len(comment_list)-1, 2):
+			str += string[comment_list[index]:comment_list[index+1]]
+	
+	str += string[comment_list[-1]:]
+	
+	return str
 		
 def start():
+	comment_list = []
 	lexemeBegin = Character(string, 0)
-	print("here ", lexemeBegin.val)
 	index = -1
 	store = Character(string, 0)
 	while lexemeBegin.index < len(string):
-		yes = False
-		for function in [keyword, punctuation, string_literal, number, relational_operator, assignment_operator, arithmetic_operator, logical_operator, bitwise_operator, identifier]:
+		valid = False
+		for function in [comment, keyword, punctuation, string_literal, number, relational_operator, assignment_operator, arithmetic_operator, logical_operator, bitwise_operator, identifier]:
 			if is_valid(lexemeBegin, function(lexemeBegin.index, store)):
 				tokenize_and_forward(lexemeBegin, store.index, function.__name__.upper())
-				yes = True
-		if not yes:		
+				valid = True
+		if not valid:		
 			if lexemeBegin.index + 1 == len(string):
 				break
-			lexemeBegin.increment()
+			else:
+				lexemeBegin.increment()
 		
 def tokenize_and_forward(lexemeBegin, index, tok_type):
+	global comment_list
 	token = string[lexemeBegin.index : index + 1]
-	lexemeBegin.increment_mult(index + 1 - lexemeBegin.index)
 	print((tok_type, token))
 	if (tok_type == 'IDENTIFIER'):
 		add_to_symtab(token)
-	token_list.append(Token(tok_type, token))
+	if (tok_type == 'COMMENT'):
+		comment_list += [lexemeBegin.index, index+1]
+	else:
+		token_list.append(Token(tok_type, token))
+	lexemeBegin.increment_mult(index + 1 - lexemeBegin.index)
 	return Token(tok_type, token)
-			
+
+string = get_program()	
 start()
+string = remove_comments(string)
 
 print("SYMTAB -")
 print(sorted(symtab.items()))
