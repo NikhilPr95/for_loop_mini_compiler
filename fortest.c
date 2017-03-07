@@ -1,3 +1,8 @@
+
+for (; i < 10; i++){
+	printf("Hello World\n");
+}
+
 int i = 5;
 
 break; double
@@ -10,7 +15,4 @@ b & c
 c &= 1
 x += 20
 s --
-qw % 6
-for (; i < 10; i++){
-	printf("Hello World\n");
-}
+qw % 6 

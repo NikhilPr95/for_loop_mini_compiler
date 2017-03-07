@@ -71,10 +71,11 @@ def match_string_with_lookahead(ch, store, string, lookaheads):
 					
 def number(index, store):
 	ch = Character(string, index)
-	while (digit(ch.val)):
+	if (digit(ch.val)):
 		ch.increment()
-	ch.decrement()
-	if ch.index >= index:
+		while (digit(ch.val)):
+			ch.increment()
+		ch.decrement()
 		store.index = ch.index
 		return store.index
 	else:
@@ -88,8 +89,7 @@ def identifier(index, store):
 			ch.increment()
 		ch.decrement()
 		store.index = ch.index
-		return store.index
-		
+		return store.index		
 	else:
 		return -1 
 		
@@ -272,14 +272,16 @@ def comment(index, store):
 					return store.index
 	
 def remove_comments(string):
-	str = ""
-	str += string[:comment_list[0]]
-	for index in range(1, len(comment_list)-1, 2):
-			str += string[comment_list[index]:comment_list[index+1]]
-	
-	str += string[comment_list[-1]:]
-	
-	return str
+	if len(comment_list) > 0:
+		str = ""
+		str += string[:comment_list[0]]
+		for index in range(1, len(comment_list)-1, 2):
+				str += string[comment_list[index]:comment_list[index+1]]
+		str += string[comment_list[-1]:]
+		
+		return str
+	else:
+		return string
 		
 def start():
 	comment_list = []
@@ -292,7 +294,7 @@ def start():
 			if is_valid(lexemeBegin, function(lexemeBegin.index, store)):
 				tokenize_and_forward(lexemeBegin, store.index, function.__name__.upper())
 				valid = True
-		if not valid:		
+		if not valid:
 			if lexemeBegin.index + 1 == len(string):
 				break
 			else:
