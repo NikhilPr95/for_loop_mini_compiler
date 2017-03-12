@@ -15,8 +15,8 @@ def get_program():
 		string += line
 
 	return string
+###
 
-####
 #keywords = ['break', 'case', 'char', 'continue', 'do', 'double', 'else', 'for', 'float', 'if', 'int', 'include', 'long', 'return', 'sizeof', 'static', 'switch', 'void', 'while']
 
 symtab = dict()
@@ -282,7 +282,7 @@ def remove_comments(string):
 		return str
 	else:
 		return string
-		
+	
 def start():
 	comment_list = []
 	lexemeBegin = Character(string, 0)
@@ -290,9 +290,9 @@ def start():
 	store = Character(string, 0)
 	while lexemeBegin.index < len(string):
 		valid = False
-		for function in [comment, keyword, punctuation, string_literal, number, relational_operator, assignment_operator, arithmetic_operator, logical_operator, bitwise_operator, identifier]:
+		for function in token_types:
 			if is_valid(lexemeBegin, function(lexemeBegin.index, store)):
-				tokenize_and_forward(lexemeBegin, store.index, function.__name__.upper())
+				tokenize_and_forward(lexemeBegin, store.index, function.__name__)
 				valid = True
 		if not valid:
 			if lexemeBegin.index + 1 == len(string):
@@ -313,6 +313,8 @@ def tokenize_and_forward(lexemeBegin, index, tok_type):
 	lexemeBegin.increment_mult(index + 1 - lexemeBegin.index)
 	return Token(tok_type, token)
 
+token_types = [comment, keyword, punctuation, string_literal, number, relational_operator, assignment_operator, arithmetic_operator, logical_operator, bitwise_operator, identifier]
+
 string = get_program()	
 start()
 string = remove_comments(string)
@@ -323,3 +325,6 @@ print([(tok.type,tok.val) for tok in token_list])
 
 with open('tokens.pkl', 'wb') as fp:
 	pickle.dump(token_list, fp, pickle.HIGHEST_PROTOCOL)
+	
+with open('token_types.pkl', 'wb') as fp:
+	pickle.dump([t.__name__ for t in token_types], fp, pickle.HIGHEST_PROTOCOL)
