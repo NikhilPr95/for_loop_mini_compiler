@@ -124,21 +124,53 @@ def is_valid(rule, productions, token, store, stack):
 			return False
 			
 	return matched
+
+def print_tabs(n):
+	print(n*' ', end = "")
 	
+def print_stack(stack):
+	x=1
+	n = stack.count('(((')
+	i = 0	
+	while i < (len(stack)):
+		print_tabs(n)
+		if not stack[i] == '(((':
+			while (stack[i] != ')))'):
+				print(stack[i], end = "")
+				i += 1
+			n -= 1
+		else:
+			i += 1
+			
+def list_indent_stack(stack):
+	li = []
+	for element in stack:
+		if element == '(((':
+			li.append(list_indent_stack)
+			
 def match_rule(token, store, productions, producer, stack):
 	print("in match rule with ", producer, ":", productions[producer])
 	for rule in productions[producer]:
 		print("in rule ", rule, " with ", token.val)
+		stack.append('(((')
 		stack.append(rule)
 		print("STACK ", stack)
 		if (is_valid(rule, productions, token, store, stack)):
 			print("here we are", rule, productions[producer], productions[producer].index(rule))#, productions[producer][productions[producer].index(rule)])
 			#stack.append(rule)
+			stack.append(')))')
 			return True
 		else:
-			stack.pop()
+			x = None
+			#while(x != '((('):#
+			while(rule != x):
+				x = stack.pop()
+				print("Popped ", x," with rule ", rule)
+			#x = stack.pop()
+			#print("Popped ", x," with rule ", rule)
 			print("STACK ", stack)
 			print("returned false ", rule, productions[producer])
+	
 	return False
 			
 def start(token_list):
@@ -147,12 +179,15 @@ def start(token_list):
 	token = TokenList(token_list, 0)
 	store = TokenList(token_list,0)
 	
+	stack.append('(((')
 	stack.append("PROG")
 	print("STACK ", stack)
 	if match_rule(token, store, productions, "PROG", stack):
 		print("WE ARE DONE", token.val, store.val)
 	else:
 		print("ERROR", token.val, store.val)
+	
+	stack.append(')))')
 		
 def init_rules():	
 	for rule in rules:
@@ -176,4 +211,5 @@ start(token_list)
 
 print("STACK ----")
 print(stack)
+#print_stack(stack)
 #print("ttt",token_types)
