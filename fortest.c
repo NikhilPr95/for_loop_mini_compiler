@@ -1,3 +1,3 @@
-for (i = 0; i < 10; i++){
-	printf("Hello World\n");
+for (i = 0; j < 10; k = 5){
+	l = 5;
 }

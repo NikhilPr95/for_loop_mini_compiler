@@ -51,7 +51,7 @@ def match_string(ch, store, string):
 	ch, i = match(ch, string)
 	if (i == len(string)):
 		ch.decrement()
-		store.index = ch.index
+		store.update(ch)
 		return True
 	else:
 		return False
@@ -62,7 +62,7 @@ def match_string_with_lookahead(ch, store, string, lookaheads):
 		if ch.val in lookaheads:
 		#if is_space(ch.val):
 			ch.decrement()
-			store.index = ch.index
+			store.update(ch)
 			return True
 		else:
 			return False
@@ -76,7 +76,7 @@ def number(index, store):
 		while (digit(ch.val)):
 			ch.increment()
 		ch.decrement()
-		store.index = ch.index
+		store.update(ch)
 		return store.index
 	else:
 		return -1
@@ -88,7 +88,7 @@ def identifier(index, store):
 		while(digit(ch.val) or isLetter(ch.val) or ch.val == '_'):
 			ch.increment()
 		ch.decrement()
-		store.index = ch.index
+		store.update(ch)
 		return store.index		
 	else:
 		return -1 
@@ -103,11 +103,17 @@ def string_literal(index, store):
 				if (temp.val == '"'):
 					ch.increment()
 			ch.increment()
-		store.index = ch.index
+		store.update(ch)
 		return store.index
 	else:
 		return -1
-			
+
+def type(index, store):
+	ch = Character(string, index)
+	for t in ['int', 'float', 'double', 'char']:
+		if match_string_with_lookahead(ch, store, t, spaces):
+			return store.index
+		
 def keyword(index, store):
 	ch = Character(string, index)
 	if match_string_with_lookahead(ch, store, 'break', spaces + [';']):
@@ -125,7 +131,7 @@ def keyword(index, store):
 			ch.increment()
 			if (is_space(ch.val) or ch.val == '{'):
 				ch.decrement()
-				store.index = ch.index
+				store.update(ch)
 				return store.index
 			elif match_string_with_lookahead(ch, store, 'uble', spaces):
 				return store.index
@@ -169,11 +175,11 @@ def keyword(index, store):
 def check_extra(ch, store, symbol):
 	ch.increment()
 	if (ch.val == symbol):
-		store.index = ch.index
+		store.update(ch)
 		return store.index
 	else:
 		ch.decrement()
-		store.index = ch.index
+		store.update(ch)
 		return store.index		
 
 def relational_operator(index, store):
@@ -181,20 +187,20 @@ def relational_operator(index, store):
 	if (ch.val == '<'):
 		ch.increment()
 		if (ch.val == '='):
-			store.index = ch.index
+			store.update(ch)
 			return store.index
 		elif (is_space(ch.val)):
 			ch.decrement()
-			store.index = ch.index
+			store.update(ch)
 			return store.index				
 	elif (ch.val == '>'):
 		ch.increment()
 		if (ch.val == '='):
-			store.index = ch.index
+			store.update(ch)
 			return store.index
 		elif (is_space(ch.val)):
 			ch.decrement()
-			store.index = ch.index
+			store.update(ch)
 			return store.index			
 	else:
 		for symbol in ['==', '!=']:
@@ -232,13 +238,12 @@ def assignment_operator(index, store):
 			return store.index
 
 def punctuation(index, store):
-	#print("in punct")
 	ch =Character(string, index)
 	for symbol in [',', ';', ':', ')', '(', '[', ']', '{', '}']:
 		if match_string(ch, store, symbol):
 			return store.index
 		
-# [/][*][^*]*[*]+([^/*][^*]*[*]+)*/
+# [/][*][^*]*[*]+([^/*][^*]*[*]+)*/ | //[.]*(\n)
 def comment(index, store):
 	ch = Character(string, index)
 	if (ch.val == '/'):
@@ -268,9 +273,15 @@ def comment(index, store):
 					else:
 						valid = False
 				if (ch.val == '/'):
-					store.index = ch.index
+					store.update(ch)
 					return store.index
-	
+		elif (ch.val == '/'):
+			ch.increment()
+			while (ch.val != '\n') and ch.index < len(string):
+				ch.increment()
+			store.update(ch)
+			return store.index
+			
 def remove_comments(string):
 	if len(comment_list) > 0:
 		str = ""
@@ -282,7 +293,8 @@ def remove_comments(string):
 		return str
 	else:
 		return string
-	
+token_types = [comment, type, keyword, punctuation, string_literal, number, relational_operator, assignment_operator, arithmetic_operator, logical_operator, bitwise_operator, identifier]
+
 def start():
 	comment_list = []
 	lexemeBegin = Character(string, 0)
@@ -290,10 +302,15 @@ def start():
 	store = Character(string, 0)
 	while lexemeBegin.index < len(string):
 		valid = False
-		for function in token_types:
+		i = 0
+		while lexemeBegin.index < len(string) and i < len(token_types):
+			function = token_types[i]
 			if is_valid(lexemeBegin, function(lexemeBegin.index, store)):
 				tokenize_and_forward(lexemeBegin, store.index, function.__name__)
 				valid = True
+				i = 0
+			i += 1	
+			
 		if not valid:
 			if lexemeBegin.index + 1 == len(string):
 				break
@@ -313,18 +330,21 @@ def tokenize_and_forward(lexemeBegin, index, tok_type):
 	lexemeBegin.increment_mult(index + 1 - lexemeBegin.index)
 	return Token(tok_type, token)
 
-token_types = [comment, keyword, punctuation, string_literal, number, relational_operator, assignment_operator, arithmetic_operator, logical_operator, bitwise_operator, identifier]
 
 string = get_program()	
 start()
 string = remove_comments(string)
 
-print("SYMTAB -")
-print(sorted(symtab.items()))
-print([(tok.type,tok.val) for tok in token_list])
 
+print("SYMTAB -")
+#print(sorted(symtab.items()))
+print([(tok.type,tok.val) for tok in token_list])
+print(len(string))
+
+			
 with open('tokens.pkl', 'wb') as fp:
 	pickle.dump(token_list, fp, pickle.HIGHEST_PROTOCOL)
 	
 with open('token_types.pkl', 'wb') as fp:
 	pickle.dump([t.__name__ for t in token_types], fp, pickle.HIGHEST_PROTOCOL)
+	

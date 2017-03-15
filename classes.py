@@ -1,6 +1,9 @@
 class Character:
 	def set_val(self, string, index):
-		self.val = string[self.index]
+		if self.index >= self.stringlen:
+			self.val = None
+		else:
+			self.val = string[self.index]
 
 	def __init__(self, string, index):
 		self.string = string
@@ -12,10 +15,6 @@ class Character:
 		self.increment_mult(1)
 		
 	def increment_mult(self, inc):
-		if (self.index + inc) == self.stringlen:
-			inc -= 1
-		elif (self.index + inc) > self.stringlen:
-			return -1
 		self.index += inc
 		self.set_val(self.string, self.index)
 	
@@ -25,6 +24,10 @@ class Character:
 	def decrement_mult(self, dec):
 		self.index -= dec
 		self.set_val(self.string, self.index)
+		
+	def update(self, obj):
+		self.index = obj.index
+		self.set_val(self.string, obj.index)
 			
 class Token:
 	def __init__(self, type, val):

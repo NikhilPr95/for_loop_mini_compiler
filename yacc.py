@@ -8,62 +8,32 @@ with open('tokens.pkl', 'rb') as fp:
 
 with open('token_types.pkl', 'rb') as fp:
 		token_types = pickle.load(fp)
-		
-"""
-PROG : STATEMENT
 
-STATEMENT : FOR_LOOP_ST | IF_COND_ST | ASSIGN_ST | DECL_ST
-
-FOR_LOOP_ST : FOR_LOOP ST
-IF_COND_ST : IF_COND ST
-ASSIGN_ST : ASSIGN ST
-DECL_ST : DECL ST
-
-ST : STATEMENT_ST | epsilon
-
-STATEMENT_ST : STATEMENT ST
-
-FOR_LOOP : for ( ASSIGN ; COND ; S) { S }
-
-IF_COND : KEY[if] ( COND ) { S } OP_ELSE
-OP_ELSE : KEY{else} { S } | epsilon
-
-ASSIGN : IDENTIFIER = ( IDENTIFIER | NUM | EXPRESSION) ;
-
-DECL : TYPE IDENTIFIER ;
-
-EXPRESSION : E
-
-E : TE' | T
-E' : +TE' | -TE' | EPSILON
-T : FT' | F
-T' : *FT' | /FT' | EPSILON
-F : G^F | G
-G : (E) | id | num 
-
-"""
 rules = [
-			"PROG: STATEMENT",
+			"PROG: STATEMENT eof",
 			"STATEMENT: FOR_LOOP_ST | IF_COND_ST | ASSIGN_ST | DECL_ST",
-			"FOR_LOOP_ST: FOR_LOOP ST",
-			"IF_COND_ST: IF_COND ST",
-			"ASSIGN_ST: ASSIGN ST",
-			"DECL_ST: DECL ST",
-			"ST: STATEMENT_ST | epsilon",
-			"STATEMENT_ST: STATEMENT ST",
-			"FOR_LOOP: for ( ASSIGN ; COND ; S) { S }",
-			"IF_COND: if ( COND ) { S } OP_ELSE",
-			"OP_ELSE: else { S } | epsilon",
-			"ASSIGN: identifier = ( VAL ) ;",
-			"VAL: identifier | number | EXPRESSION",
-			"DECL: TYPE identifier ;",
+			"FOR_LOOP_ST: FOR_LOOP ST | FOR_LOOP",
+			"IF_COND_ST: IF_COND ST | IF_COND",
+			"ASSIGN_ST: ASSIGN ST | ASSIGN",
+			"DECL_ST: DECL ST | DECL",
+			"ST: STATEMENT_ST ",
+			"STATEMENT_ST: STATEMENT ; ST | STATEMENT ",
+			"FOR_LOOP: for ( ASSIGN COND INCREMENT ) { STATEMENT }",
+			"INCREMENT: I_ASSIGN | I_COND | EXPRESSION",
+			"IF_COND: if ( COND ) { STATEMENT ; } OP_ELSE | if ( COND ) { STATEMENT }",
+			"OP_ELSE: else { STATEMENT } ",
+			"ASSIGN: identifier = EXPRESSION ;",			
+			"DECL: type identifier ;",
+			"COND: EXPRESSION relational_operator EXPRESSION ;",
+			"I_ASSIGN: identifier = EXPRESSION",
+			"IF_COND: EXPRESSION relational_operator EXPRESSION",
 			"EXPRESSION: E",
 			"E: T E' | T",
-			"E': + T E' | - T E' | epsilon",
+			"E': + T E' | - T E'", # | epsilon",
 			"T: F T' | F",
-			"T': * F T' | / F T' | epsilon",
+			"T': * F T' | / F T'", # | epsilon",
 			"F: G ^ F | G",
-			"G: ( E ) | id | num" 
+			"G: ( E ) | identifier | number "
 		 ]
 
 productions = dict()
@@ -80,7 +50,6 @@ def update(token1, token2):
 	token1.set_index(token2.index)
 	
 def has_proceeded(start, store):
-	print("proceed", start.val, store.val)
 	return store.index > start.index
 	
 def is_producer(symbol):
@@ -90,74 +59,121 @@ def is_token(symbol):
 	return symbol in token_types
 
 def match_token(token, store, symbol):
+	print("in match token", token.val, token.type, symbol)
 	if token.type == symbol:
-		print("token matched")
-		token.increment()
-		update(store, token)
-
+		store.set_index(token.index + 1)		
+		return True
+	return False
+	
 def is_tuple(symbol):
 	return symbol[0] == '(' and symbol[-1] == ')'
 	
-def is_valid(rule, productions, token, store):
-	start = token
-	y = store.index
+def is_valid(rule, productions, token, store, stack):
+	temp = TokenList(token_list,0)
+	update(temp, token)
 	matched = True
 	for symbol in rule:
+		print("in symbol", symbol, "\t\t(in rule ", rule, ")")			
 		if matched:
-			print("in symbol", symbol)
 			if is_producer(symbol):
-				print("in if")
-				match_rule(token, store, productions, symbol)			
-				if has_proceeded(token, store):
-					update(token, store)
+				print("in producer")
+				if match_rule(temp, store, productions, symbol, stack):
+					if has_proceeded(temp, store):
+						print("1.SYMBOL in RULE", symbol, rule)
+						if not symbol == rule[-1]:# and rule[rule.index(symbol) + 1] != 'eof':
+							update(temp, store)
+						print("1. temp store", temp.val, store.val)					
+					else:
+						print("1. unmatched", symbol, temp.val, store.val, rule)
+						return False
 				else:
-					matched = False
+					print("2. unmatched", symbol, temp.val, store.val, rule)
+					#stack.pop()
+					return False
 			elif is_token(symbol):
-				print("is token", symbol)
-				match_token(token, store, symbol)
-				if has_proceeded(token, store):
-					update(token, store)
+				print("is token")
+				if match_token(temp, store, symbol):
+					if has_proceeded(temp, store):
+						#print("2.SYMBOL in RULE", symbol, rule)
+						if not symbol == rule[-1]:# and rule[rule.index(symbol) + 1] != 'eof':
+							update(temp, store)
+						print("matched")
+						print("2. temp store", temp.val, store.val)
+					else:
+						print("3. unmatched not proceeded", symbol, temp.val)
+						#stack.pop()
+						return False
 				else:
-					matched = False
-			else:
-				print("in else ")
-				if (token.val == symbol):
-					print("matched")
-					token.increment()
-					update(store, token)		
+					print("4. unmatched token")
+					return False
+			else: #string match
+				print("else", temp.val, symbol)
+				if (temp.val == symbol):
+					if (temp.type == 'eof'):
+						print("done!")
+						return True
+					else:
+						temp.increment()
+						update(store, temp)
+						print("matched")
 				else:
-					matched =  False
-	
+					print("5. unmatched", symbol, temp.val)
+					return False					
+		else:
+			print ("unmatched exiting")
+			return False
+			
 	return matched
 	
-def match_rule(token, store, productions, producer):
-	print("in match rule with ", producer)
+def match_rule(token, store, productions, producer, stack):
+	print("in match rule with ", producer, ":", productions[producer])
 	for rule in productions[producer]:
-		print("in rule ", rule)
-		if (is_valid(rule, productions, token, store)):
-			x = store.index
-			return store
-
+		print("in rule ", rule, " with ", token.val)
+		stack.append(rule)
+		print("STACK ", stack)
+		if (is_valid(rule, productions, token, store, stack)):
+			print("here we are", rule, productions[producer], productions[producer].index(rule))#, productions[producer][productions[producer].index(rule)])
+			#stack.append(rule)
+			return True
+		else:
+			stack.pop()
+			print("STACK ", stack)
+			print("returned false ", rule, productions[producer])
+	return False
+			
 def start(token_list):
+	eof = Token('eof', 'eof')
+	token_list.append(eof)
 	token = TokenList(token_list, 0)
 	store = TokenList(token_list,0)
 	
-	match_rule(token, store, productions, "PROG")
-
+	stack.append("PROG")
+	print("STACK ", stack)
+	if match_rule(token, store, productions, "PROG", stack):
+		print("WE ARE DONE", token.val, store.val)
+	else:
+		print("ERROR", token.val, store.val)
+		
 def init_rules():	
 	for rule in rules:
+		#print(rule.split(":"))
 		symbol, prod = rule.split(":")
 		for p in prod.split("|"):
 			add(productions, symbol, p.strip())
 
 init_rules()
 			
-for item in productions.items():
+for item in sorted(productions.items()):
 	print(item)
 print("\n")
 print([(tok.val, tok.type) for tok in token_list])
 print("\n")
 print("\n")
 
+stack = []
+
 start(token_list)
+
+print("STACK ----")
+print(stack)
 #print("ttt",token_types)
