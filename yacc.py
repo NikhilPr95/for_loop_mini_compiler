@@ -11,11 +11,12 @@ with open('token_types.pkl', 'rb') as fp:
 
 rules = [
 			"PROG: STATEMENT eof",
-			"STATEMENT: FOR_LOOP_ST | IF_COND_ST | ASSIGN_ST | DECL_ST",
+			"STATEMENT: FOR_LOOP_ST | IF_COND_ST | DEFN_ST | ASSIGN_ST | DECL_ST",
 			"FOR_LOOP_ST: FOR_LOOP ST | FOR_LOOP",
 			"IF_COND_ST: IF_COND ST | IF_COND",
 			"ASSIGN_ST: ASSIGN ST | ASSIGN",
 			"DECL_ST: DECL ST | DECL",
+			"DEFN_ST: DEFN ST | DEFN",
 			"ST: STATEMENT_ST ",
 			"STATEMENT_ST: STATEMENT ; ST | STATEMENT ",
 			"FOR_LOOP: for ( ASSIGN COND INCREMENT ) { STATEMENT }",
@@ -24,9 +25,11 @@ rules = [
 			"OP_ELSE: else { STATEMENT } ",
 			"ASSIGN: identifier = EXPRESSION ;",			
 			"DECL: type identifier ;",
-			"COND: EXPRESSION relational_operator EXPRESSION ;",
+			"DEFN: type identifier = EXPRESSION ;",
+			"COND: EXPRESSION1 relational_operator EXPRESSION2 ;",
 			"I_ASSIGN: identifier = EXPRESSION",
-			"IF_COND: EXPRESSION relational_operator EXPRESSION",
+			"EXPRESSION1: EXPRESSION",
+			"EXPRESSION2: EXPRESSION",
 			"EXPRESSION: E",
 			"E: T E' | T",
 			"E': + T E' | - T E'", # | epsilon",
@@ -68,16 +71,19 @@ def match_token(token, store, symbol):
 def is_tuple(symbol):
 	return symbol[0] == '(' and symbol[-1] == ')'
 	
-def is_valid(rule, productions, token, store, stack):
+def is_valid(rule, productions, token, store, stack, root):
 	temp = TokenList(token_list,0)
 	update(temp, token)
 	matched = True
-	for symbol in rule:
+	children = root.get_children()
+	for i in range(len(rule)):
+		symbol = rule[i]
+		child = children[i]
 		print("in symbol", symbol, "\t\t(in rule ", rule, ")")			
 		if matched:
 			if is_producer(symbol):
 				print("in producer")
-				if match_rule(temp, store, productions, symbol, stack):
+				if match_rule(temp, store, productions, symbol, stack, child):
 					if has_proceeded(temp, store):
 						print("1.SYMBOL in RULE", symbol, rule)
 						if not symbol == rule[-1]:# and rule[rule.index(symbol) + 1] != 'eof':
@@ -126,7 +132,7 @@ def is_valid(rule, productions, token, store, stack):
 	return matched
 
 def print_tabs(n):
-	print(n*' ', end = "")
+	print(n*' ', end = " ")
 	
 def print_stack(stack):
 	x=1
@@ -141,31 +147,44 @@ def print_stack(stack):
 			n -= 1
 		else:
 			i += 1
-			
+
+def print_tree(root):
+	print(root.val, end= " ")
+	if is_producer(root.val) and root.children:
+		print("(", end = "")
+	for child in root.children:
+		print_tree(child)
+	if is_producer(root.val) and root.children:
+		print(")", end = " ")
+
 def list_indent_stack(stack):
 	li = []
 	for element in stack:
 		if element == '(((':
 			li.append(list_indent_stack)
 			
-def match_rule(token, store, productions, producer, stack):
+def match_rule(token, store, productions, producer, stack, root):
 	print("in match rule with ", producer, ":", productions[producer])
 	for rule in productions[producer]:
 		print("in rule ", rule, " with ", token.val)
-		stack.append('(((')
+		#stack.append('(((')
 		stack.append(rule)
+		root.set_children(rule)	
+		print("TREE")
+		print_tree(root)
+		print("")
 		print("STACK ", stack)
-		if (is_valid(rule, productions, token, store, stack)):
+		if (is_valid(rule, productions, token, store, stack, root)):
 			print("here we are", rule, productions[producer], productions[producer].index(rule))#, productions[producer][productions[producer].index(rule)])
 			#stack.append(rule)
-			stack.append(')))')
+		#	stack.append(')))')
 			return True
 		else:
 			x = None
 			#while(x != '((('):#
 			while(rule != x):
 				x = stack.pop()
-				print("Popped ", x," with rule ", rule)
+	#			print("Popped ", x," with rule ", rule)
 			#x = stack.pop()
 			#print("Popped ", x," with rule ", rule)
 			print("STACK ", stack)
@@ -178,16 +197,26 @@ def start(token_list):
 	token_list.append(eof)
 	token = TokenList(token_list, 0)
 	store = TokenList(token_list,0)
-	
-	stack.append('(((')
+	stack = []
+
+	root = Tree("PROG")
+	#stack.append('(((')
 	stack.append("PROG")
+	print("TREE")
+	print_tree(root)
+	print("")
 	print("STACK ", stack)
-	if match_rule(token, store, productions, "PROG", stack):
-		print("WE ARE DONE", token.val, store.val)
+	if match_rule(token, store, productions, "PROG", stack, root):
+		print("VALID", token.val, store.val)
 	else:
 		print("ERROR", token.val, store.val)
+
+	print("TREE")
+	print_tree(root)
+	print("")
 	
-	stack.append(')))')
+	return stack
+	#stack.append(')))')
 		
 def init_rules():	
 	for rule in rules:
@@ -205,9 +234,8 @@ print([(tok.val, tok.type) for tok in token_list])
 print("\n")
 print("\n")
 
-stack = []
 
-start(token_list)
+stack = start(token_list)
 
 print("STACK ----")
 print(stack)

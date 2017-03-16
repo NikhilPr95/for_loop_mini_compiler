@@ -55,3 +55,25 @@ class TokenList:
 	def set_index(self, index):
 		self.index = index
 		self.set_vals(self.index)
+
+class Tree:
+	def __init__(self, val):
+		self.val = val
+		self.children = []
+		self.parent = []
+		self.code = None
+
+	def set_children(self, children):
+		for child in children:
+			child_node = Tree(child)
+			child_node.set_parent(self)
+			self.children.append(child_node)
+		
+	def set_parent(self, parent):
+		self.parent = parent
+
+	def get_children(self):
+		return self.children
+
+	def get_parent(self):
+		return self.parent
