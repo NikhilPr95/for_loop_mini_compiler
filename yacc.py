@@ -40,6 +40,11 @@ rules = [
 			"G: ( E ) | identifier | number "
 		 ]
 
+assign = {
+	'DECL' : {
+		'type' : [(0, 'inh'), (1, 'type')]
+	}
+}
 productions = dict()
 
 def add(dict, key, val):
@@ -63,20 +68,24 @@ def is_token(symbol):
 	return symbol in token_types
 
 def assign_token_vals(token, node):
-	if token.type in ['number', 'relational_operator']:
-		node.set_synthval(token.val)
-	elif token.type in ['identifier']:
-		node.set_entry(token.val)			
+	
+def assign_producer_vals(symbol, rule, root):
+	if root == 'DECL':
+		if rule == ['type', 'identifier']:
+			if symbol == 'type':
+				children = root.get_children()
+				T = children[0]
+				L = children[1]
+				L.inhval = T.type
 
-def assign_producer_vals(node):
-	if len(node.children) == 1:
-		child = node.children[0]
-		node.set_synthval(child.synthval)
-		
+#def assign_producer_vals(symbol, rule, root):
+	
+def assign_symbol_vals():
+				
 def match_token(token, store, symbol, node):
 	print("in match token", token.val, token.type, symbol)
 	if token.type == symbol:
-		#assign_token_vals(token, node)
+		assign_token_vals(token, node)
 		store.set_index(token.index + 1)	
 		return True
 	return False
@@ -100,8 +109,9 @@ def is_valid(rule, productions, token, store, root):
 				if match_rule(temp, store, productions, symbol, child):
 					if has_proceeded(temp, store):
 						print("1.SYMBOL in RULE", symbol, rule)
-						if not symbol == rule[-1]:
+						if not symbol == rule[-1]: #don't progress token if the symbol is the last in the list -> Error
 							update(temp, store)
+						assign_producer_vals(symbol, rule, root)
 						print("1. temp store", temp.val, store.val)					
 					else:
 						print("1. unmatched", symbol, temp.val, store.val, rule)
@@ -161,13 +171,13 @@ def match_rule(token, store, productions, producer, root):
 	for rule in productions[producer]:
 		print("in rule ", rule, " with ", token.val)
 		root.set_children(rule)
-		#assign_producer_vals(root)
+		assign_producer_vals(root)
 		print("TREE")
 		print_tree(root)
 		print("")
 		if (is_valid(rule, productions, token, store, root)):
 			print("here we are", rule, productions[producer], productions[producer].index(rule))
-			#assign_producer_vals(root)
+			assign_producer_vals(root)
 			return True
 		else:
 			x = None
