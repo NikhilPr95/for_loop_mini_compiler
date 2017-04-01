@@ -32,17 +32,29 @@ rules = [
 			"EXPRESSION1: EXPRESSION",
 			"EXPRESSION2: EXPRESSION",
 			"EXPRESSION: E",
-			"E: T E' | T",
-			"E': + T E' | + T | - T E' | - T",
-			"T: F T' | F",
-			"T': * F T' | * F | / F T' | / F",
+			"E: T E' ",
+			"E': + T E' | - T E' | epsilon",
+			"T: F T' ",
+			"T': * F T' | / F T' | epsilon",
 			"F: ^ G F | G",
 			"G: ( E ) | identifier | number "
 		 ]
 
 assign = {
-	'DECL' : {
-		'type' : [(0, 'inh'), (1, 'type')]
+	'E': {
+		'T': [(1, 'inh'), (0, 'val')]
+	},
+	'T': {
+	
+	},
+	'F': {
+	
+	},
+	'G': {
+	
+	}
+	'DECL': {
+		'type' : [(1, 'inh'), (0, 'type')]
 	}
 }
 productions = dict()
@@ -68,11 +80,15 @@ def is_token(symbol):
 	return symbol in token_types
 
 def assign_token_vals(token, node):
-	
-def assign_producer_vals(symbol, rule, root):
+	if token.type in ['number', 'relational_operator']:
+		node.set_synthval(token.val)
+	elif token.type in ['identifier']:
+		node.set_entry(token.val)
+		
+def assign_producer_vals(node, rule, root):
 	if root == 'DECL':
 		if rule == ['type', 'identifier']:
-			if symbol == 'type':
+			if node.val == 'type':
 				children = root.get_children()
 				T = children[0]
 				L = children[1]
@@ -80,7 +96,7 @@ def assign_producer_vals(symbol, rule, root):
 
 #def assign_producer_vals(symbol, rule, root):
 	
-def assign_symbol_vals():
+#def assign_symbol_vals():
 				
 def match_token(token, store, symbol, node):
 	print("in match token", token.val, token.type, symbol)
@@ -171,13 +187,13 @@ def match_rule(token, store, productions, producer, root):
 	for rule in productions[producer]:
 		print("in rule ", rule, " with ", token.val)
 		root.set_children(rule)
-		assign_producer_vals(root)
+		#assign_producer_vals(root)
 		print("TREE")
 		print_tree(root)
 		print("")
 		if (is_valid(rule, productions, token, store, root)):
 			print("here we are", rule, productions[producer], productions[producer].index(rule))
-			assign_producer_vals(root)
+			#assign_producer_vals(root)
 			return True
 		else:
 			x = None
