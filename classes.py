@@ -57,12 +57,23 @@ class TokenList:
 		self.set_vals(self.index)
 
 class Tree:
-	def __init__(self, val):
-		self.val = val
+	def __init__(self, name):
+		self.name = name
 		self.children = []
 		self.parent = []
+		self.synthval = None
+		self.inhval = None
+		self.type = None
+		self.inhtype = None
+		self.entry = None
 		self.code = None
-
+	
+	def set_synthval(self, synthval):
+		self.synthval = synthval
+	
+	def set_entry(self, entry):
+		self.entry = entry
+		
 	def set_children(self, children):
 		for child in children:
 			child_node = Tree(child)
@@ -77,3 +88,8 @@ class Tree:
 
 	def get_parent(self):
 		return self.parent
+		
+	def delete_children(self):
+		for child in self.children:
+			child.delete_children()
+		self.children = []
