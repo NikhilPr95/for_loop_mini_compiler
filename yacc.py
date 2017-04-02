@@ -34,6 +34,7 @@ rules = [
 			"EXPRESSION1: EXPRESSION",
 			"EXPRESSION2: EXPRESSION",
 			"EXPRESSION: E",
+<<<<<<< HEAD
 			"E: T E'",
 			"E': M E1' | M E2'",
 			"M: epsilon",
@@ -111,6 +112,31 @@ assign = {
 		')' : [['=',('root','synval'),(0,'synval')]],
 		'identifier' : [['=',('root','synval'),(0,'val')]],
 		'number' : [['=',('root','synval'),(0,'lexval')]]
+=======
+			"E: T E' ",
+			"E': + T E' | - T E' | epsilon",
+			"T: F T' ",
+			"T': * F T' | / F T' | epsilon",
+			"F: ^ G F | G",
+			"G: ( E ) | identifier | number "
+		 ]
+
+assign = {
+	'E': {
+		'T': [(1, 'inh'), (0, 'val')]
+	},
+	'T': {
+	
+	},
+	'F': {
+	
+	},
+	'G': {
+	
+	}
+	'DECL': {
+		'type' : [(1, 'inh'), (0, 'type')]
+>>>>>>> 425ebd53f5f890c6f216b157998e27b07f53ee44
 	}
 	
 }
@@ -137,6 +163,7 @@ def is_token(symbol):
 	return symbol in token_types
 
 def assign_token_vals(token, node):
+<<<<<<< HEAD
 	x=1
 	
 def get_params(vals, children):
@@ -155,6 +182,21 @@ def get_params(vals, children):
 		params.append(node_x, x_attr)
 	
 	return params	
+=======
+	if token.type in ['number', 'relational_operator']:
+		node.set_synthval(token.val)
+	elif token.type in ['identifier']:
+		node.set_entry(token.val)
+		
+def assign_producer_vals(node, rule, root):
+	if root == 'DECL':
+		if rule == ['type', 'identifier']:
+			if node.val == 'type':
+				children = root.get_children()
+				T = children[0]
+				L = children[1]
+				L.inhval = T.type
+>>>>>>> 425ebd53f5f890c6f216b157998e27b07f53ee44
 
 def assign_producer_vals(symbol, rule, root):
 	if root in assign:
@@ -179,9 +221,14 @@ def assign_producer_vals(symbol, rule, root):
 		
 #def assign_producer_vals(symbol, rule, root):
 	
+<<<<<<< HEAD
 def assign_symbol_vals():
 	x=1
 			
+=======
+#def assign_symbol_vals():
+				
+>>>>>>> 425ebd53f5f890c6f216b157998e27b07f53ee44
 def match_token(token, store, symbol, node):
 	print("in match token", token.val, token.type, symbol)
 	if token.type == symbol:
