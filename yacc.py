@@ -24,7 +24,9 @@ rules = [
 			"IF_COND: if ( COND ) { STATEMENT ; } OP_ELSE | if ( COND ) { STATEMENT }",
 			"OP_ELSE: else { STATEMENT } ",
 			"ASSIGN: identifier = EXPRESSION ;",			
-			"DECL: type identifier ;",
+			"DECL: type ID ;",
+			"ID: identifier ID'",
+			"ID': , identifier ID' | epsilon ", 
 			"DEFN: type ASSIGN",
 			"COND: EXPRESSION1 relational_operator EXPRESSION2 ;",
 			"I_ASSIGN: identifier = EXPRESSION",
@@ -32,18 +34,85 @@ rules = [
 			"EXPRESSION1: EXPRESSION",
 			"EXPRESSION2: EXPRESSION",
 			"EXPRESSION: E",
-			"E: T E' | T",
-			"E': + T E' | + T | - T E' | - T",
-			"T: F T' | F",
-			"T': * F T' | * F | / F T' | / F",
-			"F: ^ G F | G",
-			"G: ( E ) | identifier | number "
-		 ]
+			"E: T E'",
+			"E': M E1' | M E2'",
+			"M: epsilon",
+			"E1': + T E' | epsilon",
+			"E2': - T E' | epsilon",
+			"T: F T'",
+			"T': T1' | T2'",
+			"T1': * F T' | epsilon",
+			"T2': / F T' | epsilon",
+			"F: ( E ) | identifier | number ",
+		]
 
 assign = {
-	'DECL' : {
-		'type' : [(0, 'inh'), (1, 'type')]
+	'ASSIGN' : {
+		'identifier' : [['=',(0,'type'),('root','inh')]],
+		'EXPRESSION' : [['=',(0,'val'),(2,'val')]]
+	},
+	'DECL': {
+		'type' : [['=',(1, 'inh'), (0, 'type')]]
+	},
+	'ID': {
+		'identifier' : [['=', (0, 'type'), ('root', 'type')]]
+	},
+	'ID\'' : {
+		'identifier' : [['=', (1,'type'),('root','type')], ['=',(2,'type'),('root','type')]]
+	},
+	'DEFN' : {
+		'type' : [['=',(1, 'inh'), (0, 'type')]]
+	},
+	'EXPRESSION1' : {
+		'EXPRESSION' : [['=',('root','val'),(0,'val')]]
+	},
+	'EXPRESSION2' : {
+		'EXPRESSION' : [['=',('root','val'),(0,'val')]]
+	},
+	'EXPRESSION' : {
+		'E' : [['=',('root','val'),(0,'val')]]
+	},
+	'E' : {
+		'T' : [['=',(1,'inh'),(0,'val')]],
+		'E\'' : [['=', ('root','val'),(1,'synval')]]
+	},
+	'E\'': {
+		'M': [['=',(1,'inh'),(0,'inh')]], 
+		'E1\'': [['=',(0,'synval'),(1,'synval')]],
+		'E2\'': [['=',(0,'synval'),(1,'synval')]]
+	},
+	'E1\'' : {
+		'T' : [['+=',(2,'inh'),('root','inh'),(1,'inh')]],
+		'E\'' : [['=',('root','synval'),(1,'synval')]],	
+	},
+	'E2\'' : {
+		'T' : [['-=',(2,'inh'),('root','inh'),(1,'inh')]],
+		'E\'' : [['=',('root','synval'),(1,'synval')]],
+	},
+	'T' : {
+		'F' : [['=',(1,'inh'),(0,'val')]],
+		'T\'' : [['=', ('root','val'),(1,'synval')]]
+	},
+	'T\'': {
+		'M': [['=',(1,'inh'),(0,'inh')]], 
+		'T1\'': [['=',(0,'synval'),(1,'synval')]],
+		'T2\'': [['=',(0,'synval'),(1,'synval')]]
+	},
+	'T1\'' : {
+		'F' : [['*=',(2,'inh'),('root','inh'),(1,'inh')]],
+		'T\'' : [['=',('root','synval'),(1,'synval')]],	
+	},
+	'T2\'' : {
+		'F' : [['/=',(2,'inh'),('root','inh'),(1,'inh')]],
+		'T\'' : [['=',('root','synval'),(1,'synval')]],
+	},
+	'F' : {
+		'(' : [['=',(0,'inh'),('root','inh')]],
+		')' : [['=',('root','synval'),(0,'synval')]],
+		'identifier' : [['=',('root','synval'),(0,'val')]],
+		'number' : [['=',('root','synval'),(0,'lexval')]]
 	}
+	
 }
 productions = dict()
 
@@ -68,20 +137,51 @@ def is_token(symbol):
 	return symbol in token_types
 
 def assign_token_vals(token, node):
+	x=1
 	
-def assign_producer_vals(symbol, rule, root):
-	if root == 'DECL':
-		if rule == ['type', 'identifier']:
-			if symbol == 'type':
-				children = root.get_children()
-				T = children[0]
-				L = children[1]
-				L.inhval = T.type
+def get_params(vals, children):
+	tuples = vals[1:]
+	num = len(tuples)
+	params = []
+	
+	for val in tuples:
+		x = vals[0]
+		x_attr = vals[1]
+		
+		if x == 'root':
+			node_x = root
+		else:
+			node_x = children(x)		
+		params.append(node_x, x_attr)
+	
+	return params	
 
+def assign_producer_vals(symbol, rule, root):
+	if root in assign:
+		if symbol in assign[root]:
+			vals = assign[root][symbol]
+			children = root.get_children()
+			if vals[0] == '=':
+				node_x, x_attr, node_y, y_attr = get_params(vals, children)			
+				setattr(node_x, x_attr, getattr(node_y, y_attr))
+			elif vals[0] == '+=':
+				node_x, x_attr, node_y, y_attr, node_z, z_attr = get_params(vals, children)
+				setattr(node_x, x_attr, (getattr(node_y, y_attr) + getattr(node_z, z_attr)))
+			elif vals[0] == '-=':
+				node_x, x_attr, node_y, y_attr, node_z, z_attr = get_params(vals, children)
+				setattr(node_x, x_attr, (getattr(node_y, y_attr) - getattr(node_z, z_attr)))
+			elif vals[0] == '*=':
+				node_x, x_attr, node_y, y_attr, node_z, z_attr = get_params(vals, children)
+				setattr(node_x, x_attr, (getattr(node_y, y_attr) * getattr(node_z, z_attr)))
+			elif vals[0] == '/=':
+				node_x, x_attr, node_y, y_attr, node_z, z_attr = get_params(vals, children)
+				setattr(node_x, x_attr, (getattr(node_y, y_attr) / getattr(node_z, z_attr)))
+		
 #def assign_producer_vals(symbol, rule, root):
 	
 def assign_symbol_vals():
-				
+	x=1
+			
 def match_token(token, store, symbol, node):
 	print("in match token", token.val, token.type, symbol)
 	if token.type == symbol:
@@ -111,7 +211,7 @@ def is_valid(rule, productions, token, store, root):
 						print("1.SYMBOL in RULE", symbol, rule)
 						if not symbol == rule[-1]: #don't progress token if the symbol is the last in the list -> Error
 							update(temp, store)
-						assign_producer_vals(symbol, rule, root)
+						#assign_producer_vals(symbol, rule, root)
 						print("1. temp store", temp.val, store.val)					
 					else:
 						print("1. unmatched", symbol, temp.val, store.val, rule)
@@ -171,13 +271,13 @@ def match_rule(token, store, productions, producer, root):
 	for rule in productions[producer]:
 		print("in rule ", rule, " with ", token.val)
 		root.set_children(rule)
-		assign_producer_vals(root)
+		#assign_producer_vals(root)
 		print("TREE")
 		print_tree(root)
 		print("")
 		if (is_valid(rule, productions, token, store, root)):
 			print("here we are", rule, productions[producer], productions[producer].index(rule))
-			assign_producer_vals(root)
+			#assign_producer_vals(root)
 			return True
 		else:
 			x = None

@@ -61,7 +61,7 @@ class Tree:
 		self.name = name
 		self.children = []
 		self.parent = []
-		self.synthval = None
+		self.synval = None
 		self.inhval = None
 		self.type = None
 		self.inhtype = None
