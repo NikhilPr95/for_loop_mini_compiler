@@ -61,13 +61,15 @@ class Tree:
 		self.name = name
 		self.children = []
 		self.parent = []
+		self.val = None
+		self.lexval = None
 		self.synval = None
 		self.inhval = None
 		self.type = None
 		self.inhtype = None
 		self.entry = None
 		self.code = None
-	
+		
 	def set_synthval(self, synthval):
 		self.synthval = synthval
 	
