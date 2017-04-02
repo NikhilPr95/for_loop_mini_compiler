@@ -57,10 +57,14 @@ rules = [
 # also in the same rule, E' should not be applied when going top down
 # so does that mean the last rule is always bottom up?
 # How apt ! Because the if condition symbol != rule[-1] is just above! i just need to do a tab indent
+# next what is required is assign prod to be called after it comes out of isvalid and apply the rule for the last symbol
+
+# But i am still not sure if it is correct
+# need to verify
 
 assign = {
 	'ASSIGN' : {
-		'identifier' : [['=',(0,'type'),('root','inhval')]],
+		'identifier' : [['=',(0,'type'),('root','inhval')]], # is this correct?
 		'EXPRESSION' : [['=',(0,'val'),(2,'val')]]
 	},
 	'DECL': {
