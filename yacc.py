@@ -52,6 +52,12 @@ rules = [
 #Currently top-down parser is only top-down -- There is no going up... Once it comes back up we can apply
 # the rules but I think there will be conflict. Applying the top down rules again in bottom-up
 # thus screwing up the values
+#in bottom up only certain rules need to be applied
+# example in E -> TE' the rule for E' has to be applied not for T
+# also in the same rule, E' should not be applied when going top down
+# so does that mean the last rule is always bottom up?
+# How apt ! Because the if condition symbol != rule[-1] is just above! i just need to do a tab indent
+
 assign = {
 	'ASSIGN' : {
 		'identifier' : [['=',(0,'type'),('root','inhval')]],
