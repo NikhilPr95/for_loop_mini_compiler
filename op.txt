@@ -1,7 +1,7 @@
 ('ASSIGN', [['identifier', '=', 'EXPRESSION', ';']])
 ('ASSIGN_ST', [['ASSIGN', 'ST'], ['ASSIGN']])
 ('COND', [['EXPRESSION1', 'relational_operator', 'EXPRESSION2', ';']])
-('DECL', [['type', 'identifier', ';'], ['type', 'ID', ';']])
+('DECL', [['type', 'ID', ';']])
 ('DECL_ST', [['DECL', 'ST'], ['DECL']])
 ('DEFN', [['type', 'ASSIGN']])
 ('DEFN_ST', [['DEFN', 'ST'], ['DEFN']])
@@ -29,12 +29,12 @@
 ('STATEMENT', [['FOR_LOOP_ST'], ['IF_COND_ST'], ['DEFN_ST'], ['ASSIGN_ST'], ['DECL_ST']])
 ('STATEMENT_ST', [['STATEMENT', ';', 'ST'], ['STATEMENT']])
 ('T', [['F', "T'"]])
-("T'", [["T1'"], ["T2'"]])
+("T'", [['M', "T1'"], ['M', "T2'"]])
 ("T1'", [['*', 'F', "T'"], ['epsilon']])
 ("T2'", [['/', 'F', "T'"], ['epsilon']])
 
 
-[('i', 'identifier'), ('=', 'assignment_operator'), ('5', 'number'), ('+', 'arithmetic_operator'), ('4', 'number'), (';', 'punctuation')]
+[('int', 'type'), ('i', 'identifier'), (';', 'punctuation'), ('i', 'identifier'), ('=', 'assignment_operator'), ('5', 'number'), ('-', 'arithmetic_operator'), ('4', 'number'), (';', 'punctuation')]
 
 
 
@@ -42,11 +42,436 @@
 TREE
 PROG 
 in match rule with  PROG : [['STATEMENT', 'eof']]
-in rule  ['STATEMENT', 'eof']  with  i
+in rule  ['STATEMENT', 'eof']  with  int
 TREE
 PROG [STATEMENT eof ] 
 SYMBOL  STATEMENT
 in symbol STATEMENT 		(in rule  ['STATEMENT', 'eof'] )
+in producer
+in match rule with  STATEMENT : [['FOR_LOOP_ST'], ['IF_COND_ST'], ['DEFN_ST'], ['ASSIGN_ST'], ['DECL_ST']]
+in rule  ['FOR_LOOP_ST']  with  int
+TREE
+STATEMENT [FOR_LOOP_ST ] 
+SYMBOL  FOR_LOOP_ST
+in symbol FOR_LOOP_ST 		(in rule  ['FOR_LOOP_ST'] )
+in producer
+in match rule with  FOR_LOOP_ST : [['FOR_LOOP', 'ST'], ['FOR_LOOP']]
+in rule  ['FOR_LOOP', 'ST']  with  int
+TREE
+FOR_LOOP_ST [FOR_LOOP ST ] 
+SYMBOL  FOR_LOOP
+in symbol FOR_LOOP 		(in rule  ['FOR_LOOP', 'ST'] )
+in producer
+in match rule with  FOR_LOOP : [['for', '(', 'ASSIGN', 'COND', 'INCREMENT', ')', '{', 'STATEMENT', '}']]
+in rule  ['for', '(', 'ASSIGN', 'COND', 'INCREMENT', ')', '{', 'STATEMENT', '}']  with  int
+TREE
+FOR_LOOP [for ( ASSIGN COND INCREMENT ) { STATEMENT } ] 
+SYMBOL  for
+in symbol for 		(in rule  ['for', '(', 'ASSIGN', 'COND', 'INCREMENT', ')', '{', 'STATEMENT', '}'] )
+else int for
+5. unmatched for int
+TREE
+FOR_LOOP 
+returned false  ['for', '(', 'ASSIGN', 'COND', 'INCREMENT', ')', '{', 'STATEMENT', '}'] [['for', '(', 'ASSIGN', 'COND', 'INCREMENT', ')', '{', 'STATEMENT', '}']]
+2. unmatched FOR_LOOP int int ['FOR_LOOP', 'ST']
+TREE
+FOR_LOOP_ST 
+returned false  ['FOR_LOOP', 'ST'] [['FOR_LOOP', 'ST'], ['FOR_LOOP']]
+in rule  ['FOR_LOOP']  with  int
+TREE
+FOR_LOOP_ST [FOR_LOOP ] 
+SYMBOL  FOR_LOOP
+in symbol FOR_LOOP 		(in rule  ['FOR_LOOP'] )
+in producer
+in match rule with  FOR_LOOP : [['for', '(', 'ASSIGN', 'COND', 'INCREMENT', ')', '{', 'STATEMENT', '}']]
+in rule  ['for', '(', 'ASSIGN', 'COND', 'INCREMENT', ')', '{', 'STATEMENT', '}']  with  int
+TREE
+FOR_LOOP [for ( ASSIGN COND INCREMENT ) { STATEMENT } ] 
+SYMBOL  for
+in symbol for 		(in rule  ['for', '(', 'ASSIGN', 'COND', 'INCREMENT', ')', '{', 'STATEMENT', '}'] )
+else int for
+5. unmatched for int
+TREE
+FOR_LOOP 
+returned false  ['for', '(', 'ASSIGN', 'COND', 'INCREMENT', ')', '{', 'STATEMENT', '}'] [['for', '(', 'ASSIGN', 'COND', 'INCREMENT', ')', '{', 'STATEMENT', '}']]
+2. unmatched FOR_LOOP int int ['FOR_LOOP']
+TREE
+FOR_LOOP_ST 
+returned false  ['FOR_LOOP'] [['FOR_LOOP', 'ST'], ['FOR_LOOP']]
+2. unmatched FOR_LOOP_ST int int ['FOR_LOOP_ST']
+TREE
+STATEMENT 
+returned false  ['FOR_LOOP_ST'] [['FOR_LOOP_ST'], ['IF_COND_ST'], ['DEFN_ST'], ['ASSIGN_ST'], ['DECL_ST']]
+in rule  ['IF_COND_ST']  with  int
+TREE
+STATEMENT [IF_COND_ST ] 
+SYMBOL  IF_COND_ST
+in symbol IF_COND_ST 		(in rule  ['IF_COND_ST'] )
+in producer
+in match rule with  IF_COND_ST : [['IF_COND', 'ST'], ['IF_COND']]
+in rule  ['IF_COND', 'ST']  with  int
+TREE
+IF_COND_ST [IF_COND ST ] 
+SYMBOL  IF_COND
+in symbol IF_COND 		(in rule  ['IF_COND', 'ST'] )
+in producer
+in match rule with  IF_COND : [['if', '(', 'COND', ')', '{', 'STATEMENT', ';', '}', 'OP_ELSE'], ['if', '(', 'COND', ')', '{', 'STATEMENT', '}']]
+in rule  ['if', '(', 'COND', ')', '{', 'STATEMENT', ';', '}', 'OP_ELSE']  with  int
+TREE
+IF_COND [if ( COND ) { STATEMENT ; } OP_ELSE ] 
+SYMBOL  if
+in symbol if 		(in rule  ['if', '(', 'COND', ')', '{', 'STATEMENT', ';', '}', 'OP_ELSE'] )
+else int if
+5. unmatched if int
+TREE
+IF_COND 
+returned false  ['if', '(', 'COND', ')', '{', 'STATEMENT', ';', '}', 'OP_ELSE'] [['if', '(', 'COND', ')', '{', 'STATEMENT', ';', '}', 'OP_ELSE'], ['if', '(', 'COND', ')', '{', 'STATEMENT', '}']]
+in rule  ['if', '(', 'COND', ')', '{', 'STATEMENT', '}']  with  int
+TREE
+IF_COND [if ( COND ) { STATEMENT } ] 
+SYMBOL  if
+in symbol if 		(in rule  ['if', '(', 'COND', ')', '{', 'STATEMENT', '}'] )
+else int if
+5. unmatched if int
+TREE
+IF_COND 
+returned false  ['if', '(', 'COND', ')', '{', 'STATEMENT', '}'] [['if', '(', 'COND', ')', '{', 'STATEMENT', ';', '}', 'OP_ELSE'], ['if', '(', 'COND', ')', '{', 'STATEMENT', '}']]
+2. unmatched IF_COND int int ['IF_COND', 'ST']
+TREE
+IF_COND_ST 
+returned false  ['IF_COND', 'ST'] [['IF_COND', 'ST'], ['IF_COND']]
+in rule  ['IF_COND']  with  int
+TREE
+IF_COND_ST [IF_COND ] 
+SYMBOL  IF_COND
+in symbol IF_COND 		(in rule  ['IF_COND'] )
+in producer
+in match rule with  IF_COND : [['if', '(', 'COND', ')', '{', 'STATEMENT', ';', '}', 'OP_ELSE'], ['if', '(', 'COND', ')', '{', 'STATEMENT', '}']]
+in rule  ['if', '(', 'COND', ')', '{', 'STATEMENT', ';', '}', 'OP_ELSE']  with  int
+TREE
+IF_COND [if ( COND ) { STATEMENT ; } OP_ELSE ] 
+SYMBOL  if
+in symbol if 		(in rule  ['if', '(', 'COND', ')', '{', 'STATEMENT', ';', '}', 'OP_ELSE'] )
+else int if
+5. unmatched if int
+TREE
+IF_COND 
+returned false  ['if', '(', 'COND', ')', '{', 'STATEMENT', ';', '}', 'OP_ELSE'] [['if', '(', 'COND', ')', '{', 'STATEMENT', ';', '}', 'OP_ELSE'], ['if', '(', 'COND', ')', '{', 'STATEMENT', '}']]
+in rule  ['if', '(', 'COND', ')', '{', 'STATEMENT', '}']  with  int
+TREE
+IF_COND [if ( COND ) { STATEMENT } ] 
+SYMBOL  if
+in symbol if 		(in rule  ['if', '(', 'COND', ')', '{', 'STATEMENT', '}'] )
+else int if
+5. unmatched if int
+TREE
+IF_COND 
+returned false  ['if', '(', 'COND', ')', '{', 'STATEMENT', '}'] [['if', '(', 'COND', ')', '{', 'STATEMENT', ';', '}', 'OP_ELSE'], ['if', '(', 'COND', ')', '{', 'STATEMENT', '}']]
+2. unmatched IF_COND int int ['IF_COND']
+TREE
+IF_COND_ST 
+returned false  ['IF_COND'] [['IF_COND', 'ST'], ['IF_COND']]
+2. unmatched IF_COND_ST int int ['IF_COND_ST']
+TREE
+STATEMENT 
+returned false  ['IF_COND_ST'] [['FOR_LOOP_ST'], ['IF_COND_ST'], ['DEFN_ST'], ['ASSIGN_ST'], ['DECL_ST']]
+in rule  ['DEFN_ST']  with  int
+TREE
+STATEMENT [DEFN_ST ] 
+SYMBOL  DEFN_ST
+in symbol DEFN_ST 		(in rule  ['DEFN_ST'] )
+in producer
+in match rule with  DEFN_ST : [['DEFN', 'ST'], ['DEFN']]
+in rule  ['DEFN', 'ST']  with  int
+TREE
+DEFN_ST [DEFN ST ] 
+SYMBOL  DEFN
+in symbol DEFN 		(in rule  ['DEFN', 'ST'] )
+in producer
+in match rule with  DEFN : [['type', 'ASSIGN']]
+in rule  ['type', 'ASSIGN']  with  int
+TREE
+DEFN [type ASSIGN ] 
+SYMBOL  type
+in symbol type 		(in rule  ['type', 'ASSIGN'] )
+is token
+in match token int type type
+TOKENSET  type int
+2.SYMBOL in RULE type ['type', 'ASSIGN'] DEFN
+3. NOT LAST
+here2 in assign_producer_vals with  type DEFN ['type', 'ASSIGN']
+here3 in assign_producer_vals ['=', (1, 'inhval'), (0, 'type')]
+TP  [['=', (1, 'inhval'), (0, 'type')]]
+PARAMS  ASSIGN inhval type type ['type', 'ASSIGN']
+setting = ASSIGN inhval int under root  DEFN with rule  ['type', 'ASSIGN'] with symbol type
+matched
+2. temp store i i
+SYMBOL  ASSIGN
+in symbol ASSIGN 		(in rule  ['type', 'ASSIGN'] )
+in producer
+in match rule with  ASSIGN : [['identifier', '=', 'EXPRESSION', ';']]
+in rule  ['identifier', '=', 'EXPRESSION', ';']  with  i
+TREE
+ASSIGN [identifier = EXPRESSION ; ] 
+SYMBOL  identifier
+in symbol identifier 		(in rule  ['identifier', '=', 'EXPRESSION', ';'] )
+is token
+in match token i identifier identifier
+2.SYMBOL in RULE identifier ['identifier', '=', 'EXPRESSION', ';'] ASSIGN
+3. NOT LAST
+here2 in assign_producer_vals with  identifier ASSIGN ['identifier', '=', 'EXPRESSION', ';']
+here3 in assign_producer_vals ['=', (0, 'type'), ('root', 'inhval')]
+TP  [['=', (0, 'type'), ('root', 'inhval')]]
+PARAMS  identifier type ASSIGN inhval ['identifier', '=', 'EXPRESSION', ';']
+setting = identifier type int under root  ASSIGN with rule  ['identifier', '=', 'EXPRESSION', ';'] with symbol identifier
+matched
+2. temp store ; ;
+SYMBOL  =
+in symbol = 		(in rule  ['identifier', '=', 'EXPRESSION', ';'] )
+else ; =
+5. unmatched = ;
+TREE
+ASSIGN 
+returned false  ['identifier', '=', 'EXPRESSION', ';'] [['identifier', '=', 'EXPRESSION', ';']]
+2. unmatched ASSIGN i ; ['type', 'ASSIGN']
+TREE
+DEFN 
+returned false  ['type', 'ASSIGN'] [['type', 'ASSIGN']]
+2. unmatched DEFN int ; ['DEFN', 'ST']
+TREE
+DEFN_ST 
+returned false  ['DEFN', 'ST'] [['DEFN', 'ST'], ['DEFN']]
+in rule  ['DEFN']  with  int
+TREE
+DEFN_ST [DEFN ] 
+SYMBOL  DEFN
+in symbol DEFN 		(in rule  ['DEFN'] )
+in producer
+in match rule with  DEFN : [['type', 'ASSIGN']]
+in rule  ['type', 'ASSIGN']  with  int
+TREE
+DEFN [type ASSIGN ] 
+SYMBOL  type
+in symbol type 		(in rule  ['type', 'ASSIGN'] )
+is token
+in match token int type type
+TOKENSET  type int
+2.SYMBOL in RULE type ['type', 'ASSIGN'] DEFN
+3. NOT LAST
+here2 in assign_producer_vals with  type DEFN ['type', 'ASSIGN']
+here3 in assign_producer_vals ['=', (1, 'inhval'), (0, 'type')]
+TP  [['=', (1, 'inhval'), (0, 'type')]]
+PARAMS  ASSIGN inhval type type ['type', 'ASSIGN']
+setting = ASSIGN inhval int under root  DEFN with rule  ['type', 'ASSIGN'] with symbol type
+matched
+2. temp store i i
+SYMBOL  ASSIGN
+in symbol ASSIGN 		(in rule  ['type', 'ASSIGN'] )
+in producer
+in match rule with  ASSIGN : [['identifier', '=', 'EXPRESSION', ';']]
+in rule  ['identifier', '=', 'EXPRESSION', ';']  with  i
+TREE
+ASSIGN [identifier = EXPRESSION ; ] 
+SYMBOL  identifier
+in symbol identifier 		(in rule  ['identifier', '=', 'EXPRESSION', ';'] )
+is token
+in match token i identifier identifier
+2.SYMBOL in RULE identifier ['identifier', '=', 'EXPRESSION', ';'] ASSIGN
+3. NOT LAST
+here2 in assign_producer_vals with  identifier ASSIGN ['identifier', '=', 'EXPRESSION', ';']
+here3 in assign_producer_vals ['=', (0, 'type'), ('root', 'inhval')]
+TP  [['=', (0, 'type'), ('root', 'inhval')]]
+PARAMS  identifier type ASSIGN inhval ['identifier', '=', 'EXPRESSION', ';']
+setting = identifier type int under root  ASSIGN with rule  ['identifier', '=', 'EXPRESSION', ';'] with symbol identifier
+matched
+2. temp store ; ;
+SYMBOL  =
+in symbol = 		(in rule  ['identifier', '=', 'EXPRESSION', ';'] )
+else ; =
+5. unmatched = ;
+TREE
+ASSIGN 
+returned false  ['identifier', '=', 'EXPRESSION', ';'] [['identifier', '=', 'EXPRESSION', ';']]
+2. unmatched ASSIGN i ; ['type', 'ASSIGN']
+TREE
+DEFN 
+returned false  ['type', 'ASSIGN'] [['type', 'ASSIGN']]
+2. unmatched DEFN int ; ['DEFN']
+TREE
+DEFN_ST 
+returned false  ['DEFN'] [['DEFN', 'ST'], ['DEFN']]
+2. unmatched DEFN_ST int ; ['DEFN_ST']
+TREE
+STATEMENT 
+returned false  ['DEFN_ST'] [['FOR_LOOP_ST'], ['IF_COND_ST'], ['DEFN_ST'], ['ASSIGN_ST'], ['DECL_ST']]
+in rule  ['ASSIGN_ST']  with  int
+TREE
+STATEMENT [ASSIGN_ST ] 
+SYMBOL  ASSIGN_ST
+in symbol ASSIGN_ST 		(in rule  ['ASSIGN_ST'] )
+in producer
+in match rule with  ASSIGN_ST : [['ASSIGN', 'ST'], ['ASSIGN']]
+in rule  ['ASSIGN', 'ST']  with  int
+TREE
+ASSIGN_ST [ASSIGN ST ] 
+SYMBOL  ASSIGN
+in symbol ASSIGN 		(in rule  ['ASSIGN', 'ST'] )
+in producer
+in match rule with  ASSIGN : [['identifier', '=', 'EXPRESSION', ';']]
+in rule  ['identifier', '=', 'EXPRESSION', ';']  with  int
+TREE
+ASSIGN [identifier = EXPRESSION ; ] 
+SYMBOL  identifier
+in symbol identifier 		(in rule  ['identifier', '=', 'EXPRESSION', ';'] )
+is token
+in match token int type identifier
+4. unmatched token
+TREE
+ASSIGN 
+returned false  ['identifier', '=', 'EXPRESSION', ';'] [['identifier', '=', 'EXPRESSION', ';']]
+2. unmatched ASSIGN int ; ['ASSIGN', 'ST']
+TREE
+ASSIGN_ST 
+returned false  ['ASSIGN', 'ST'] [['ASSIGN', 'ST'], ['ASSIGN']]
+in rule  ['ASSIGN']  with  int
+TREE
+ASSIGN_ST [ASSIGN ] 
+SYMBOL  ASSIGN
+in symbol ASSIGN 		(in rule  ['ASSIGN'] )
+in producer
+in match rule with  ASSIGN : [['identifier', '=', 'EXPRESSION', ';']]
+in rule  ['identifier', '=', 'EXPRESSION', ';']  with  int
+TREE
+ASSIGN [identifier = EXPRESSION ; ] 
+SYMBOL  identifier
+in symbol identifier 		(in rule  ['identifier', '=', 'EXPRESSION', ';'] )
+is token
+in match token int type identifier
+4. unmatched token
+TREE
+ASSIGN 
+returned false  ['identifier', '=', 'EXPRESSION', ';'] [['identifier', '=', 'EXPRESSION', ';']]
+2. unmatched ASSIGN int ; ['ASSIGN']
+TREE
+ASSIGN_ST 
+returned false  ['ASSIGN'] [['ASSIGN', 'ST'], ['ASSIGN']]
+2. unmatched ASSIGN_ST int ; ['ASSIGN_ST']
+TREE
+STATEMENT 
+returned false  ['ASSIGN_ST'] [['FOR_LOOP_ST'], ['IF_COND_ST'], ['DEFN_ST'], ['ASSIGN_ST'], ['DECL_ST']]
+in rule  ['DECL_ST']  with  int
+TREE
+STATEMENT [DECL_ST ] 
+SYMBOL  DECL_ST
+in symbol DECL_ST 		(in rule  ['DECL_ST'] )
+in producer
+in match rule with  DECL_ST : [['DECL', 'ST'], ['DECL']]
+in rule  ['DECL', 'ST']  with  int
+TREE
+DECL_ST [DECL ST ] 
+SYMBOL  DECL
+in symbol DECL 		(in rule  ['DECL', 'ST'] )
+in producer
+in match rule with  DECL : [['type', 'ID', ';']]
+in rule  ['type', 'ID', ';']  with  int
+TREE
+DECL [type ID ; ] 
+SYMBOL  type
+in symbol type 		(in rule  ['type', 'ID', ';'] )
+is token
+in match token int type type
+TOKENSET  type int
+2.SYMBOL in RULE type ['type', 'ID', ';'] DECL
+3. NOT LAST
+here2 in assign_producer_vals with  type DECL ['type', 'ID', ';']
+here3 in assign_producer_vals ['=', (1, 'inhval'), (0, 'type')]
+TP  [['=', (1, 'inhval'), (0, 'type')]]
+PARAMS  ID inhval type type ['type', 'ID', ';']
+setting = ID inhval int under root  DECL with rule  ['type', 'ID', ';'] with symbol type
+matched
+2. temp store i i
+SYMBOL  ID
+in symbol ID 		(in rule  ['type', 'ID', ';'] )
+in producer
+in match rule with  ID : [['identifier', "ID'"]]
+in rule  ['identifier', "ID'"]  with  i
+TREE
+ID [identifier ID' ] 
+SYMBOL  identifier
+in symbol identifier 		(in rule  ['identifier', "ID'"] )
+is token
+in match token i identifier identifier
+2.SYMBOL in RULE identifier ['identifier', "ID'"] ID
+3. NOT LAST
+here2 in assign_producer_vals with  identifier ID ['identifier', "ID'"]
+here3 in assign_producer_vals ['=', (0, 'type'), ('root', 'type')]
+TP  [['=', (0, 'type'), ('root', 'type')]]
+PARAMS  identifier type ID type ['identifier', "ID'"]
+setting = identifier type None under root  ID with rule  ['identifier', "ID'"] with symbol identifier
+matched
+2. temp store ; ;
+SYMBOL  ID'
+in symbol ID' 		(in rule  ['identifier', "ID'"] )
+in producer
+in match rule with  ID' : [[',', 'identifier', "ID'"], ['epsilon']]
+in rule  [',', 'identifier', "ID'"]  with  ;
+TREE
+ID' [, identifier ID' ] 
+SYMBOL  ,
+in symbol , 		(in rule  [',', 'identifier', "ID'"] )
+else ; ,
+5. unmatched , ;
+TREE
+ID' 
+returned false  [',', 'identifier', "ID'"] [[',', 'identifier', "ID'"], ['epsilon']]
+in rule  ['epsilon']  with  ;
+TREE
+ID' [epsilon ] 
+SYMBOL  epsilon
+in symbol epsilon 		(in rule  ['epsilon'] )
+else ; epsilon
+here we are ['epsilon'] [[',', 'identifier', "ID'"], ['epsilon']] 1 ['epsilon']
+2. LAST ['epsilon']
+2. prod epsilon not in  {'identifier': [['=', (1, 'type'), ('root', 'type')], ['=', (2, 'type'), ('root', 'type')]]}
+done
+1.SYMBOL in RULE ID' ['identifier', "ID'"]
+1. temp store ; ;
+here we are ['identifier', "ID'"] [['identifier', "ID'"]] 0 ['identifier', "ID'"]
+2. LAST ['identifier', "ID'"]
+2. prod ID' not in  {'identifier': [['=', (0, 'type'), ('root', 'type')]]}
+done
+1.SYMBOL in RULE ID ['type', 'ID', ';']
+1. NOT LAST
+2. prod ID not in  {'type': [['=', (1, 'inhval'), (0, 'type')]]}
+1. temp store ; ;
+SYMBOL  ;
+in symbol ; 		(in rule  ['type', 'ID', ';'] )
+else ; ;
+matched
+here we are ['type', 'ID', ';'] [['type', 'ID', ';']] 0 ['type', 'ID', ';']
+2. LAST ['type', 'ID', ';']
+2. prod ; not in  {'type': [['=', (1, 'inhval'), (0, 'type')]]}
+done
+1.SYMBOL in RULE DECL ['DECL', 'ST']
+1. NOT LAST
+1. prod  DECL_ST not in assign
+1. temp store i i
+SYMBOL  ST
+in symbol ST 		(in rule  ['DECL', 'ST'] )
+in producer
+in match rule with  ST : [['STATEMENT_ST']]
+in rule  ['STATEMENT_ST']  with  i
+TREE
+ST [STATEMENT_ST ] 
+SYMBOL  STATEMENT_ST
+in symbol STATEMENT_ST 		(in rule  ['STATEMENT_ST'] )
+in producer
+in match rule with  STATEMENT_ST : [['STATEMENT', ';', 'ST'], ['STATEMENT']]
+in rule  ['STATEMENT', ';', 'ST']  with  i
+TREE
+STATEMENT_ST [STATEMENT ; ST ] 
+SYMBOL  STATEMENT
+in symbol STATEMENT 		(in rule  ['STATEMENT', ';', 'ST'] )
 in producer
 in match rule with  STATEMENT : [['FOR_LOOP_ST'], ['IF_COND_ST'], ['DEFN_ST'], ['ASSIGN_ST'], ['DECL_ST']]
 in rule  ['FOR_LOOP_ST']  with  i
@@ -251,17 +676,13 @@ SYMBOL  identifier
 in symbol identifier 		(in rule  ['identifier', '=', 'EXPRESSION', ';'] )
 is token
 in match token i identifier identifier
-TOKENSET  identifier i
 2.SYMBOL in RULE identifier ['identifier', '=', 'EXPRESSION', ';'] ASSIGN
+3. NOT LAST
 here2 in assign_producer_vals with  identifier ASSIGN ['identifier', '=', 'EXPRESSION', ';']
 here3 in assign_producer_vals ['=', (0, 'type'), ('root', 'inhval')]
 TP  [['=', (0, 'type'), ('root', 'inhval')]]
-tuples [(0, 'type'), ('root', 'inhval')]
-children  ['identifier', '=', 'EXPRESSION', ';']
-x, x_attr 0 type
-x, x_attr root inhval
 PARAMS  identifier type ASSIGN inhval ['identifier', '=', 'EXPRESSION', ';']
-setting = identifier type None under root  ASSIGN with rule  ['identifier', '=', 'EXPRESSION', ';']
+setting = identifier type None under root  ASSIGN with rule  ['identifier', '=', 'EXPRESSION', ';'] with symbol identifier
 matched
 2. temp store = =
 SYMBOL  =
@@ -323,261 +744,1526 @@ is token
 in match token 5 number number
 TOKENSET  number 5
 2.SYMBOL in RULE number ['number'] F
+matched
+2. temp store 5 -
+here we are ['number'] [['(', 'E', ')'], ['identifier'], ['number']] 2 ['number']
+2. LAST ['number']
 here2 in assign_producer_vals with  number F ['number']
 here3 in assign_producer_vals ['=', ('root', 'synval'), (0, 'lexval')]
 TP  [['=', ('root', 'synval'), (0, 'lexval')]]
-tuples [('root', 'synval'), (0, 'lexval')]
-children  ['number']
-x, x_attr root synval
-x, x_attr 0 lexval
 PARAMS  F synval number lexval ['number']
-setting = F synval 5 under root  F with rule  ['number']
-matched
-2. temp store 5 +
-here we are ['number'] [['(', 'E', ')'], ['identifier'], ['number']] 2
+setting = F synval 5 under root  F with rule  ['number'] with symbol number
+done
 1.SYMBOL in RULE F ['F', "T'"]
+1. NOT LAST
 here2 in assign_producer_vals with  F T ['F', "T'"]
-here3 in assign_producer_vals ['=', (1, 'inhval'), (0, 'val')]
-TP  [['=', (1, 'inhval'), (0, 'val')]]
-tuples [(1, 'inhval'), (0, 'val')]
-children  ['F', "T'"]
-x, x_attr 1 inhval
-x, x_attr 0 val
-PARAMS  T' inhval F val ['F', "T'"]
-setting = T' inhval None under root  T with rule  ['F', "T'"]
-1. temp store + +
+here3 in assign_producer_vals ['=', (1, 'inhval'), (0, 'synval')]
+TP  [['=', (1, 'inhval'), (0, 'synval')]]
+PARAMS  T' inhval F synval ['F', "T'"]
+setting = T' inhval 5 under root  T with rule  ['F', "T'"] with symbol F
+1. temp store - -
 SYMBOL  T'
 in symbol T' 		(in rule  ['F', "T'"] )
 in producer
-in match rule with  T' : [["T1'"], ["T2'"]]
-in rule  ["T1'"]  with  +
+in match rule with  T' : [['M', "T1'"], ['M', "T2'"]]
+in rule  ['M', "T1'"]  with  -
 TREE
-T' [T1' ] 
+T' [M T1' ] 
+SYMBOL  M
+in symbol M 		(in rule  ['M', "T1'"] )
+in producer
+in match rule with  M : [['epsilon']]
+in rule  ['epsilon']  with  -
+TREE
+M [epsilon ] 
+SYMBOL  epsilon
+in symbol epsilon 		(in rule  ['epsilon'] )
+else - epsilon
+here we are ['epsilon'] [['epsilon']] 0 ['epsilon']
+2. LAST ['epsilon']
+1. prod  M not in assign
+done
+1.SYMBOL in RULE M ['M', "T1'"]
+1. NOT LAST
+here2 in assign_producer_vals with  M T' ['M', "T1'"]
+here3 in assign_producer_vals ['=', (1, 'inhval'), ('root', 'inhval')]
+TP  [['=', (1, 'inhval'), ('root', 'inhval')]]
+PARAMS  T1' inhval T' inhval ['M', "T1'"]
+setting = T1' inhval 5 under root  T' with rule  ['M', "T1'"] with symbol M
+1. temp store - -
 SYMBOL  T1'
-in symbol T1' 		(in rule  ["T1'"] )
+in symbol T1' 		(in rule  ['M', "T1'"] )
 in producer
 in match rule with  T1' : [['*', 'F', "T'"], ['epsilon']]
-in rule  ['*', 'F', "T'"]  with  +
+in rule  ['*', 'F', "T'"]  with  -
 TREE
 T1' [* F T' ] 
 SYMBOL  *
 in symbol * 		(in rule  ['*', 'F', "T'"] )
-else + *
-5. unmatched * +
+else - *
+5. unmatched * -
 TREE
 T1' 
 returned false  ['*', 'F', "T'"] [['*', 'F', "T'"], ['epsilon']]
-in rule  ['epsilon']  with  +
+in rule  ['epsilon']  with  -
 TREE
 T1' [epsilon ] 
 SYMBOL  epsilon
 in symbol epsilon 		(in rule  ['epsilon'] )
-else + epsilon
-here we are ['epsilon'] [['*', 'F', "T'"], ['epsilon']] 1
-1.SYMBOL in RULE T1' ["T1'"]
-here2 in assign_producer_vals with  T1' T' ["T1'"]
-here3 in assign_producer_vals ['=', ('root', 'synval'), (0, 'synval')]
-TP  [['=', ('root', 'synval'), (0, 'synval')]]
-tuples [('root', 'synval'), (0, 'synval')]
-children  ["T1'"]
-x, x_attr root synval
-x, x_attr 0 synval
-PARAMS  T' synval T1' synval ["T1'"]
-setting = T' synval None under root  T' with rule  ["T1'"]
-1. temp store + +
-here we are ["T1'"] [["T1'"], ["T2'"]] 0
+else - epsilon
+here we are ['epsilon'] [['*', 'F', "T'"], ['epsilon']] 1 ['epsilon']
+2. LAST ['epsilon']
+here2 in assign_producer_vals with  epsilon T1' ['epsilon']
+here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
+TP  [['=', ('root', 'synval'), ('root', 'inhval')]]
+PARAMS  T1' synval T1' inhval ['epsilon']
+setting = T1' synval 5 under root  T1' with rule  ['epsilon'] with symbol epsilon
+done
+1.SYMBOL in RULE T1' ['M', "T1'"]
+1. temp store - -
+here we are ['M', "T1'"] [['M', "T1'"], ['M', "T2'"]] 0 ['M', "T1'"]
+2. LAST ['M', "T1'"]
+here2 in assign_producer_vals with  T1' T' ['M', "T1'"]
+here3 in assign_producer_vals ['=', ('root', 'synval'), (1, 'synval')]
+TP  [['=', ('root', 'synval'), (1, 'synval')]]
+PARAMS  T' synval T1' synval ['M', "T1'"]
+setting = T' synval 5 under root  T' with rule  ['M', "T1'"] with symbol T1'
+done
 1.SYMBOL in RULE T' ['F', "T'"]
+1. temp store - -
+here we are ['F', "T'"] [['F', "T'"]] 0 ['F', "T'"]
+2. LAST ['F', "T'"]
 here2 in assign_producer_vals with  T' T ['F', "T'"]
-here3 in assign_producer_vals ['=', ('root', 'val'), (1, 'synval')]
-TP  [['=', ('root', 'val'), (1, 'synval')]]
-tuples [('root', 'val'), (1, 'synval')]
-children  ['F', "T'"]
-x, x_attr root val
-x, x_attr 1 synval
-PARAMS  T val T' synval ['F', "T'"]
-setting = T val None under root  T with rule  ['F', "T'"]
-1. temp store + +
-here we are ['F', "T'"] [['F', "T'"]] 0
+here3 in assign_producer_vals ['=', ('root', 'synval'), (1, 'synval')]
+TP  [['=', ('root', 'synval'), (1, 'synval')]]
+PARAMS  T synval T' synval ['F', "T'"]
+setting = T synval 5 under root  T with rule  ['F', "T'"] with symbol T'
+done
 1.SYMBOL in RULE T ['T', "E'"]
+1. NOT LAST
 here2 in assign_producer_vals with  T E ['T', "E'"]
-here3 in assign_producer_vals ['=', (1, 'inhval'), (0, 'val')]
-TP  [['=', (1, 'inhval'), (0, 'val')]]
-tuples [(1, 'inhval'), (0, 'val')]
-children  ['T', "E'"]
-x, x_attr 1 inhval
-x, x_attr 0 val
-PARAMS  E' inhval T val ['T', "E'"]
-setting = E' inhval None under root  E with rule  ['T', "E'"]
-1. temp store + +
+here3 in assign_producer_vals ['=', (1, 'inhval'), (0, 'synval')]
+TP  [['=', (1, 'inhval'), (0, 'synval')]]
+PARAMS  E' inhval T synval ['T', "E'"]
+setting = E' inhval 5 under root  E with rule  ['T', "E'"] with symbol T
+1. temp store - -
 SYMBOL  E'
 in symbol E' 		(in rule  ['T', "E'"] )
 in producer
 in match rule with  E' : [['M', "E1'"], ['M', "E2'"]]
-in rule  ['M', "E1'"]  with  +
+in rule  ['M', "E1'"]  with  -
 TREE
 E' [M E1' ] 
 SYMBOL  M
 in symbol M 		(in rule  ['M', "E1'"] )
 in producer
 in match rule with  M : [['epsilon']]
-in rule  ['epsilon']  with  +
+in rule  ['epsilon']  with  -
 TREE
 M [epsilon ] 
 SYMBOL  epsilon
 in symbol epsilon 		(in rule  ['epsilon'] )
-else + epsilon
-here we are ['epsilon'] [['epsilon']] 0
+else - epsilon
+here we are ['epsilon'] [['epsilon']] 0 ['epsilon']
+2. LAST ['epsilon']
+1. prod  M not in assign
+done
 1.SYMBOL in RULE M ['M', "E1'"]
+1. NOT LAST
 here2 in assign_producer_vals with  M E' ['M', "E1'"]
-here3 in assign_producer_vals ['=', (0, 'inhval'), ('root', 'inhval')]
-TP  [['=', (0, 'inhval'), ('root', 'inhval')]]
-tuples [(0, 'inhval'), ('root', 'inhval')]
-children  ['M', "E1'"]
-x, x_attr 0 inhval
-x, x_attr root inhval
-PARAMS  M inhval E' inhval ['M', "E1'"]
-setting = M inhval None under root  E' with rule  ['M', "E1'"]
-1. temp store + +
+here3 in assign_producer_vals ['=', (1, 'inhval'), ('root', 'inhval')]
+TP  [['=', (1, 'inhval'), ('root', 'inhval')]]
+PARAMS  E1' inhval E' inhval ['M', "E1'"]
+setting = E1' inhval 5 under root  E' with rule  ['M', "E1'"] with symbol M
+1. temp store - -
 SYMBOL  E1'
 in symbol E1' 		(in rule  ['M', "E1'"] )
 in producer
 in match rule with  E1' : [['+', 'T', "E'"], ['epsilon']]
-in rule  ['+', 'T', "E'"]  with  +
+in rule  ['+', 'T', "E'"]  with  -
 TREE
 E1' [+ T E' ] 
 SYMBOL  +
 in symbol + 		(in rule  ['+', 'T', "E'"] )
-else + +
+else - +
+5. unmatched + -
+TREE
+E1' 
+returned false  ['+', 'T', "E'"] [['+', 'T', "E'"], ['epsilon']]
+in rule  ['epsilon']  with  -
+TREE
+E1' [epsilon ] 
+SYMBOL  epsilon
+in symbol epsilon 		(in rule  ['epsilon'] )
+else - epsilon
+here we are ['epsilon'] [['+', 'T', "E'"], ['epsilon']] 1 ['epsilon']
+2. LAST ['epsilon']
+here2 in assign_producer_vals with  epsilon E1' ['epsilon']
+here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
+TP  [['=', ('root', 'synval'), ('root', 'inhval')]]
+PARAMS  E1' synval E1' inhval ['epsilon']
+setting = E1' synval 5 under root  E1' with rule  ['epsilon'] with symbol epsilon
+done
+1.SYMBOL in RULE E1' ['M', "E1'"]
+1. temp store - -
+here we are ['M', "E1'"] [['M', "E1'"], ['M', "E2'"]] 0 ['M', "E1'"]
+2. LAST ['M', "E1'"]
+here2 in assign_producer_vals with  E1' E' ['M', "E1'"]
+here3 in assign_producer_vals ['=', ('root', 'synval'), (1, 'synval')]
+TP  [['=', ('root', 'synval'), (1, 'synval')]]
+PARAMS  E' synval E1' synval ['M', "E1'"]
+setting = E' synval 5 under root  E' with rule  ['M', "E1'"] with symbol E1'
+done
+1.SYMBOL in RULE E' ['T', "E'"]
+1. temp store - -
+here we are ['T', "E'"] [['T', "E'"]] 0 ['T', "E'"]
+2. LAST ['T', "E'"]
+here2 in assign_producer_vals with  E' E ['T', "E'"]
+here3 in assign_producer_vals ['=', ('root', 'synval'), (1, 'synval')]
+TP  [['=', ('root', 'synval'), (1, 'synval')]]
+PARAMS  E synval E' synval ['T', "E'"]
+setting = E synval 5 under root  E with rule  ['T', "E'"] with symbol E'
+done
+1.SYMBOL in RULE E ['E']
+1. temp store 5 -
+here we are ['E'] [['E']] 0 ['E']
+2. LAST ['E']
+here2 in assign_producer_vals with  E EXPRESSION ['E']
+here3 in assign_producer_vals ['=', ('root', 'val'), (0, 'val')]
+TP  [['=', ('root', 'val'), (0, 'val')]]
+PARAMS  EXPRESSION val E val ['E']
+setting = EXPRESSION val None under root  EXPRESSION with rule  ['E'] with symbol E
+done
+1.SYMBOL in RULE EXPRESSION ['identifier', '=', 'EXPRESSION', ';']
+1. NOT LAST
+here2 in assign_producer_vals with  EXPRESSION ASSIGN ['identifier', '=', 'EXPRESSION', ';']
+here3 in assign_producer_vals ['=', (0, 'val'), (2, 'val')]
+TP  [['=', (0, 'val'), (2, 'val')]]
+PARAMS  identifier val EXPRESSION val ['identifier', '=', 'EXPRESSION', ';']
+setting = identifier val None under root  ASSIGN with rule  ['identifier', '=', 'EXPRESSION', ';'] with symbol EXPRESSION
+1. temp store - -
+SYMBOL  ;
+in symbol ; 		(in rule  ['identifier', '=', 'EXPRESSION', ';'] )
+else - ;
+5. unmatched ; -
+TREE
+ASSIGN 
+returned false  ['identifier', '=', 'EXPRESSION', ';'] [['identifier', '=', 'EXPRESSION', ';']]
+2. unmatched ASSIGN i - ['ASSIGN', 'ST']
+TREE
+ASSIGN_ST 
+returned false  ['ASSIGN', 'ST'] [['ASSIGN', 'ST'], ['ASSIGN']]
+in rule  ['ASSIGN']  with  i
+TREE
+ASSIGN_ST [ASSIGN ] 
+SYMBOL  ASSIGN
+in symbol ASSIGN 		(in rule  ['ASSIGN'] )
+in producer
+in match rule with  ASSIGN : [['identifier', '=', 'EXPRESSION', ';']]
+in rule  ['identifier', '=', 'EXPRESSION', ';']  with  i
+TREE
+ASSIGN [identifier = EXPRESSION ; ] 
+SYMBOL  identifier
+in symbol identifier 		(in rule  ['identifier', '=', 'EXPRESSION', ';'] )
+is token
+in match token i identifier identifier
+2.SYMBOL in RULE identifier ['identifier', '=', 'EXPRESSION', ';'] ASSIGN
+3. NOT LAST
+here2 in assign_producer_vals with  identifier ASSIGN ['identifier', '=', 'EXPRESSION', ';']
+here3 in assign_producer_vals ['=', (0, 'type'), ('root', 'inhval')]
+TP  [['=', (0, 'type'), ('root', 'inhval')]]
+PARAMS  identifier type ASSIGN inhval ['identifier', '=', 'EXPRESSION', ';']
+setting = identifier type None under root  ASSIGN with rule  ['identifier', '=', 'EXPRESSION', ';'] with symbol identifier
 matched
+2. temp store = =
+SYMBOL  =
+in symbol = 		(in rule  ['identifier', '=', 'EXPRESSION', ';'] )
+else = =
+matched
+SYMBOL  EXPRESSION
+in symbol EXPRESSION 		(in rule  ['identifier', '=', 'EXPRESSION', ';'] )
+in producer
+in match rule with  EXPRESSION : [['E']]
+in rule  ['E']  with  5
+TREE
+EXPRESSION [E ] 
+SYMBOL  E
+in symbol E 		(in rule  ['E'] )
+in producer
+in match rule with  E : [['T', "E'"]]
+in rule  ['T', "E'"]  with  5
+TREE
+E [T E' ] 
 SYMBOL  T
-in symbol T 		(in rule  ['+', 'T', "E'"] )
+in symbol T 		(in rule  ['T', "E'"] )
 in producer
 in match rule with  T : [['F', "T'"]]
-in rule  ['F', "T'"]  with  4
+in rule  ['F', "T'"]  with  5
 TREE
 T [F T' ] 
 SYMBOL  F
 in symbol F 		(in rule  ['F', "T'"] )
 in producer
 in match rule with  F : [['(', 'E', ')'], ['identifier'], ['number']]
-in rule  ['(', 'E', ')']  with  4
+in rule  ['(', 'E', ')']  with  5
 TREE
 F [( E ) ] 
 SYMBOL  (
 in symbol ( 		(in rule  ['(', 'E', ')'] )
-else 4 (
-5. unmatched ( 4
+else 5 (
+5. unmatched ( 5
 TREE
 F 
 returned false  ['(', 'E', ')'] [['(', 'E', ')'], ['identifier'], ['number']]
-in rule  ['identifier']  with  4
+in rule  ['identifier']  with  5
 TREE
 F [identifier ] 
 SYMBOL  identifier
 in symbol identifier 		(in rule  ['identifier'] )
 is token
-in match token 4 number identifier
+in match token 5 number identifier
 4. unmatched token
 TREE
 F 
 returned false  ['identifier'] [['(', 'E', ')'], ['identifier'], ['number']]
-in rule  ['number']  with  4
+in rule  ['number']  with  5
 TREE
 F [number ] 
 SYMBOL  number
 in symbol number 		(in rule  ['number'] )
 is token
-in match token 4 number number
-TOKENSET  number 4
+in match token 5 number number
+TOKENSET  number 5
 2.SYMBOL in RULE number ['number'] F
+matched
+2. temp store 5 -
+here we are ['number'] [['(', 'E', ')'], ['identifier'], ['number']] 2 ['number']
+2. LAST ['number']
 here2 in assign_producer_vals with  number F ['number']
 here3 in assign_producer_vals ['=', ('root', 'synval'), (0, 'lexval')]
 TP  [['=', ('root', 'synval'), (0, 'lexval')]]
-tuples [('root', 'synval'), (0, 'lexval')]
-children  ['number']
-x, x_attr root synval
-x, x_attr 0 lexval
 PARAMS  F synval number lexval ['number']
-setting = F synval 4 under root  F with rule  ['number']
-matched
-2. temp store 4 ;
-here we are ['number'] [['(', 'E', ')'], ['identifier'], ['number']] 2
+setting = F synval 5 under root  F with rule  ['number'] with symbol number
+done
 1.SYMBOL in RULE F ['F', "T'"]
+1. NOT LAST
 here2 in assign_producer_vals with  F T ['F', "T'"]
-here3 in assign_producer_vals ['=', (1, 'inhval'), (0, 'val')]
-TP  [['=', (1, 'inhval'), (0, 'val')]]
-tuples [(1, 'inhval'), (0, 'val')]
-children  ['F', "T'"]
-x, x_attr 1 inhval
-x, x_attr 0 val
-PARAMS  T' inhval F val ['F', "T'"]
-setting = T' inhval None under root  T with rule  ['F', "T'"]
-1. temp store ; ;
+here3 in assign_producer_vals ['=', (1, 'inhval'), (0, 'synval')]
+TP  [['=', (1, 'inhval'), (0, 'synval')]]
+PARAMS  T' inhval F synval ['F', "T'"]
+setting = T' inhval 5 under root  T with rule  ['F', "T'"] with symbol F
+1. temp store - -
 SYMBOL  T'
 in symbol T' 		(in rule  ['F', "T'"] )
 in producer
-in match rule with  T' : [["T1'"], ["T2'"]]
-in rule  ["T1'"]  with  ;
+in match rule with  T' : [['M', "T1'"], ['M', "T2'"]]
+in rule  ['M', "T1'"]  with  -
 TREE
-T' [T1' ] 
+T' [M T1' ] 
+SYMBOL  M
+in symbol M 		(in rule  ['M', "T1'"] )
+in producer
+in match rule with  M : [['epsilon']]
+in rule  ['epsilon']  with  -
+TREE
+M [epsilon ] 
+SYMBOL  epsilon
+in symbol epsilon 		(in rule  ['epsilon'] )
+else - epsilon
+here we are ['epsilon'] [['epsilon']] 0 ['epsilon']
+2. LAST ['epsilon']
+1. prod  M not in assign
+done
+1.SYMBOL in RULE M ['M', "T1'"]
+1. NOT LAST
+here2 in assign_producer_vals with  M T' ['M', "T1'"]
+here3 in assign_producer_vals ['=', (1, 'inhval'), ('root', 'inhval')]
+TP  [['=', (1, 'inhval'), ('root', 'inhval')]]
+PARAMS  T1' inhval T' inhval ['M', "T1'"]
+setting = T1' inhval 5 under root  T' with rule  ['M', "T1'"] with symbol M
+1. temp store - -
 SYMBOL  T1'
-in symbol T1' 		(in rule  ["T1'"] )
+in symbol T1' 		(in rule  ['M', "T1'"] )
 in producer
 in match rule with  T1' : [['*', 'F', "T'"], ['epsilon']]
-in rule  ['*', 'F', "T'"]  with  ;
+in rule  ['*', 'F', "T'"]  with  -
 TREE
 T1' [* F T' ] 
 SYMBOL  *
 in symbol * 		(in rule  ['*', 'F', "T'"] )
-else ; *
-5. unmatched * ;
+else - *
+5. unmatched * -
 TREE
 T1' 
 returned false  ['*', 'F', "T'"] [['*', 'F', "T'"], ['epsilon']]
-in rule  ['epsilon']  with  ;
+in rule  ['epsilon']  with  -
 TREE
 T1' [epsilon ] 
 SYMBOL  epsilon
 in symbol epsilon 		(in rule  ['epsilon'] )
-else ; epsilon
-here we are ['epsilon'] [['*', 'F', "T'"], ['epsilon']] 1
-1.SYMBOL in RULE T1' ["T1'"]
-here2 in assign_producer_vals with  T1' T' ["T1'"]
-here3 in assign_producer_vals ['=', ('root', 'synval'), (0, 'synval')]
-TP  [['=', ('root', 'synval'), (0, 'synval')]]
-tuples [('root', 'synval'), (0, 'synval')]
-children  ["T1'"]
-x, x_attr root synval
-x, x_attr 0 synval
-PARAMS  T' synval T1' synval ["T1'"]
-setting = T' synval None under root  T' with rule  ["T1'"]
-1. temp store ; ;
-here we are ["T1'"] [["T1'"], ["T2'"]] 0
+else - epsilon
+here we are ['epsilon'] [['*', 'F', "T'"], ['epsilon']] 1 ['epsilon']
+2. LAST ['epsilon']
+here2 in assign_producer_vals with  epsilon T1' ['epsilon']
+here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
+TP  [['=', ('root', 'synval'), ('root', 'inhval')]]
+PARAMS  T1' synval T1' inhval ['epsilon']
+setting = T1' synval 5 under root  T1' with rule  ['epsilon'] with symbol epsilon
+done
+1.SYMBOL in RULE T1' ['M', "T1'"]
+1. temp store - -
+here we are ['M', "T1'"] [['M', "T1'"], ['M', "T2'"]] 0 ['M', "T1'"]
+2. LAST ['M', "T1'"]
+here2 in assign_producer_vals with  T1' T' ['M', "T1'"]
+here3 in assign_producer_vals ['=', ('root', 'synval'), (1, 'synval')]
+TP  [['=', ('root', 'synval'), (1, 'synval')]]
+PARAMS  T' synval T1' synval ['M', "T1'"]
+setting = T' synval 5 under root  T' with rule  ['M', "T1'"] with symbol T1'
+done
 1.SYMBOL in RULE T' ['F', "T'"]
+1. temp store - -
+here we are ['F', "T'"] [['F', "T'"]] 0 ['F', "T'"]
+2. LAST ['F', "T'"]
 here2 in assign_producer_vals with  T' T ['F', "T'"]
-here3 in assign_producer_vals ['=', ('root', 'val'), (1, 'synval')]
-TP  [['=', ('root', 'val'), (1, 'synval')]]
-tuples [('root', 'val'), (1, 'synval')]
-children  ['F', "T'"]
-x, x_attr root val
-x, x_attr 1 synval
-PARAMS  T val T' synval ['F', "T'"]
-setting = T val None under root  T with rule  ['F', "T'"]
+here3 in assign_producer_vals ['=', ('root', 'synval'), (1, 'synval')]
+TP  [['=', ('root', 'synval'), (1, 'synval')]]
+PARAMS  T synval T' synval ['F', "T'"]
+setting = T synval 5 under root  T with rule  ['F', "T'"] with symbol T'
+done
+1.SYMBOL in RULE T ['T', "E'"]
+1. NOT LAST
+here2 in assign_producer_vals with  T E ['T', "E'"]
+here3 in assign_producer_vals ['=', (1, 'inhval'), (0, 'synval')]
+TP  [['=', (1, 'inhval'), (0, 'synval')]]
+PARAMS  E' inhval T synval ['T', "E'"]
+setting = E' inhval 5 under root  E with rule  ['T', "E'"] with symbol T
+1. temp store - -
+SYMBOL  E'
+in symbol E' 		(in rule  ['T', "E'"] )
+in producer
+in match rule with  E' : [['M', "E1'"], ['M', "E2'"]]
+in rule  ['M', "E1'"]  with  -
+TREE
+E' [M E1' ] 
+SYMBOL  M
+in symbol M 		(in rule  ['M', "E1'"] )
+in producer
+in match rule with  M : [['epsilon']]
+in rule  ['epsilon']  with  -
+TREE
+M [epsilon ] 
+SYMBOL  epsilon
+in symbol epsilon 		(in rule  ['epsilon'] )
+else - epsilon
+here we are ['epsilon'] [['epsilon']] 0 ['epsilon']
+2. LAST ['epsilon']
+1. prod  M not in assign
+done
+1.SYMBOL in RULE M ['M', "E1'"]
+1. NOT LAST
+here2 in assign_producer_vals with  M E' ['M', "E1'"]
+here3 in assign_producer_vals ['=', (1, 'inhval'), ('root', 'inhval')]
+TP  [['=', (1, 'inhval'), ('root', 'inhval')]]
+PARAMS  E1' inhval E' inhval ['M', "E1'"]
+setting = E1' inhval 5 under root  E' with rule  ['M', "E1'"] with symbol M
+1. temp store - -
+SYMBOL  E1'
+in symbol E1' 		(in rule  ['M', "E1'"] )
+in producer
+in match rule with  E1' : [['+', 'T', "E'"], ['epsilon']]
+in rule  ['+', 'T', "E'"]  with  -
+TREE
+E1' [+ T E' ] 
+SYMBOL  +
+in symbol + 		(in rule  ['+', 'T', "E'"] )
+else - +
+5. unmatched + -
+TREE
+E1' 
+returned false  ['+', 'T', "E'"] [['+', 'T', "E'"], ['epsilon']]
+in rule  ['epsilon']  with  -
+TREE
+E1' [epsilon ] 
+SYMBOL  epsilon
+in symbol epsilon 		(in rule  ['epsilon'] )
+else - epsilon
+here we are ['epsilon'] [['+', 'T', "E'"], ['epsilon']] 1 ['epsilon']
+2. LAST ['epsilon']
+here2 in assign_producer_vals with  epsilon E1' ['epsilon']
+here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
+TP  [['=', ('root', 'synval'), ('root', 'inhval')]]
+PARAMS  E1' synval E1' inhval ['epsilon']
+setting = E1' synval 5 under root  E1' with rule  ['epsilon'] with symbol epsilon
+done
+1.SYMBOL in RULE E1' ['M', "E1'"]
+1. temp store - -
+here we are ['M', "E1'"] [['M', "E1'"], ['M', "E2'"]] 0 ['M', "E1'"]
+2. LAST ['M', "E1'"]
+here2 in assign_producer_vals with  E1' E' ['M', "E1'"]
+here3 in assign_producer_vals ['=', ('root', 'synval'), (1, 'synval')]
+TP  [['=', ('root', 'synval'), (1, 'synval')]]
+PARAMS  E' synval E1' synval ['M', "E1'"]
+setting = E' synval 5 under root  E' with rule  ['M', "E1'"] with symbol E1'
+done
+1.SYMBOL in RULE E' ['T', "E'"]
+1. temp store - -
+here we are ['T', "E'"] [['T', "E'"]] 0 ['T', "E'"]
+2. LAST ['T', "E'"]
+here2 in assign_producer_vals with  E' E ['T', "E'"]
+here3 in assign_producer_vals ['=', ('root', 'synval'), (1, 'synval')]
+TP  [['=', ('root', 'synval'), (1, 'synval')]]
+PARAMS  E synval E' synval ['T', "E'"]
+setting = E synval 5 under root  E with rule  ['T', "E'"] with symbol E'
+done
+1.SYMBOL in RULE E ['E']
+1. temp store 5 -
+here we are ['E'] [['E']] 0 ['E']
+2. LAST ['E']
+here2 in assign_producer_vals with  E EXPRESSION ['E']
+here3 in assign_producer_vals ['=', ('root', 'val'), (0, 'val')]
+TP  [['=', ('root', 'val'), (0, 'val')]]
+PARAMS  EXPRESSION val E val ['E']
+setting = EXPRESSION val None under root  EXPRESSION with rule  ['E'] with symbol E
+done
+1.SYMBOL in RULE EXPRESSION ['identifier', '=', 'EXPRESSION', ';']
+1. NOT LAST
+here2 in assign_producer_vals with  EXPRESSION ASSIGN ['identifier', '=', 'EXPRESSION', ';']
+here3 in assign_producer_vals ['=', (0, 'val'), (2, 'val')]
+TP  [['=', (0, 'val'), (2, 'val')]]
+PARAMS  identifier val EXPRESSION val ['identifier', '=', 'EXPRESSION', ';']
+setting = identifier val None under root  ASSIGN with rule  ['identifier', '=', 'EXPRESSION', ';'] with symbol EXPRESSION
+1. temp store - -
+SYMBOL  ;
+in symbol ; 		(in rule  ['identifier', '=', 'EXPRESSION', ';'] )
+else - ;
+5. unmatched ; -
+TREE
+ASSIGN 
+returned false  ['identifier', '=', 'EXPRESSION', ';'] [['identifier', '=', 'EXPRESSION', ';']]
+2. unmatched ASSIGN i - ['ASSIGN']
+TREE
+ASSIGN_ST 
+returned false  ['ASSIGN'] [['ASSIGN', 'ST'], ['ASSIGN']]
+2. unmatched ASSIGN_ST i - ['ASSIGN_ST']
+TREE
+STATEMENT 
+returned false  ['ASSIGN_ST'] [['FOR_LOOP_ST'], ['IF_COND_ST'], ['DEFN_ST'], ['ASSIGN_ST'], ['DECL_ST']]
+in rule  ['DECL_ST']  with  i
+TREE
+STATEMENT [DECL_ST ] 
+SYMBOL  DECL_ST
+in symbol DECL_ST 		(in rule  ['DECL_ST'] )
+in producer
+in match rule with  DECL_ST : [['DECL', 'ST'], ['DECL']]
+in rule  ['DECL', 'ST']  with  i
+TREE
+DECL_ST [DECL ST ] 
+SYMBOL  DECL
+in symbol DECL 		(in rule  ['DECL', 'ST'] )
+in producer
+in match rule with  DECL : [['type', 'ID', ';']]
+in rule  ['type', 'ID', ';']  with  i
+TREE
+DECL [type ID ; ] 
+SYMBOL  type
+in symbol type 		(in rule  ['type', 'ID', ';'] )
+is token
+in match token i identifier type
+4. unmatched token
+TREE
+DECL 
+returned false  ['type', 'ID', ';'] [['type', 'ID', ';']]
+2. unmatched DECL i - ['DECL', 'ST']
+TREE
+DECL_ST 
+returned false  ['DECL', 'ST'] [['DECL', 'ST'], ['DECL']]
+in rule  ['DECL']  with  i
+TREE
+DECL_ST [DECL ] 
+SYMBOL  DECL
+in symbol DECL 		(in rule  ['DECL'] )
+in producer
+in match rule with  DECL : [['type', 'ID', ';']]
+in rule  ['type', 'ID', ';']  with  i
+TREE
+DECL [type ID ; ] 
+SYMBOL  type
+in symbol type 		(in rule  ['type', 'ID', ';'] )
+is token
+in match token i identifier type
+4. unmatched token
+TREE
+DECL 
+returned false  ['type', 'ID', ';'] [['type', 'ID', ';']]
+2. unmatched DECL i - ['DECL']
+TREE
+DECL_ST 
+returned false  ['DECL'] [['DECL', 'ST'], ['DECL']]
+2. unmatched DECL_ST i - ['DECL_ST']
+TREE
+STATEMENT 
+returned false  ['DECL_ST'] [['FOR_LOOP_ST'], ['IF_COND_ST'], ['DEFN_ST'], ['ASSIGN_ST'], ['DECL_ST']]
+2. unmatched STATEMENT i - ['STATEMENT', ';', 'ST']
+TREE
+STATEMENT_ST 
+returned false  ['STATEMENT', ';', 'ST'] [['STATEMENT', ';', 'ST'], ['STATEMENT']]
+in rule  ['STATEMENT']  with  i
+TREE
+STATEMENT_ST [STATEMENT ] 
+SYMBOL  STATEMENT
+in symbol STATEMENT 		(in rule  ['STATEMENT'] )
+in producer
+in match rule with  STATEMENT : [['FOR_LOOP_ST'], ['IF_COND_ST'], ['DEFN_ST'], ['ASSIGN_ST'], ['DECL_ST']]
+in rule  ['FOR_LOOP_ST']  with  i
+TREE
+STATEMENT [FOR_LOOP_ST ] 
+SYMBOL  FOR_LOOP_ST
+in symbol FOR_LOOP_ST 		(in rule  ['FOR_LOOP_ST'] )
+in producer
+in match rule with  FOR_LOOP_ST : [['FOR_LOOP', 'ST'], ['FOR_LOOP']]
+in rule  ['FOR_LOOP', 'ST']  with  i
+TREE
+FOR_LOOP_ST [FOR_LOOP ST ] 
+SYMBOL  FOR_LOOP
+in symbol FOR_LOOP 		(in rule  ['FOR_LOOP', 'ST'] )
+in producer
+in match rule with  FOR_LOOP : [['for', '(', 'ASSIGN', 'COND', 'INCREMENT', ')', '{', 'STATEMENT', '}']]
+in rule  ['for', '(', 'ASSIGN', 'COND', 'INCREMENT', ')', '{', 'STATEMENT', '}']  with  i
+TREE
+FOR_LOOP [for ( ASSIGN COND INCREMENT ) { STATEMENT } ] 
+SYMBOL  for
+in symbol for 		(in rule  ['for', '(', 'ASSIGN', 'COND', 'INCREMENT', ')', '{', 'STATEMENT', '}'] )
+else i for
+5. unmatched for i
+TREE
+FOR_LOOP 
+returned false  ['for', '(', 'ASSIGN', 'COND', 'INCREMENT', ')', '{', 'STATEMENT', '}'] [['for', '(', 'ASSIGN', 'COND', 'INCREMENT', ')', '{', 'STATEMENT', '}']]
+2. unmatched FOR_LOOP i - ['FOR_LOOP', 'ST']
+TREE
+FOR_LOOP_ST 
+returned false  ['FOR_LOOP', 'ST'] [['FOR_LOOP', 'ST'], ['FOR_LOOP']]
+in rule  ['FOR_LOOP']  with  i
+TREE
+FOR_LOOP_ST [FOR_LOOP ] 
+SYMBOL  FOR_LOOP
+in symbol FOR_LOOP 		(in rule  ['FOR_LOOP'] )
+in producer
+in match rule with  FOR_LOOP : [['for', '(', 'ASSIGN', 'COND', 'INCREMENT', ')', '{', 'STATEMENT', '}']]
+in rule  ['for', '(', 'ASSIGN', 'COND', 'INCREMENT', ')', '{', 'STATEMENT', '}']  with  i
+TREE
+FOR_LOOP [for ( ASSIGN COND INCREMENT ) { STATEMENT } ] 
+SYMBOL  for
+in symbol for 		(in rule  ['for', '(', 'ASSIGN', 'COND', 'INCREMENT', ')', '{', 'STATEMENT', '}'] )
+else i for
+5. unmatched for i
+TREE
+FOR_LOOP 
+returned false  ['for', '(', 'ASSIGN', 'COND', 'INCREMENT', ')', '{', 'STATEMENT', '}'] [['for', '(', 'ASSIGN', 'COND', 'INCREMENT', ')', '{', 'STATEMENT', '}']]
+2. unmatched FOR_LOOP i - ['FOR_LOOP']
+TREE
+FOR_LOOP_ST 
+returned false  ['FOR_LOOP'] [['FOR_LOOP', 'ST'], ['FOR_LOOP']]
+2. unmatched FOR_LOOP_ST i - ['FOR_LOOP_ST']
+TREE
+STATEMENT 
+returned false  ['FOR_LOOP_ST'] [['FOR_LOOP_ST'], ['IF_COND_ST'], ['DEFN_ST'], ['ASSIGN_ST'], ['DECL_ST']]
+in rule  ['IF_COND_ST']  with  i
+TREE
+STATEMENT [IF_COND_ST ] 
+SYMBOL  IF_COND_ST
+in symbol IF_COND_ST 		(in rule  ['IF_COND_ST'] )
+in producer
+in match rule with  IF_COND_ST : [['IF_COND', 'ST'], ['IF_COND']]
+in rule  ['IF_COND', 'ST']  with  i
+TREE
+IF_COND_ST [IF_COND ST ] 
+SYMBOL  IF_COND
+in symbol IF_COND 		(in rule  ['IF_COND', 'ST'] )
+in producer
+in match rule with  IF_COND : [['if', '(', 'COND', ')', '{', 'STATEMENT', ';', '}', 'OP_ELSE'], ['if', '(', 'COND', ')', '{', 'STATEMENT', '}']]
+in rule  ['if', '(', 'COND', ')', '{', 'STATEMENT', ';', '}', 'OP_ELSE']  with  i
+TREE
+IF_COND [if ( COND ) { STATEMENT ; } OP_ELSE ] 
+SYMBOL  if
+in symbol if 		(in rule  ['if', '(', 'COND', ')', '{', 'STATEMENT', ';', '}', 'OP_ELSE'] )
+else i if
+5. unmatched if i
+TREE
+IF_COND 
+returned false  ['if', '(', 'COND', ')', '{', 'STATEMENT', ';', '}', 'OP_ELSE'] [['if', '(', 'COND', ')', '{', 'STATEMENT', ';', '}', 'OP_ELSE'], ['if', '(', 'COND', ')', '{', 'STATEMENT', '}']]
+in rule  ['if', '(', 'COND', ')', '{', 'STATEMENT', '}']  with  i
+TREE
+IF_COND [if ( COND ) { STATEMENT } ] 
+SYMBOL  if
+in symbol if 		(in rule  ['if', '(', 'COND', ')', '{', 'STATEMENT', '}'] )
+else i if
+5. unmatched if i
+TREE
+IF_COND 
+returned false  ['if', '(', 'COND', ')', '{', 'STATEMENT', '}'] [['if', '(', 'COND', ')', '{', 'STATEMENT', ';', '}', 'OP_ELSE'], ['if', '(', 'COND', ')', '{', 'STATEMENT', '}']]
+2. unmatched IF_COND i - ['IF_COND', 'ST']
+TREE
+IF_COND_ST 
+returned false  ['IF_COND', 'ST'] [['IF_COND', 'ST'], ['IF_COND']]
+in rule  ['IF_COND']  with  i
+TREE
+IF_COND_ST [IF_COND ] 
+SYMBOL  IF_COND
+in symbol IF_COND 		(in rule  ['IF_COND'] )
+in producer
+in match rule with  IF_COND : [['if', '(', 'COND', ')', '{', 'STATEMENT', ';', '}', 'OP_ELSE'], ['if', '(', 'COND', ')', '{', 'STATEMENT', '}']]
+in rule  ['if', '(', 'COND', ')', '{', 'STATEMENT', ';', '}', 'OP_ELSE']  with  i
+TREE
+IF_COND [if ( COND ) { STATEMENT ; } OP_ELSE ] 
+SYMBOL  if
+in symbol if 		(in rule  ['if', '(', 'COND', ')', '{', 'STATEMENT', ';', '}', 'OP_ELSE'] )
+else i if
+5. unmatched if i
+TREE
+IF_COND 
+returned false  ['if', '(', 'COND', ')', '{', 'STATEMENT', ';', '}', 'OP_ELSE'] [['if', '(', 'COND', ')', '{', 'STATEMENT', ';', '}', 'OP_ELSE'], ['if', '(', 'COND', ')', '{', 'STATEMENT', '}']]
+in rule  ['if', '(', 'COND', ')', '{', 'STATEMENT', '}']  with  i
+TREE
+IF_COND [if ( COND ) { STATEMENT } ] 
+SYMBOL  if
+in symbol if 		(in rule  ['if', '(', 'COND', ')', '{', 'STATEMENT', '}'] )
+else i if
+5. unmatched if i
+TREE
+IF_COND 
+returned false  ['if', '(', 'COND', ')', '{', 'STATEMENT', '}'] [['if', '(', 'COND', ')', '{', 'STATEMENT', ';', '}', 'OP_ELSE'], ['if', '(', 'COND', ')', '{', 'STATEMENT', '}']]
+2. unmatched IF_COND i - ['IF_COND']
+TREE
+IF_COND_ST 
+returned false  ['IF_COND'] [['IF_COND', 'ST'], ['IF_COND']]
+2. unmatched IF_COND_ST i - ['IF_COND_ST']
+TREE
+STATEMENT 
+returned false  ['IF_COND_ST'] [['FOR_LOOP_ST'], ['IF_COND_ST'], ['DEFN_ST'], ['ASSIGN_ST'], ['DECL_ST']]
+in rule  ['DEFN_ST']  with  i
+TREE
+STATEMENT [DEFN_ST ] 
+SYMBOL  DEFN_ST
+in symbol DEFN_ST 		(in rule  ['DEFN_ST'] )
+in producer
+in match rule with  DEFN_ST : [['DEFN', 'ST'], ['DEFN']]
+in rule  ['DEFN', 'ST']  with  i
+TREE
+DEFN_ST [DEFN ST ] 
+SYMBOL  DEFN
+in symbol DEFN 		(in rule  ['DEFN', 'ST'] )
+in producer
+in match rule with  DEFN : [['type', 'ASSIGN']]
+in rule  ['type', 'ASSIGN']  with  i
+TREE
+DEFN [type ASSIGN ] 
+SYMBOL  type
+in symbol type 		(in rule  ['type', 'ASSIGN'] )
+is token
+in match token i identifier type
+4. unmatched token
+TREE
+DEFN 
+returned false  ['type', 'ASSIGN'] [['type', 'ASSIGN']]
+2. unmatched DEFN i - ['DEFN', 'ST']
+TREE
+DEFN_ST 
+returned false  ['DEFN', 'ST'] [['DEFN', 'ST'], ['DEFN']]
+in rule  ['DEFN']  with  i
+TREE
+DEFN_ST [DEFN ] 
+SYMBOL  DEFN
+in symbol DEFN 		(in rule  ['DEFN'] )
+in producer
+in match rule with  DEFN : [['type', 'ASSIGN']]
+in rule  ['type', 'ASSIGN']  with  i
+TREE
+DEFN [type ASSIGN ] 
+SYMBOL  type
+in symbol type 		(in rule  ['type', 'ASSIGN'] )
+is token
+in match token i identifier type
+4. unmatched token
+TREE
+DEFN 
+returned false  ['type', 'ASSIGN'] [['type', 'ASSIGN']]
+2. unmatched DEFN i - ['DEFN']
+TREE
+DEFN_ST 
+returned false  ['DEFN'] [['DEFN', 'ST'], ['DEFN']]
+2. unmatched DEFN_ST i - ['DEFN_ST']
+TREE
+STATEMENT 
+returned false  ['DEFN_ST'] [['FOR_LOOP_ST'], ['IF_COND_ST'], ['DEFN_ST'], ['ASSIGN_ST'], ['DECL_ST']]
+in rule  ['ASSIGN_ST']  with  i
+TREE
+STATEMENT [ASSIGN_ST ] 
+SYMBOL  ASSIGN_ST
+in symbol ASSIGN_ST 		(in rule  ['ASSIGN_ST'] )
+in producer
+in match rule with  ASSIGN_ST : [['ASSIGN', 'ST'], ['ASSIGN']]
+in rule  ['ASSIGN', 'ST']  with  i
+TREE
+ASSIGN_ST [ASSIGN ST ] 
+SYMBOL  ASSIGN
+in symbol ASSIGN 		(in rule  ['ASSIGN', 'ST'] )
+in producer
+in match rule with  ASSIGN : [['identifier', '=', 'EXPRESSION', ';']]
+in rule  ['identifier', '=', 'EXPRESSION', ';']  with  i
+TREE
+ASSIGN [identifier = EXPRESSION ; ] 
+SYMBOL  identifier
+in symbol identifier 		(in rule  ['identifier', '=', 'EXPRESSION', ';'] )
+is token
+in match token i identifier identifier
+2.SYMBOL in RULE identifier ['identifier', '=', 'EXPRESSION', ';'] ASSIGN
+3. NOT LAST
+here2 in assign_producer_vals with  identifier ASSIGN ['identifier', '=', 'EXPRESSION', ';']
+here3 in assign_producer_vals ['=', (0, 'type'), ('root', 'inhval')]
+TP  [['=', (0, 'type'), ('root', 'inhval')]]
+PARAMS  identifier type ASSIGN inhval ['identifier', '=', 'EXPRESSION', ';']
+setting = identifier type None under root  ASSIGN with rule  ['identifier', '=', 'EXPRESSION', ';'] with symbol identifier
+matched
+2. temp store = =
+SYMBOL  =
+in symbol = 		(in rule  ['identifier', '=', 'EXPRESSION', ';'] )
+else = =
+matched
+SYMBOL  EXPRESSION
+in symbol EXPRESSION 		(in rule  ['identifier', '=', 'EXPRESSION', ';'] )
+in producer
+in match rule with  EXPRESSION : [['E']]
+in rule  ['E']  with  5
+TREE
+EXPRESSION [E ] 
+SYMBOL  E
+in symbol E 		(in rule  ['E'] )
+in producer
+in match rule with  E : [['T', "E'"]]
+in rule  ['T', "E'"]  with  5
+TREE
+E [T E' ] 
+SYMBOL  T
+in symbol T 		(in rule  ['T', "E'"] )
+in producer
+in match rule with  T : [['F', "T'"]]
+in rule  ['F', "T'"]  with  5
+TREE
+T [F T' ] 
+SYMBOL  F
+in symbol F 		(in rule  ['F', "T'"] )
+in producer
+in match rule with  F : [['(', 'E', ')'], ['identifier'], ['number']]
+in rule  ['(', 'E', ')']  with  5
+TREE
+F [( E ) ] 
+SYMBOL  (
+in symbol ( 		(in rule  ['(', 'E', ')'] )
+else 5 (
+5. unmatched ( 5
+TREE
+F 
+returned false  ['(', 'E', ')'] [['(', 'E', ')'], ['identifier'], ['number']]
+in rule  ['identifier']  with  5
+TREE
+F [identifier ] 
+SYMBOL  identifier
+in symbol identifier 		(in rule  ['identifier'] )
+is token
+in match token 5 number identifier
+4. unmatched token
+TREE
+F 
+returned false  ['identifier'] [['(', 'E', ')'], ['identifier'], ['number']]
+in rule  ['number']  with  5
+TREE
+F [number ] 
+SYMBOL  number
+in symbol number 		(in rule  ['number'] )
+is token
+in match token 5 number number
+TOKENSET  number 5
+2.SYMBOL in RULE number ['number'] F
+matched
+2. temp store 5 -
+here we are ['number'] [['(', 'E', ')'], ['identifier'], ['number']] 2 ['number']
+2. LAST ['number']
+here2 in assign_producer_vals with  number F ['number']
+here3 in assign_producer_vals ['=', ('root', 'synval'), (0, 'lexval')]
+TP  [['=', ('root', 'synval'), (0, 'lexval')]]
+PARAMS  F synval number lexval ['number']
+setting = F synval 5 under root  F with rule  ['number'] with symbol number
+done
+1.SYMBOL in RULE F ['F', "T'"]
+1. NOT LAST
+here2 in assign_producer_vals with  F T ['F', "T'"]
+here3 in assign_producer_vals ['=', (1, 'inhval'), (0, 'synval')]
+TP  [['=', (1, 'inhval'), (0, 'synval')]]
+PARAMS  T' inhval F synval ['F', "T'"]
+setting = T' inhval 5 under root  T with rule  ['F', "T'"] with symbol F
+1. temp store - -
+SYMBOL  T'
+in symbol T' 		(in rule  ['F', "T'"] )
+in producer
+in match rule with  T' : [['M', "T1'"], ['M', "T2'"]]
+in rule  ['M', "T1'"]  with  -
+TREE
+T' [M T1' ] 
+SYMBOL  M
+in symbol M 		(in rule  ['M', "T1'"] )
+in producer
+in match rule with  M : [['epsilon']]
+in rule  ['epsilon']  with  -
+TREE
+M [epsilon ] 
+SYMBOL  epsilon
+in symbol epsilon 		(in rule  ['epsilon'] )
+else - epsilon
+here we are ['epsilon'] [['epsilon']] 0 ['epsilon']
+2. LAST ['epsilon']
+1. prod  M not in assign
+done
+1.SYMBOL in RULE M ['M', "T1'"]
+1. NOT LAST
+here2 in assign_producer_vals with  M T' ['M', "T1'"]
+here3 in assign_producer_vals ['=', (1, 'inhval'), ('root', 'inhval')]
+TP  [['=', (1, 'inhval'), ('root', 'inhval')]]
+PARAMS  T1' inhval T' inhval ['M', "T1'"]
+setting = T1' inhval 5 under root  T' with rule  ['M', "T1'"] with symbol M
+1. temp store - -
+SYMBOL  T1'
+in symbol T1' 		(in rule  ['M', "T1'"] )
+in producer
+in match rule with  T1' : [['*', 'F', "T'"], ['epsilon']]
+in rule  ['*', 'F', "T'"]  with  -
+TREE
+T1' [* F T' ] 
+SYMBOL  *
+in symbol * 		(in rule  ['*', 'F', "T'"] )
+else - *
+5. unmatched * -
+TREE
+T1' 
+returned false  ['*', 'F', "T'"] [['*', 'F', "T'"], ['epsilon']]
+in rule  ['epsilon']  with  -
+TREE
+T1' [epsilon ] 
+SYMBOL  epsilon
+in symbol epsilon 		(in rule  ['epsilon'] )
+else - epsilon
+here we are ['epsilon'] [['*', 'F', "T'"], ['epsilon']] 1 ['epsilon']
+2. LAST ['epsilon']
+here2 in assign_producer_vals with  epsilon T1' ['epsilon']
+here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
+TP  [['=', ('root', 'synval'), ('root', 'inhval')]]
+PARAMS  T1' synval T1' inhval ['epsilon']
+setting = T1' synval 5 under root  T1' with rule  ['epsilon'] with symbol epsilon
+done
+1.SYMBOL in RULE T1' ['M', "T1'"]
+1. temp store - -
+here we are ['M', "T1'"] [['M', "T1'"], ['M', "T2'"]] 0 ['M', "T1'"]
+2. LAST ['M', "T1'"]
+here2 in assign_producer_vals with  T1' T' ['M', "T1'"]
+here3 in assign_producer_vals ['=', ('root', 'synval'), (1, 'synval')]
+TP  [['=', ('root', 'synval'), (1, 'synval')]]
+PARAMS  T' synval T1' synval ['M', "T1'"]
+setting = T' synval 5 under root  T' with rule  ['M', "T1'"] with symbol T1'
+done
+1.SYMBOL in RULE T' ['F', "T'"]
+1. temp store - -
+here we are ['F', "T'"] [['F', "T'"]] 0 ['F', "T'"]
+2. LAST ['F', "T'"]
+here2 in assign_producer_vals with  T' T ['F', "T'"]
+here3 in assign_producer_vals ['=', ('root', 'synval'), (1, 'synval')]
+TP  [['=', ('root', 'synval'), (1, 'synval')]]
+PARAMS  T synval T' synval ['F', "T'"]
+setting = T synval 5 under root  T with rule  ['F', "T'"] with symbol T'
+done
+1.SYMBOL in RULE T ['T', "E'"]
+1. NOT LAST
+here2 in assign_producer_vals with  T E ['T', "E'"]
+here3 in assign_producer_vals ['=', (1, 'inhval'), (0, 'synval')]
+TP  [['=', (1, 'inhval'), (0, 'synval')]]
+PARAMS  E' inhval T synval ['T', "E'"]
+setting = E' inhval 5 under root  E with rule  ['T', "E'"] with symbol T
+1. temp store - -
+SYMBOL  E'
+in symbol E' 		(in rule  ['T', "E'"] )
+in producer
+in match rule with  E' : [['M', "E1'"], ['M', "E2'"]]
+in rule  ['M', "E1'"]  with  -
+TREE
+E' [M E1' ] 
+SYMBOL  M
+in symbol M 		(in rule  ['M', "E1'"] )
+in producer
+in match rule with  M : [['epsilon']]
+in rule  ['epsilon']  with  -
+TREE
+M [epsilon ] 
+SYMBOL  epsilon
+in symbol epsilon 		(in rule  ['epsilon'] )
+else - epsilon
+here we are ['epsilon'] [['epsilon']] 0 ['epsilon']
+2. LAST ['epsilon']
+1. prod  M not in assign
+done
+1.SYMBOL in RULE M ['M', "E1'"]
+1. NOT LAST
+here2 in assign_producer_vals with  M E' ['M', "E1'"]
+here3 in assign_producer_vals ['=', (1, 'inhval'), ('root', 'inhval')]
+TP  [['=', (1, 'inhval'), ('root', 'inhval')]]
+PARAMS  E1' inhval E' inhval ['M', "E1'"]
+setting = E1' inhval 5 under root  E' with rule  ['M', "E1'"] with symbol M
+1. temp store - -
+SYMBOL  E1'
+in symbol E1' 		(in rule  ['M', "E1'"] )
+in producer
+in match rule with  E1' : [['+', 'T', "E'"], ['epsilon']]
+in rule  ['+', 'T', "E'"]  with  -
+TREE
+E1' [+ T E' ] 
+SYMBOL  +
+in symbol + 		(in rule  ['+', 'T', "E'"] )
+else - +
+5. unmatched + -
+TREE
+E1' 
+returned false  ['+', 'T', "E'"] [['+', 'T', "E'"], ['epsilon']]
+in rule  ['epsilon']  with  -
+TREE
+E1' [epsilon ] 
+SYMBOL  epsilon
+in symbol epsilon 		(in rule  ['epsilon'] )
+else - epsilon
+here we are ['epsilon'] [['+', 'T', "E'"], ['epsilon']] 1 ['epsilon']
+2. LAST ['epsilon']
+here2 in assign_producer_vals with  epsilon E1' ['epsilon']
+here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
+TP  [['=', ('root', 'synval'), ('root', 'inhval')]]
+PARAMS  E1' synval E1' inhval ['epsilon']
+setting = E1' synval 5 under root  E1' with rule  ['epsilon'] with symbol epsilon
+done
+1.SYMBOL in RULE E1' ['M', "E1'"]
+1. temp store - -
+here we are ['M', "E1'"] [['M', "E1'"], ['M', "E2'"]] 0 ['M', "E1'"]
+2. LAST ['M', "E1'"]
+here2 in assign_producer_vals with  E1' E' ['M', "E1'"]
+here3 in assign_producer_vals ['=', ('root', 'synval'), (1, 'synval')]
+TP  [['=', ('root', 'synval'), (1, 'synval')]]
+PARAMS  E' synval E1' synval ['M', "E1'"]
+setting = E' synval 5 under root  E' with rule  ['M', "E1'"] with symbol E1'
+done
+1.SYMBOL in RULE E' ['T', "E'"]
+1. temp store - -
+here we are ['T', "E'"] [['T', "E'"]] 0 ['T', "E'"]
+2. LAST ['T', "E'"]
+here2 in assign_producer_vals with  E' E ['T', "E'"]
+here3 in assign_producer_vals ['=', ('root', 'synval'), (1, 'synval')]
+TP  [['=', ('root', 'synval'), (1, 'synval')]]
+PARAMS  E synval E' synval ['T', "E'"]
+setting = E synval 5 under root  E with rule  ['T', "E'"] with symbol E'
+done
+1.SYMBOL in RULE E ['E']
+1. temp store 5 -
+here we are ['E'] [['E']] 0 ['E']
+2. LAST ['E']
+here2 in assign_producer_vals with  E EXPRESSION ['E']
+here3 in assign_producer_vals ['=', ('root', 'val'), (0, 'val')]
+TP  [['=', ('root', 'val'), (0, 'val')]]
+PARAMS  EXPRESSION val E val ['E']
+setting = EXPRESSION val None under root  EXPRESSION with rule  ['E'] with symbol E
+done
+1.SYMBOL in RULE EXPRESSION ['identifier', '=', 'EXPRESSION', ';']
+1. NOT LAST
+here2 in assign_producer_vals with  EXPRESSION ASSIGN ['identifier', '=', 'EXPRESSION', ';']
+here3 in assign_producer_vals ['=', (0, 'val'), (2, 'val')]
+TP  [['=', (0, 'val'), (2, 'val')]]
+PARAMS  identifier val EXPRESSION val ['identifier', '=', 'EXPRESSION', ';']
+setting = identifier val None under root  ASSIGN with rule  ['identifier', '=', 'EXPRESSION', ';'] with symbol EXPRESSION
+1. temp store - -
+SYMBOL  ;
+in symbol ; 		(in rule  ['identifier', '=', 'EXPRESSION', ';'] )
+else - ;
+5. unmatched ; -
+TREE
+ASSIGN 
+returned false  ['identifier', '=', 'EXPRESSION', ';'] [['identifier', '=', 'EXPRESSION', ';']]
+2. unmatched ASSIGN i - ['ASSIGN', 'ST']
+TREE
+ASSIGN_ST 
+returned false  ['ASSIGN', 'ST'] [['ASSIGN', 'ST'], ['ASSIGN']]
+in rule  ['ASSIGN']  with  i
+TREE
+ASSIGN_ST [ASSIGN ] 
+SYMBOL  ASSIGN
+in symbol ASSIGN 		(in rule  ['ASSIGN'] )
+in producer
+in match rule with  ASSIGN : [['identifier', '=', 'EXPRESSION', ';']]
+in rule  ['identifier', '=', 'EXPRESSION', ';']  with  i
+TREE
+ASSIGN [identifier = EXPRESSION ; ] 
+SYMBOL  identifier
+in symbol identifier 		(in rule  ['identifier', '=', 'EXPRESSION', ';'] )
+is token
+in match token i identifier identifier
+2.SYMBOL in RULE identifier ['identifier', '=', 'EXPRESSION', ';'] ASSIGN
+3. NOT LAST
+here2 in assign_producer_vals with  identifier ASSIGN ['identifier', '=', 'EXPRESSION', ';']
+here3 in assign_producer_vals ['=', (0, 'type'), ('root', 'inhval')]
+TP  [['=', (0, 'type'), ('root', 'inhval')]]
+PARAMS  identifier type ASSIGN inhval ['identifier', '=', 'EXPRESSION', ';']
+setting = identifier type None under root  ASSIGN with rule  ['identifier', '=', 'EXPRESSION', ';'] with symbol identifier
+matched
+2. temp store = =
+SYMBOL  =
+in symbol = 		(in rule  ['identifier', '=', 'EXPRESSION', ';'] )
+else = =
+matched
+SYMBOL  EXPRESSION
+in symbol EXPRESSION 		(in rule  ['identifier', '=', 'EXPRESSION', ';'] )
+in producer
+in match rule with  EXPRESSION : [['E']]
+in rule  ['E']  with  5
+TREE
+EXPRESSION [E ] 
+SYMBOL  E
+in symbol E 		(in rule  ['E'] )
+in producer
+in match rule with  E : [['T', "E'"]]
+in rule  ['T', "E'"]  with  5
+TREE
+E [T E' ] 
+SYMBOL  T
+in symbol T 		(in rule  ['T', "E'"] )
+in producer
+in match rule with  T : [['F', "T'"]]
+in rule  ['F', "T'"]  with  5
+TREE
+T [F T' ] 
+SYMBOL  F
+in symbol F 		(in rule  ['F', "T'"] )
+in producer
+in match rule with  F : [['(', 'E', ')'], ['identifier'], ['number']]
+in rule  ['(', 'E', ')']  with  5
+TREE
+F [( E ) ] 
+SYMBOL  (
+in symbol ( 		(in rule  ['(', 'E', ')'] )
+else 5 (
+5. unmatched ( 5
+TREE
+F 
+returned false  ['(', 'E', ')'] [['(', 'E', ')'], ['identifier'], ['number']]
+in rule  ['identifier']  with  5
+TREE
+F [identifier ] 
+SYMBOL  identifier
+in symbol identifier 		(in rule  ['identifier'] )
+is token
+in match token 5 number identifier
+4. unmatched token
+TREE
+F 
+returned false  ['identifier'] [['(', 'E', ')'], ['identifier'], ['number']]
+in rule  ['number']  with  5
+TREE
+F [number ] 
+SYMBOL  number
+in symbol number 		(in rule  ['number'] )
+is token
+in match token 5 number number
+TOKENSET  number 5
+2.SYMBOL in RULE number ['number'] F
+matched
+2. temp store 5 -
+here we are ['number'] [['(', 'E', ')'], ['identifier'], ['number']] 2 ['number']
+2. LAST ['number']
+here2 in assign_producer_vals with  number F ['number']
+here3 in assign_producer_vals ['=', ('root', 'synval'), (0, 'lexval')]
+TP  [['=', ('root', 'synval'), (0, 'lexval')]]
+PARAMS  F synval number lexval ['number']
+setting = F synval 5 under root  F with rule  ['number'] with symbol number
+done
+1.SYMBOL in RULE F ['F', "T'"]
+1. NOT LAST
+here2 in assign_producer_vals with  F T ['F', "T'"]
+here3 in assign_producer_vals ['=', (1, 'inhval'), (0, 'synval')]
+TP  [['=', (1, 'inhval'), (0, 'synval')]]
+PARAMS  T' inhval F synval ['F', "T'"]
+setting = T' inhval 5 under root  T with rule  ['F', "T'"] with symbol F
+1. temp store - -
+SYMBOL  T'
+in symbol T' 		(in rule  ['F', "T'"] )
+in producer
+in match rule with  T' : [['M', "T1'"], ['M', "T2'"]]
+in rule  ['M', "T1'"]  with  -
+TREE
+T' [M T1' ] 
+SYMBOL  M
+in symbol M 		(in rule  ['M', "T1'"] )
+in producer
+in match rule with  M : [['epsilon']]
+in rule  ['epsilon']  with  -
+TREE
+M [epsilon ] 
+SYMBOL  epsilon
+in symbol epsilon 		(in rule  ['epsilon'] )
+else - epsilon
+here we are ['epsilon'] [['epsilon']] 0 ['epsilon']
+2. LAST ['epsilon']
+1. prod  M not in assign
+done
+1.SYMBOL in RULE M ['M', "T1'"]
+1. NOT LAST
+here2 in assign_producer_vals with  M T' ['M', "T1'"]
+here3 in assign_producer_vals ['=', (1, 'inhval'), ('root', 'inhval')]
+TP  [['=', (1, 'inhval'), ('root', 'inhval')]]
+PARAMS  T1' inhval T' inhval ['M', "T1'"]
+setting = T1' inhval 5 under root  T' with rule  ['M', "T1'"] with symbol M
+1. temp store - -
+SYMBOL  T1'
+in symbol T1' 		(in rule  ['M', "T1'"] )
+in producer
+in match rule with  T1' : [['*', 'F', "T'"], ['epsilon']]
+in rule  ['*', 'F', "T'"]  with  -
+TREE
+T1' [* F T' ] 
+SYMBOL  *
+in symbol * 		(in rule  ['*', 'F', "T'"] )
+else - *
+5. unmatched * -
+TREE
+T1' 
+returned false  ['*', 'F', "T'"] [['*', 'F', "T'"], ['epsilon']]
+in rule  ['epsilon']  with  -
+TREE
+T1' [epsilon ] 
+SYMBOL  epsilon
+in symbol epsilon 		(in rule  ['epsilon'] )
+else - epsilon
+here we are ['epsilon'] [['*', 'F', "T'"], ['epsilon']] 1 ['epsilon']
+2. LAST ['epsilon']
+here2 in assign_producer_vals with  epsilon T1' ['epsilon']
+here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
+TP  [['=', ('root', 'synval'), ('root', 'inhval')]]
+PARAMS  T1' synval T1' inhval ['epsilon']
+setting = T1' synval 5 under root  T1' with rule  ['epsilon'] with symbol epsilon
+done
+1.SYMBOL in RULE T1' ['M', "T1'"]
+1. temp store - -
+here we are ['M', "T1'"] [['M', "T1'"], ['M', "T2'"]] 0 ['M', "T1'"]
+2. LAST ['M', "T1'"]
+here2 in assign_producer_vals with  T1' T' ['M', "T1'"]
+here3 in assign_producer_vals ['=', ('root', 'synval'), (1, 'synval')]
+TP  [['=', ('root', 'synval'), (1, 'synval')]]
+PARAMS  T' synval T1' synval ['M', "T1'"]
+setting = T' synval 5 under root  T' with rule  ['M', "T1'"] with symbol T1'
+done
+1.SYMBOL in RULE T' ['F', "T'"]
+1. temp store - -
+here we are ['F', "T'"] [['F', "T'"]] 0 ['F', "T'"]
+2. LAST ['F', "T'"]
+here2 in assign_producer_vals with  T' T ['F', "T'"]
+here3 in assign_producer_vals ['=', ('root', 'synval'), (1, 'synval')]
+TP  [['=', ('root', 'synval'), (1, 'synval')]]
+PARAMS  T synval T' synval ['F', "T'"]
+setting = T synval 5 under root  T with rule  ['F', "T'"] with symbol T'
+done
+1.SYMBOL in RULE T ['T', "E'"]
+1. NOT LAST
+here2 in assign_producer_vals with  T E ['T', "E'"]
+here3 in assign_producer_vals ['=', (1, 'inhval'), (0, 'synval')]
+TP  [['=', (1, 'inhval'), (0, 'synval')]]
+PARAMS  E' inhval T synval ['T', "E'"]
+setting = E' inhval 5 under root  E with rule  ['T', "E'"] with symbol T
+1. temp store - -
+SYMBOL  E'
+in symbol E' 		(in rule  ['T', "E'"] )
+in producer
+in match rule with  E' : [['M', "E1'"], ['M', "E2'"]]
+in rule  ['M', "E1'"]  with  -
+TREE
+E' [M E1' ] 
+SYMBOL  M
+in symbol M 		(in rule  ['M', "E1'"] )
+in producer
+in match rule with  M : [['epsilon']]
+in rule  ['epsilon']  with  -
+TREE
+M [epsilon ] 
+SYMBOL  epsilon
+in symbol epsilon 		(in rule  ['epsilon'] )
+else - epsilon
+here we are ['epsilon'] [['epsilon']] 0 ['epsilon']
+2. LAST ['epsilon']
+1. prod  M not in assign
+done
+1.SYMBOL in RULE M ['M', "E1'"]
+1. NOT LAST
+here2 in assign_producer_vals with  M E' ['M', "E1'"]
+here3 in assign_producer_vals ['=', (1, 'inhval'), ('root', 'inhval')]
+TP  [['=', (1, 'inhval'), ('root', 'inhval')]]
+PARAMS  E1' inhval E' inhval ['M', "E1'"]
+setting = E1' inhval 5 under root  E' with rule  ['M', "E1'"] with symbol M
+1. temp store - -
+SYMBOL  E1'
+in symbol E1' 		(in rule  ['M', "E1'"] )
+in producer
+in match rule with  E1' : [['+', 'T', "E'"], ['epsilon']]
+in rule  ['+', 'T', "E'"]  with  -
+TREE
+E1' [+ T E' ] 
+SYMBOL  +
+in symbol + 		(in rule  ['+', 'T', "E'"] )
+else - +
+5. unmatched + -
+TREE
+E1' 
+returned false  ['+', 'T', "E'"] [['+', 'T', "E'"], ['epsilon']]
+in rule  ['epsilon']  with  -
+TREE
+E1' [epsilon ] 
+SYMBOL  epsilon
+in symbol epsilon 		(in rule  ['epsilon'] )
+else - epsilon
+here we are ['epsilon'] [['+', 'T', "E'"], ['epsilon']] 1 ['epsilon']
+2. LAST ['epsilon']
+here2 in assign_producer_vals with  epsilon E1' ['epsilon']
+here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
+TP  [['=', ('root', 'synval'), ('root', 'inhval')]]
+PARAMS  E1' synval E1' inhval ['epsilon']
+setting = E1' synval 5 under root  E1' with rule  ['epsilon'] with symbol epsilon
+done
+1.SYMBOL in RULE E1' ['M', "E1'"]
+1. temp store - -
+here we are ['M', "E1'"] [['M', "E1'"], ['M', "E2'"]] 0 ['M', "E1'"]
+2. LAST ['M', "E1'"]
+here2 in assign_producer_vals with  E1' E' ['M', "E1'"]
+here3 in assign_producer_vals ['=', ('root', 'synval'), (1, 'synval')]
+TP  [['=', ('root', 'synval'), (1, 'synval')]]
+PARAMS  E' synval E1' synval ['M', "E1'"]
+setting = E' synval 5 under root  E' with rule  ['M', "E1'"] with symbol E1'
+done
+1.SYMBOL in RULE E' ['T', "E'"]
+1. temp store - -
+here we are ['T', "E'"] [['T', "E'"]] 0 ['T', "E'"]
+2. LAST ['T', "E'"]
+here2 in assign_producer_vals with  E' E ['T', "E'"]
+here3 in assign_producer_vals ['=', ('root', 'synval'), (1, 'synval')]
+TP  [['=', ('root', 'synval'), (1, 'synval')]]
+PARAMS  E synval E' synval ['T', "E'"]
+setting = E synval 5 under root  E with rule  ['T', "E'"] with symbol E'
+done
+1.SYMBOL in RULE E ['E']
+1. temp store 5 -
+here we are ['E'] [['E']] 0 ['E']
+2. LAST ['E']
+here2 in assign_producer_vals with  E EXPRESSION ['E']
+here3 in assign_producer_vals ['=', ('root', 'val'), (0, 'val')]
+TP  [['=', ('root', 'val'), (0, 'val')]]
+PARAMS  EXPRESSION val E val ['E']
+setting = EXPRESSION val None under root  EXPRESSION with rule  ['E'] with symbol E
+done
+1.SYMBOL in RULE EXPRESSION ['identifier', '=', 'EXPRESSION', ';']
+1. NOT LAST
+here2 in assign_producer_vals with  EXPRESSION ASSIGN ['identifier', '=', 'EXPRESSION', ';']
+here3 in assign_producer_vals ['=', (0, 'val'), (2, 'val')]
+TP  [['=', (0, 'val'), (2, 'val')]]
+PARAMS  identifier val EXPRESSION val ['identifier', '=', 'EXPRESSION', ';']
+setting = identifier val None under root  ASSIGN with rule  ['identifier', '=', 'EXPRESSION', ';'] with symbol EXPRESSION
+1. temp store - -
+SYMBOL  ;
+in symbol ; 		(in rule  ['identifier', '=', 'EXPRESSION', ';'] )
+else - ;
+5. unmatched ; -
+TREE
+ASSIGN 
+returned false  ['identifier', '=', 'EXPRESSION', ';'] [['identifier', '=', 'EXPRESSION', ';']]
+2. unmatched ASSIGN i - ['ASSIGN']
+TREE
+ASSIGN_ST 
+returned false  ['ASSIGN'] [['ASSIGN', 'ST'], ['ASSIGN']]
+2. unmatched ASSIGN_ST i - ['ASSIGN_ST']
+TREE
+STATEMENT 
+returned false  ['ASSIGN_ST'] [['FOR_LOOP_ST'], ['IF_COND_ST'], ['DEFN_ST'], ['ASSIGN_ST'], ['DECL_ST']]
+in rule  ['DECL_ST']  with  i
+TREE
+STATEMENT [DECL_ST ] 
+SYMBOL  DECL_ST
+in symbol DECL_ST 		(in rule  ['DECL_ST'] )
+in producer
+in match rule with  DECL_ST : [['DECL', 'ST'], ['DECL']]
+in rule  ['DECL', 'ST']  with  i
+TREE
+DECL_ST [DECL ST ] 
+SYMBOL  DECL
+in symbol DECL 		(in rule  ['DECL', 'ST'] )
+in producer
+in match rule with  DECL : [['type', 'ID', ';']]
+in rule  ['type', 'ID', ';']  with  i
+TREE
+DECL [type ID ; ] 
+SYMBOL  type
+in symbol type 		(in rule  ['type', 'ID', ';'] )
+is token
+in match token i identifier type
+4. unmatched token
+TREE
+DECL 
+returned false  ['type', 'ID', ';'] [['type', 'ID', ';']]
+2. unmatched DECL i - ['DECL', 'ST']
+TREE
+DECL_ST 
+returned false  ['DECL', 'ST'] [['DECL', 'ST'], ['DECL']]
+in rule  ['DECL']  with  i
+TREE
+DECL_ST [DECL ] 
+SYMBOL  DECL
+in symbol DECL 		(in rule  ['DECL'] )
+in producer
+in match rule with  DECL : [['type', 'ID', ';']]
+in rule  ['type', 'ID', ';']  with  i
+TREE
+DECL [type ID ; ] 
+SYMBOL  type
+in symbol type 		(in rule  ['type', 'ID', ';'] )
+is token
+in match token i identifier type
+4. unmatched token
+TREE
+DECL 
+returned false  ['type', 'ID', ';'] [['type', 'ID', ';']]
+2. unmatched DECL i - ['DECL']
+TREE
+DECL_ST 
+returned false  ['DECL'] [['DECL', 'ST'], ['DECL']]
+2. unmatched DECL_ST i - ['DECL_ST']
+TREE
+STATEMENT 
+returned false  ['DECL_ST'] [['FOR_LOOP_ST'], ['IF_COND_ST'], ['DEFN_ST'], ['ASSIGN_ST'], ['DECL_ST']]
+2. unmatched STATEMENT i - ['STATEMENT']
+TREE
+STATEMENT_ST 
+returned false  ['STATEMENT'] [['STATEMENT', ';', 'ST'], ['STATEMENT']]
+2. unmatched STATEMENT_ST i - ['STATEMENT_ST']
+TREE
+ST 
+returned false  ['STATEMENT_ST'] [['STATEMENT_ST']]
+2. unmatched ST i - ['DECL', 'ST']
+TREE
+DECL_ST 
+returned false  ['DECL', 'ST'] [['DECL', 'ST'], ['DECL']]
+in rule  ['DECL']  with  int
+TREE
+DECL_ST [DECL ] 
+SYMBOL  DECL
+in symbol DECL 		(in rule  ['DECL'] )
+in producer
+in match rule with  DECL : [['type', 'ID', ';']]
+in rule  ['type', 'ID', ';']  with  int
+TREE
+DECL [type ID ; ] 
+SYMBOL  type
+in symbol type 		(in rule  ['type', 'ID', ';'] )
+is token
+in match token int type type
+TOKENSET  type int
+2.SYMBOL in RULE type ['type', 'ID', ';'] DECL
+3. NOT LAST
+here2 in assign_producer_vals with  type DECL ['type', 'ID', ';']
+here3 in assign_producer_vals ['=', (1, 'inhval'), (0, 'type')]
+TP  [['=', (1, 'inhval'), (0, 'type')]]
+PARAMS  ID inhval type type ['type', 'ID', ';']
+setting = ID inhval int under root  DECL with rule  ['type', 'ID', ';'] with symbol type
+matched
+2. temp store i i
+SYMBOL  ID
+in symbol ID 		(in rule  ['type', 'ID', ';'] )
+in producer
+in match rule with  ID : [['identifier', "ID'"]]
+in rule  ['identifier', "ID'"]  with  i
+TREE
+ID [identifier ID' ] 
+SYMBOL  identifier
+in symbol identifier 		(in rule  ['identifier', "ID'"] )
+is token
+in match token i identifier identifier
+2.SYMBOL in RULE identifier ['identifier', "ID'"] ID
+3. NOT LAST
+here2 in assign_producer_vals with  identifier ID ['identifier', "ID'"]
+here3 in assign_producer_vals ['=', (0, 'type'), ('root', 'type')]
+TP  [['=', (0, 'type'), ('root', 'type')]]
+PARAMS  identifier type ID type ['identifier', "ID'"]
+setting = identifier type None under root  ID with rule  ['identifier', "ID'"] with symbol identifier
+matched
+2. temp store ; ;
+SYMBOL  ID'
+in symbol ID' 		(in rule  ['identifier', "ID'"] )
+in producer
+in match rule with  ID' : [[',', 'identifier', "ID'"], ['epsilon']]
+in rule  [',', 'identifier', "ID'"]  with  ;
+TREE
+ID' [, identifier ID' ] 
+SYMBOL  ,
+in symbol , 		(in rule  [',', 'identifier', "ID'"] )
+else ; ,
+5. unmatched , ;
+TREE
+ID' 
+returned false  [',', 'identifier', "ID'"] [[',', 'identifier', "ID'"], ['epsilon']]
+in rule  ['epsilon']  with  ;
+TREE
+ID' [epsilon ] 
+SYMBOL  epsilon
+in symbol epsilon 		(in rule  ['epsilon'] )
+else ; epsilon
+here we are ['epsilon'] [[',', 'identifier', "ID'"], ['epsilon']] 1 ['epsilon']
+2. LAST ['epsilon']
+2. prod epsilon not in  {'identifier': [['=', (1, 'type'), ('root', 'type')], ['=', (2, 'type'), ('root', 'type')]]}
+done
+1.SYMBOL in RULE ID' ['identifier', "ID'"]
 1. temp store ; ;
-here we are ['F', "T'"] [['F', "T'"]] 0
-1.SYMBOL in RULE T ['+', 'T', "E'"]
-here2 in assign_producer_vals with  T E1' ['+', 'T', "E'"]
-here3 in assign_producer_vals ['+=', (2, 'inhval'), ('root', 'inhval'), (1, 'inhval')]
-TP  [['+=', (2, 'inhval'), ('root', 'inhval'), (1, 'inhval')]]
-tuples [(2, 'inhval'), ('root', 'inhval'), (1, 'inhval')]
-children  ['+', 'T', "E'"]
-x, x_attr 2 inhval
-x, x_attr root inhval
-x, x_attr 1 inhval
-TP  [['+=', (2, 'inhval'), ('root', 'inhval'), (1, 'inhval')]]
-tuples [(2, 'inhval'), ('root', 'inhval'), (1, 'inhval')]
-children  ['+', 'T', "E'"]
-x, x_attr 2 inhval
-x, x_attr root inhval
-x, x_attr 1 inhval
-PARAMS  [<classes.Tree object at 0x7f29b61f8898>, 'inhval', <classes.Tree object at 0x7f29b61f8668>, 'inhval', <classes.Tree object at 0x7f29b61f8860>, 'inhval']
+here we are ['identifier', "ID'"] [['identifier', "ID'"]] 0 ['identifier', "ID'"]
+2. LAST ['identifier', "ID'"]
+2. prod ID' not in  {'identifier': [['=', (0, 'type'), ('root', 'type')]]}
+done
+1.SYMBOL in RULE ID ['type', 'ID', ';']
+1. NOT LAST
+2. prod ID not in  {'type': [['=', (1, 'inhval'), (0, 'type')]]}
+1. temp store ; ;
+SYMBOL  ;
+in symbol ; 		(in rule  ['type', 'ID', ';'] )
+else ; ;
+matched
+here we are ['type', 'ID', ';'] [['type', 'ID', ';']] 0 ['type', 'ID', ';']
+2. LAST ['type', 'ID', ';']
+2. prod ; not in  {'type': [['=', (1, 'inhval'), (0, 'type')]]}
+done
+1.SYMBOL in RULE DECL ['DECL']
+1. temp store int i
+here we are ['DECL'] [['DECL', 'ST'], ['DECL']] 1 ['DECL']
+2. LAST ['DECL']
+1. prod  DECL_ST not in assign
+done
+1.SYMBOL in RULE DECL_ST ['DECL_ST']
+1. temp store int i
+here we are ['DECL_ST'] [['FOR_LOOP_ST'], ['IF_COND_ST'], ['DEFN_ST'], ['ASSIGN_ST'], ['DECL_ST']] 4 ['DECL_ST']
+2. LAST ['DECL_ST']
+1. prod  STATEMENT not in assign
+done
+1.SYMBOL in RULE STATEMENT ['STATEMENT', 'eof']
+1. NOT LAST
+1. prod  PROG not in assign
+1. temp store i i
+SYMBOL  eof
+in symbol eof 		(in rule  ['STATEMENT', 'eof'] )
+else i eof
+5. unmatched eof i
+TREE
+PROG 
+returned false  ['STATEMENT', 'eof'] [['STATEMENT', 'eof']]
+ERROR int i
+TREE
+PROG 

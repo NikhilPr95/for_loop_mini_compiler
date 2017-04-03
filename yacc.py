@@ -24,7 +24,6 @@ rules = [
 			"IF_COND: if ( COND ) { STATEMENT ; } OP_ELSE | if ( COND ) { STATEMENT }",
 			"OP_ELSE: else { STATEMENT } ",
 			"ASSIGN: identifier = EXPRESSION ;",
-			"DECL: type identifier ;",
 			"DECL: type ID ;",
 			"ID: identifier ID'",
 			"ID': , identifier ID' | epsilon ", 			
@@ -41,28 +40,17 @@ rules = [
 			"E1': + T E' | epsilon",
 			"E2': - T E' | epsilon",
 			"T: F T'",
-			"T': T1' | T2'",
+			"T': M T1' | M T2'",
 			"T1': * F T' | epsilon",
 			"T2': / F T' | epsilon",
 			"F: ( E ) | identifier | number ",
 		]
-#'''
-
-#Problem - Currently computes only when it is going down - Need it to do so when going back up (synvals)
-#Currently top-down parser is only top-down -- There is no going up... Once it comes back up we can apply
-# the rules but I think there will be conflict. Applying the top down rules again in bottom-up
-# thus screwing up the values
-#in bottom up only certain rules need to be applied
-# example in E -> TE' the rule for E' has to be applied not for T
-# also in the same rule, E' should not be applied when going top down
-# so does that mean the last rule is always bottom up?
-# How apt ! Because the if condition symbol != rule[-1] is just above! i just need to do a tab indent
-# next what is required is assign prod to be called after it comes out of isvalid and apply the rule for the last symbol
-
-# But i am still not sure if it is correct
-# need to verify
 
 assign = {
+	'DECL' : {
+		'type' : [['=',(1, 'type'), (0, 'type')]],
+		'identifier' : [[['enter', (1, 'type')]]]
+	},
 	'ASSIGN' : {
 		'identifier' : [['=',(0,'type'),('root','inhval')]], # is this correct?
 		'EXPRESSION' : [['=',(0,'val'),(2,'val')]]
@@ -89,38 +77,42 @@ assign = {
 		'E' : [['=',('root','val'),(0,'val')]]
 	},
 	'E' : {
-		'T' : [['=',(1,'inhval'),(0,'val')]],
-		'E\'' : [['=', ('root','val'),(1,'synval')]]
+		'T' : [['=',(1,'inhval'),(0,'synval')]],
+		'E\'' : [['=', ('root','synval'),(1,'synval')]]
 	},
 	'E\'': {
-		'M': [['=',(0,'inhval'),('root','inhval')]],  # Changed all 0 to root here and  1 to 0
-		'E1\'': [['=',('root','synval'),(0,'synval')]],
-		'E2\'': [['=',('root','synval'),(0,'synval')]]
+		'M': [['=',(1,'inhval'),('root','inhval')]],  # Changed all 0 to root here and  1 to 0
+		'E1\'': [['=',('root','synval'),(1,'synval')]],
+		'E2\'': [['=',('root','synval'),(1,'synval')]]
 	},
 	'E1\'' : {
-		'T' : [['+=',(2,'inhval'),('root','inhval'),(1,'inhval')]],
-		'E\'' : [['=',('root','synval'),(1,'synval')]],	
+		'T' : [['+=',(2,'inhval'),('root','inhval'),(1,'synval')]],
+		'E\'' : [['=',('root','synval'),(2,'synval')]],	
+		'epsilon' : [['=', ('root', 'synval'), ('root', 'inhval')]]
 	},
 	'E2\'' : {
-		'T' : [['-=',(2,'inhval'),('root','inhval'),(1,'inhval')]],
-		'E\'' : [['=',('root','synval'),(1,'synval')]],
+		'T' : [['-=',(2,'inhval'),('root','inhval'),(1,'synval')]],
+		'E\'' : [['=',('root','synval'),(2,'synval')]],
+		'epsilon' : [['=', ('root', 'synval'), ('root', 'inhval')]]
 	},
 	'T' : {
-		'F' : [['=',(1,'inhval'),(0,'val')]],
-		'T\'' : [['=', ('root','val'),(1,'synval')]]
+		'F' : [['=',(1,'inhval'),(0,'synval')]],
+		'T\'' : [['=', ('root','synval'),(1,'synval')]]
 	},
 	'T\'': {
-		'M': [['=',(0,'inhval'),('root','inhval')]], # Changed all 0 to root here and 1 to 0
-		'T1\'': [['=',('root','synval'),(0,'synval')]],
-		'T2\'': [['=',('root','synval'),(0,'synval')]]
+		'M': [['=',(1,'inhval'),('root','inhval')]], # Changed all 0 to root here and 1 to 0
+		'T1\'': [['=',('root','synval'),(1,'synval')]],
+		'T2\'': [['=',('root','synval'),(1,'synval')]]
 	},
 	'T1\'' : {
-		'F' : [['*=',(2,'inhval'),('root','inhval'),(1,'inhval')]],
-		'T\'' : [['=',('root','synval'),(1,'synval')]],	
+		'F' : [['*=',(2,'inhval'),('root','inhval'),(1,'synval')]],
+		'T\'' : [['=',('root','synval'),(2,'synval')]],	
+		'epsilon' : [['=', ('root', 'synval'), ('root', 'inhval')]]
 	},
 	'T2\'' : {
-		'F' : [['/=',(2,'inhval'),('root','inhval'),(1,'inhval')]],
-		'T\'' : [['=',('root','synval'),(1,'synval')]],
+		'F' : [['/=',(2,'inhval'),('root','inhval'),(1,'synval')]],
+		'T\'' : [['=',('root','synval'),(2,'synval')]],
+		'epsilon' : [['=', ('root', 'synval'), ('root', 'inhval')]]
 	},
 	'F' : {
 		'(' : [['=',(0,'inhval'),('root','inhval')]],
@@ -154,20 +146,26 @@ def is_token(symbol):
 	return symbol in token_types
 
 def assign_token_vals(token, node):
-	node.lexval = token.val
-	print("TOKENSET ", node.name, node.lexval)
+	if node.name == 'type':
+		node.type = token.val
+		print("TOKENSET ", node.name, node.type)
+	elif node.name == 'identifier':
+		node.entry = token.val
+	else:
+		node.lexval = token.val
+		print("TOKENSET ", node.name, node.lexval)
 	
 def get_params(vals, root, children):
 	tuples = vals[0][1:]
 	num = len(tuples)
 	params = []
 	print("TP ", vals)
-	print("tuples", tuples)
-	print("children ", [c.name for c in children])
+	#print("tuples", tuples)
+	#print("children ", [c.name for c in children])
 	for val in tuples:
 		x = val[0]
 		x_attr = val[1]
-		print("x, x_attr", x, x_attr)
+		#print("x, x_attr", x, x_attr)
 		if x == 'root':
 			node_x = root
 		else:
@@ -175,6 +173,7 @@ def get_params(vals, root, children):
 		params += [node_x, x_attr]
 	return params	
 
+#"""
 def assign_producer_vals(symbol, rule, root):
 	if root.name in assign:
 		if symbol in assign[root.name]:
@@ -187,29 +186,38 @@ def assign_producer_vals(symbol, rule, root):
 				node_x, x_attr, node_y, y_attr = get_params(vals, root, children)			
 				print("PARAMS ", node_x.name, x_attr, node_y.name, y_attr, rule)
 				setattr(node_x, x_attr, getattr(node_y, y_attr))
-				print("setting =", node_x.name, x_attr, getattr(node_y, y_attr), "under root ", root.name, "with rule ", rule)
+				print("setting =", node_x.name, x_attr, getattr(node_y, y_attr), "under root ", root.name, "with rule ", rule, "with symbol", symbol)
 			elif op == '+=':
 				node_x, x_attr, node_y, y_attr, node_z, z_attr = get_params(vals, root, children)
-				print("PARAMS ", get_params(vals, root, children))
-				setattr(node_x, x_attr, (getattr(node_y, y_attr) + getattr(node_z, z_attr)))
-				print("setting +=", node_x.name, x_attr, (getattr(node_y, y_attr) + getattr(node_z, z_attr)), "under root ", root.name, "with rule ", rule)
+				print("PARAMS ", node_x.name, x_attr, node_y.name, y_attr, node_z.name, z_attr)
+				print("vals ", (getattr(node_y, y_attr)), (getattr(node_z, z_attr)))
+				setattr(node_x, x_attr, (eval(getattr(node_y, y_attr)) + eval(getattr(node_z, z_attr))))
+				print("setting +=", node_x.name, x_attr, (eval(getattr(node_y, y_attr)) + eval(getattr(node_z, z_attr))), "under root ", root.name, "with rule ", rule, "with symbol", symbol)
 			elif op == '-=':
 				node_x, x_attr, node_y, y_attr, node_z, z_attr = get_params(vals, root, children)
+				print("setting -=", node_x.name, x_attr, (getattr(node_y, y_attr) - getattr(node_z, z_attr)), "under root ", root.name, "with rule ", rule, "with symbol", symbol)
 				setattr(node_x, x_attr, (getattr(node_y, y_attr) - getattr(node_z, z_attr)))
-				print("setting -=", node_x.name, x_attr, (getattr(node_y, y_attr) - getattr(node_z, z_attr)), "under root ", root.name, "with rule ", rule)
 			elif op == '*=':
 				node_x, x_attr, node_y, y_attr, node_z, z_attr = get_params(vals, root, children)
-				setattr(node_x, x_attr, (getattr(node_y, y_attr) * getattr(node_z, z_attr)))
-				print("setting *=", node_x.name, x_attr, (getattr(node_y, y_attr) * getattr(node_z, z_attr)), "under root ", root.name, "with rule ", rule)
+				print("PARAMS ", node_x.name, x_attr, node_y.name, y_attr, node_z.name, z_attr)
+				print("vals ", (getattr(node_y, y_attr)), (getattr(node_z, z_attr)))
+				print("setting *=", node_x.name, x_attr, (getattr(node_y, y_attr)), "*", (getattr(node_z, z_attr)), "(", node_y.name, y_attr, "*", node_z.name, z_attr, ")", type(getattr(node_z, z_attr)), "under root ", root.name, "with rule ", rule, "with symbol", symbol)
+				print("setting *=", node_x.name, x_attr, (eval(getattr(node_y, y_attr)) * eval(getattr(node_z, z_attr))), "under root ", root.name, "with rule ", rule, "with symbol", symbol)
+				setattr(node_x, x_attr, (eval(getattr(node_y, y_attr)) * eval(getattr(node_z, z_attr))))
 			elif op == '/=':
 				node_x, x_attr, node_y, y_attr, node_z, z_attr = get_params(vals, root, children)
 				setattr(node_x, x_attr, (getattr(node_y, y_attr) / getattr(node_z, z_attr)))
-				print("setting /=", node_x.name, x_attr, (getattr(node_y, y_attr) / getattr(node_z, z_attr)), "under root ", root.name, "with rule ", rule)
-#def assign_producer_vals(symbol, rule, root):
-	
-def assign_symbol_vals():
+				print("setting /=", node_x.name, x_attr, (getattr(node_y, y_attr) / getattr(node_z, z_attr)), "under root ", root.name, "with rule ", rule, "with symbol", symbol)
+		else:
+			print("2. prod", symbol, "not in ", assign[root.name])
+	else:
+		print("1. prod ", root.name, "not in assign")
+
+"""
+def assign_producer_vals(a,b,c):
 	x=1
-			
+#"""
+
 def match_token(token, store, symbol, node):
 	print("in match token", token.val, token.type, symbol)
 	if token.type == symbol:
@@ -249,15 +257,12 @@ def is_valid(rule, productions, token, store, root):
 			if is_producer(symbol):
 				print("in producer")
 				if match_rule(temp, store, productions, symbol, child):
-					if True:#has_proceeded(temp, store):
-						print("1.SYMBOL in RULE", symbol, rule)
-						if not symbol == rule[-1]: #don't progress token if the symbol is the last in the list -> Error
-							update(temp, store)
+					print("1.SYMBOL in RULE", symbol, rule)
+					if not symbol == rule[-1]: #don't progress token if the symbol is the last in the list -> Error
+						update(temp, store)
+						print("1. NOT LAST")
 						assign_producer_vals(symbol, rule, root)
-						print("1. temp store", temp.val, store.val)					
-					else:
-						print("1. unmatched", symbol, temp.val, store.val, rule)
-						return False
+					print("1. temp store", temp.val, store.val)					
 				else:
 					print("2. unmatched", symbol, temp.val, store.val, rule)
 					return False
@@ -266,9 +271,10 @@ def is_valid(rule, productions, token, store, root):
 				if match_token(temp, store, symbol, child):
 					if has_proceeded(temp, store):
 						print("2.SYMBOL in RULE", symbol, rule, root.name)
-						assign_producer_vals(symbol, rule, root)
 						if not symbol == rule[-1]:
 							update(temp, store)
+							print("3. NOT LAST")
+							assign_producer_vals(symbol, rule, root)
 						print("matched")
 						print("2. temp store", temp.val, store.val)
 					else:
@@ -303,13 +309,16 @@ def match_rule(token, store, productions, producer, root):
 	for rule in productions[producer]:
 		print("in rule ", rule, " with ", token.val)
 		root.set_children(rule)
-		#assign_producer_vals(root)
 		print("TREE")
 		print_tree(root)
 		print("")
 		if (is_valid(rule, productions, token, store, root)):
-			print("here we are", rule, productions[producer], productions[producer].index(rule))
-			#assign_producer_vals(root)
+			#children = root.get_children()
+			print("here we are", rule, productions[producer], productions[producer].index(rule), rule)
+			symbol = rule[-1]
+			print("2. LAST", rule)
+			assign_producer_vals(symbol, rule, root)
+			print("done")
 			return True
 		else:
 			x = None
