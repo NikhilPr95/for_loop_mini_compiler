@@ -171,9 +171,9 @@ def get_params(vals, root, children):
 		else:
 			node_x = children[x]
 		params += [node_x, x_attr]
-	return params	
+	return params
 
-#"""
+"""
 def assign_producer_vals(symbol, rule, root):
 	if root.name in assign:
 		if symbol in assign[root.name]:
@@ -195,8 +195,8 @@ def assign_producer_vals(symbol, rule, root):
 				print("setting +=", node_x.name, x_attr, (eval(getattr(node_y, y_attr)) + eval(getattr(node_z, z_attr))), "under root ", root.name, "with rule ", rule, "with symbol", symbol)
 			elif op == '-=':
 				node_x, x_attr, node_y, y_attr, node_z, z_attr = get_params(vals, root, children)
-				print("setting -=", node_x.name, x_attr, (getattr(node_y, y_attr) - getattr(node_z, z_attr)), "under root ", root.name, "with rule ", rule, "with symbol", symbol)
-				setattr(node_x, x_attr, (getattr(node_y, y_attr) - getattr(node_z, z_attr)))
+				print("setting -=", node_x.name, x_attr, (eval(getattr(node_y, y_attr)) - eval(getattr(node_z, z_attr))), "under root ", root.name, "with rule ", rule, "with symbol", symbol)
+				setattr(node_x, x_attr, (eval(getattr(node_y, y_attr)) - eval(getattr(node_z, z_attr))))
 			elif op == '*=':
 				node_x, x_attr, node_y, y_attr, node_z, z_attr = get_params(vals, root, children)
 				print("PARAMS ", node_x.name, x_attr, node_y.name, y_attr, node_z.name, z_attr)
@@ -256,20 +256,23 @@ def is_valid(rule, productions, token, store, root):
 		if matched:
 			if is_producer(symbol):
 				print("in producer")
-				if match_rule(temp, store, productions, symbol, child):
-					print("1.SYMBOL in RULE", symbol, rule)
-					if not symbol == rule[-1]: #don't progress token if the symbol is the last in the list -> Error
-						update(temp, store)
-						print("1. NOT LAST")
-						assign_producer_vals(symbol, rule, root)
-					print("1. temp store", temp.val, store.val)					
+				if match_rule(temp, store, productions, symbol, child): # add back rule - if not epsilon has to have proceeded or invalid
+					if has_proceeded(temp, store) or symbol == 'M':
+						print("1.SYMBOL in RULE", symbol, rule)
+						if not symbol == rule[-1]: #don't progress token if the symbol is the last in the list -> Error
+							update(temp, store)
+							print("1. NOT LAST")
+							assign_producer_vals(symbol, rule, root)
+						print("1. temp store", temp.val, store.val)					
+					else:
+						print("1. unmatched", symbol, temp.val, store.val, rule)
 				else:
 					print("2. unmatched", symbol, temp.val, store.val, rule)
 					return False
 			elif is_token(symbol):
 				print("is token")
 				if match_token(temp, store, symbol, child):
-					if has_proceeded(temp, store):
+					if has_proceeded(temp, store) or symbol == 'epsilon':
 						print("2.SYMBOL in RULE", symbol, rule, root.name)
 						if not symbol == rule[-1]:
 							update(temp, store)
