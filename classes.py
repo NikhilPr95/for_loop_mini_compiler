@@ -69,7 +69,7 @@ class Tree:
 		self.type = None
 		self.inhtype = None
 		self.entry = None
-		self.code = None
+		self.code = []
 		
 	def set_synthval(self, synthval):
 		self.synthval = synthval
@@ -77,9 +77,9 @@ class Tree:
 	def set_entry(self, entry):
 		self.entry = entry
 		
-	def set_children(self, children):
-		for child in children:
-			child_node = Tree(child)
+	def set_children(self, children_names):
+		for child_name in children_names:
+			child_node = Tree(child_name)
 			child_node.set_parent(self)
 			self.children.append(child_node)
 		
@@ -96,3 +96,21 @@ class Tree:
 		for child in self.children:
 			child.delete_children()
 		self.children = []
+
+	def delete_child(self, child):
+		if child in self.children:
+			self.children.remove(child)
+			
+	def node_copy(self):
+		new_node = Tree(self.name)
+		new_node.entry = self.entry
+		new_node.val = self.val
+		new_node.lexval = self.lexval
+		new_node.synval = self.synval
+		new_node.inhval = self.inhval
+		new_node.type = self.type
+		new_node.inhtype = self.inhtype
+		new_node.entry = self.entry
+		new_node.code = self.code
+
+		return new_node
