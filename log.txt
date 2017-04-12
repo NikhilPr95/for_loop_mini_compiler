@@ -41,7 +41,7 @@
 ("T2'", [['/', 'F', "T'"], ['epsilon']])
 
 
-[('for', 'keyword'), ('(', 'punctuation'), ('i', 'identifier'), ('=', 'assignment_operator'), ('0', 'number'), (';', 'punctuation'), ('i', 'identifier'), ('<', 'relational_operator'), ('10', 'number'), (';', 'punctuation'), ('j', 'identifier'), ('=', 'assignment_operator'), ('1', 'number'), ('+', 'arithmetic_operator'), ('1', 'number'), (')', 'punctuation'), ('{', 'punctuation'), ('l', 'identifier'), ('=', 'assignment_operator'), ('3', 'number'), ('+', 'arithmetic_operator'), ('2', 'number'), ('*', 'arithmetic_operator'), ('5', 'number'), (';', 'punctuation'), ('}', 'punctuation')]
+[('int', 'type'), ('l', 'identifier'), (';', 'punctuation'), ('for', 'keyword'), ('(', 'punctuation'), ('i', 'identifier'), ('=', 'assignment_operator'), ('0', 'number'), (';', 'punctuation'), ('i', 'identifier'), ('<', 'relational_operator'), ('10', 'number'), (';', 'punctuation'), ('i', 'identifier'), ('=', 'assignment_operator'), ('i', 'identifier'), ('+', 'arithmetic_operator'), ('1', 'number'), (')', 'punctuation'), ('{', 'punctuation'), ('l', 'identifier'), ('=', 'assignment_operator'), ('3', 'number'), ('+', 'arithmetic_operator'), ('2', 'number'), ('*', 'arithmetic_operator'), ('5', 'number'), (';', 'punctuation'), ('}', 'punctuation')]
 
 
 
@@ -49,11 +49,787 @@
 TREE
 PROG 
 in match rule with  PROG : [['STATEMENT', 'eof']]
-in rule  ['STATEMENT', 'eof']  with  for
+in rule  ['STATEMENT', 'eof']  with  int
 TREE
 PROG [STATEMENT eof ] 
 SYMBOL  STATEMENT
 in symbol STATEMENT 		(in rule  ['STATEMENT', 'eof'] )
+in producer
+check is now  int
+in match rule with  STATEMENT : [['FOR_LOOP_ST'], ['COND_ST'], ['IF_COND_ST'], ['DEFN_ST'], ['ASSIGN_ST'], ['DECL_ST']]
+in rule  ['FOR_LOOP_ST']  with  int
+TREE
+STATEMENT [FOR_LOOP_ST ] 
+SYMBOL  FOR_LOOP_ST
+in symbol FOR_LOOP_ST 		(in rule  ['FOR_LOOP_ST'] )
+in producer
+check is now  int
+in match rule with  FOR_LOOP_ST : [['FOR_LOOP', "ST'"]]
+in rule  ['FOR_LOOP', "ST'"]  with  int
+TREE
+FOR_LOOP_ST [FOR_LOOP ST' ] 
+SYMBOL  FOR_LOOP
+in symbol FOR_LOOP 		(in rule  ['FOR_LOOP', "ST'"] )
+in producer
+check is now  int
+in match rule with  FOR_LOOP : [['for', '(', 'ASSIGN', 'COND', 'INCREMENT', ')', '{', 'STATEMENT', '}']]
+in rule  ['for', '(', 'ASSIGN', 'COND', 'INCREMENT', ')', '{', 'STATEMENT', '}']  with  int
+TREE
+FOR_LOOP [for ( ASSIGN COND INCREMENT ) { STATEMENT } ] 
+SYMBOL  for
+in symbol for 		(in rule  ['for', '(', 'ASSIGN', 'COND', 'INCREMENT', ')', '{', 'STATEMENT', '}'] )
+else int for
+5. unmatched for int
+TREE
+FOR_LOOP 
+returned false  ['for', '(', 'ASSIGN', 'COND', 'INCREMENT', ')', '{', 'STATEMENT', '}'] [['for', '(', 'ASSIGN', 'COND', 'INCREMENT', ')', '{', 'STATEMENT', '}']]
+2. unmatched FOR_LOOP int int ['FOR_LOOP', "ST'"]
+TREE
+FOR_LOOP_ST 
+returned false  ['FOR_LOOP', "ST'"] [['FOR_LOOP', "ST'"]]
+2. unmatched FOR_LOOP_ST int int ['FOR_LOOP_ST']
+TREE
+STATEMENT 
+returned false  ['FOR_LOOP_ST'] [['FOR_LOOP_ST'], ['COND_ST'], ['IF_COND_ST'], ['DEFN_ST'], ['ASSIGN_ST'], ['DECL_ST']]
+in rule  ['COND_ST']  with  int
+TREE
+STATEMENT [COND_ST ] 
+SYMBOL  COND_ST
+in symbol COND_ST 		(in rule  ['COND_ST'] )
+in producer
+check is now  int
+in match rule with  COND_ST : [['COND', "ST'"]]
+in rule  ['COND', "ST'"]  with  int
+TREE
+COND_ST [COND ST' ] 
+SYMBOL  COND
+in symbol COND 		(in rule  ['COND', "ST'"] )
+in producer
+check is now  int
+in match rule with  COND : [['COND1'], ['COND2'], ['COND3'], ['COND4']]
+in rule  ['COND1']  with  int
+TREE
+COND [COND1 ] 
+SYMBOL  COND1
+in symbol COND1 		(in rule  ['COND1'] )
+in producer
+check is now  int
+in match rule with  COND1 : [['EXPRESSION1', '<', 'EXPRESSION2', ';']]
+in rule  ['EXPRESSION1', '<', 'EXPRESSION2', ';']  with  int
+TREE
+COND1 [EXPRESSION1 < EXPRESSION2 ; ] 
+SYMBOL  EXPRESSION1
+in symbol EXPRESSION1 		(in rule  ['EXPRESSION1', '<', 'EXPRESSION2', ';'] )
+in producer
+check is now  int
+in match rule with  EXPRESSION1 : [['EXPRESSION']]
+in rule  ['EXPRESSION']  with  int
+TREE
+EXPRESSION1 [EXPRESSION ] 
+SYMBOL  EXPRESSION
+in symbol EXPRESSION 		(in rule  ['EXPRESSION'] )
+in producer
+check is now  int
+in match rule with  EXPRESSION : [['E']]
+in rule  ['E']  with  int
+TREE
+EXPRESSION [E ] 
+SYMBOL  E
+in symbol E 		(in rule  ['E'] )
+in producer
+check is now  int
+in match rule with  E : [['T', "E'"]]
+in rule  ['T', "E'"]  with  int
+TREE
+E [T E' ] 
+SYMBOL  T
+in symbol T 		(in rule  ['T', "E'"] )
+in producer
+check is now  int
+in match rule with  T : [['F', "T'"]]
+in rule  ['F', "T'"]  with  int
+TREE
+T [F T' ] 
+SYMBOL  F
+in symbol F 		(in rule  ['F', "T'"] )
+in producer
+check is now  int
+in match rule with  F : [['(', 'E', ')'], ['identifier'], ['number']]
+in rule  ['(', 'E', ')']  with  int
+TREE
+F [( E ) ] 
+SYMBOL  (
+in symbol ( 		(in rule  ['(', 'E', ')'] )
+else int (
+5. unmatched ( int
+TREE
+F 
+returned false  ['(', 'E', ')'] [['(', 'E', ')'], ['identifier'], ['number']]
+in rule  ['identifier']  with  int
+TREE
+F [identifier ] 
+SYMBOL  identifier
+in symbol identifier 		(in rule  ['identifier'] )
+is token
+in match token int type identifier
+4. unmatched token
+TREE
+F 
+returned false  ['identifier'] [['(', 'E', ')'], ['identifier'], ['number']]
+in rule  ['number']  with  int
+TREE
+F [number ] 
+SYMBOL  number
+in symbol number 		(in rule  ['number'] )
+is token
+in match token int type number
+4. unmatched token
+TREE
+F 
+returned false  ['number'] [['(', 'E', ')'], ['identifier'], ['number']]
+2. unmatched F int int ['F', "T'"]
+TREE
+T 
+returned false  ['F', "T'"] [['F', "T'"]]
+2. unmatched T int int ['T', "E'"]
+TREE
+E 
+returned false  ['T', "E'"] [['T', "E'"]]
+2. unmatched E int int ['E']
+TREE
+EXPRESSION 
+returned false  ['E'] [['E']]
+2. unmatched EXPRESSION int int ['EXPRESSION']
+TREE
+EXPRESSION1 
+returned false  ['EXPRESSION'] [['EXPRESSION']]
+2. unmatched EXPRESSION1 int int ['EXPRESSION1', '<', 'EXPRESSION2', ';']
+TREE
+COND1 
+returned false  ['EXPRESSION1', '<', 'EXPRESSION2', ';'] [['EXPRESSION1', '<', 'EXPRESSION2', ';']]
+2. unmatched COND1 int int ['COND1']
+TREE
+COND 
+returned false  ['COND1'] [['COND1'], ['COND2'], ['COND3'], ['COND4']]
+in rule  ['COND2']  with  int
+TREE
+COND [COND2 ] 
+SYMBOL  COND2
+in symbol COND2 		(in rule  ['COND2'] )
+in producer
+check is now  int
+in match rule with  COND2 : [['EXPRESSION1', '>', 'EXPRESSION2', ';']]
+in rule  ['EXPRESSION1', '>', 'EXPRESSION2', ';']  with  int
+TREE
+COND2 [EXPRESSION1 > EXPRESSION2 ; ] 
+SYMBOL  EXPRESSION1
+in symbol EXPRESSION1 		(in rule  ['EXPRESSION1', '>', 'EXPRESSION2', ';'] )
+in producer
+check is now  int
+in match rule with  EXPRESSION1 : [['EXPRESSION']]
+in rule  ['EXPRESSION']  with  int
+TREE
+EXPRESSION1 [EXPRESSION ] 
+SYMBOL  EXPRESSION
+in symbol EXPRESSION 		(in rule  ['EXPRESSION'] )
+in producer
+check is now  int
+in match rule with  EXPRESSION : [['E']]
+in rule  ['E']  with  int
+TREE
+EXPRESSION [E ] 
+SYMBOL  E
+in symbol E 		(in rule  ['E'] )
+in producer
+check is now  int
+in match rule with  E : [['T', "E'"]]
+in rule  ['T', "E'"]  with  int
+TREE
+E [T E' ] 
+SYMBOL  T
+in symbol T 		(in rule  ['T', "E'"] )
+in producer
+check is now  int
+in match rule with  T : [['F', "T'"]]
+in rule  ['F', "T'"]  with  int
+TREE
+T [F T' ] 
+SYMBOL  F
+in symbol F 		(in rule  ['F', "T'"] )
+in producer
+check is now  int
+in match rule with  F : [['(', 'E', ')'], ['identifier'], ['number']]
+in rule  ['(', 'E', ')']  with  int
+TREE
+F [( E ) ] 
+SYMBOL  (
+in symbol ( 		(in rule  ['(', 'E', ')'] )
+else int (
+5. unmatched ( int
+TREE
+F 
+returned false  ['(', 'E', ')'] [['(', 'E', ')'], ['identifier'], ['number']]
+in rule  ['identifier']  with  int
+TREE
+F [identifier ] 
+SYMBOL  identifier
+in symbol identifier 		(in rule  ['identifier'] )
+is token
+in match token int type identifier
+4. unmatched token
+TREE
+F 
+returned false  ['identifier'] [['(', 'E', ')'], ['identifier'], ['number']]
+in rule  ['number']  with  int
+TREE
+F [number ] 
+SYMBOL  number
+in symbol number 		(in rule  ['number'] )
+is token
+in match token int type number
+4. unmatched token
+TREE
+F 
+returned false  ['number'] [['(', 'E', ')'], ['identifier'], ['number']]
+2. unmatched F int int ['F', "T'"]
+TREE
+T 
+returned false  ['F', "T'"] [['F', "T'"]]
+2. unmatched T int int ['T', "E'"]
+TREE
+E 
+returned false  ['T', "E'"] [['T', "E'"]]
+2. unmatched E int int ['E']
+TREE
+EXPRESSION 
+returned false  ['E'] [['E']]
+2. unmatched EXPRESSION int int ['EXPRESSION']
+TREE
+EXPRESSION1 
+returned false  ['EXPRESSION'] [['EXPRESSION']]
+2. unmatched EXPRESSION1 int int ['EXPRESSION1', '>', 'EXPRESSION2', ';']
+TREE
+COND2 
+returned false  ['EXPRESSION1', '>', 'EXPRESSION2', ';'] [['EXPRESSION1', '>', 'EXPRESSION2', ';']]
+2. unmatched COND2 int int ['COND2']
+TREE
+COND 
+returned false  ['COND2'] [['COND1'], ['COND2'], ['COND3'], ['COND4']]
+in rule  ['COND3']  with  int
+TREE
+COND [COND3 ] 
+SYMBOL  COND3
+in symbol COND3 		(in rule  ['COND3'] )
+in producer
+check is now  int
+in match rule with  COND3 : [['EXPRESSION1', '<=', 'EXPRESSION2', ';']]
+in rule  ['EXPRESSION1', '<=', 'EXPRESSION2', ';']  with  int
+TREE
+COND3 [EXPRESSION1 <= EXPRESSION2 ; ] 
+SYMBOL  EXPRESSION1
+in symbol EXPRESSION1 		(in rule  ['EXPRESSION1', '<=', 'EXPRESSION2', ';'] )
+in producer
+check is now  int
+in match rule with  EXPRESSION1 : [['EXPRESSION']]
+in rule  ['EXPRESSION']  with  int
+TREE
+EXPRESSION1 [EXPRESSION ] 
+SYMBOL  EXPRESSION
+in symbol EXPRESSION 		(in rule  ['EXPRESSION'] )
+in producer
+check is now  int
+in match rule with  EXPRESSION : [['E']]
+in rule  ['E']  with  int
+TREE
+EXPRESSION [E ] 
+SYMBOL  E
+in symbol E 		(in rule  ['E'] )
+in producer
+check is now  int
+in match rule with  E : [['T', "E'"]]
+in rule  ['T', "E'"]  with  int
+TREE
+E [T E' ] 
+SYMBOL  T
+in symbol T 		(in rule  ['T', "E'"] )
+in producer
+check is now  int
+in match rule with  T : [['F', "T'"]]
+in rule  ['F', "T'"]  with  int
+TREE
+T [F T' ] 
+SYMBOL  F
+in symbol F 		(in rule  ['F', "T'"] )
+in producer
+check is now  int
+in match rule with  F : [['(', 'E', ')'], ['identifier'], ['number']]
+in rule  ['(', 'E', ')']  with  int
+TREE
+F [( E ) ] 
+SYMBOL  (
+in symbol ( 		(in rule  ['(', 'E', ')'] )
+else int (
+5. unmatched ( int
+TREE
+F 
+returned false  ['(', 'E', ')'] [['(', 'E', ')'], ['identifier'], ['number']]
+in rule  ['identifier']  with  int
+TREE
+F [identifier ] 
+SYMBOL  identifier
+in symbol identifier 		(in rule  ['identifier'] )
+is token
+in match token int type identifier
+4. unmatched token
+TREE
+F 
+returned false  ['identifier'] [['(', 'E', ')'], ['identifier'], ['number']]
+in rule  ['number']  with  int
+TREE
+F [number ] 
+SYMBOL  number
+in symbol number 		(in rule  ['number'] )
+is token
+in match token int type number
+4. unmatched token
+TREE
+F 
+returned false  ['number'] [['(', 'E', ')'], ['identifier'], ['number']]
+2. unmatched F int int ['F', "T'"]
+TREE
+T 
+returned false  ['F', "T'"] [['F', "T'"]]
+2. unmatched T int int ['T', "E'"]
+TREE
+E 
+returned false  ['T', "E'"] [['T', "E'"]]
+2. unmatched E int int ['E']
+TREE
+EXPRESSION 
+returned false  ['E'] [['E']]
+2. unmatched EXPRESSION int int ['EXPRESSION']
+TREE
+EXPRESSION1 
+returned false  ['EXPRESSION'] [['EXPRESSION']]
+2. unmatched EXPRESSION1 int int ['EXPRESSION1', '<=', 'EXPRESSION2', ';']
+TREE
+COND3 
+returned false  ['EXPRESSION1', '<=', 'EXPRESSION2', ';'] [['EXPRESSION1', '<=', 'EXPRESSION2', ';']]
+2. unmatched COND3 int int ['COND3']
+TREE
+COND 
+returned false  ['COND3'] [['COND1'], ['COND2'], ['COND3'], ['COND4']]
+in rule  ['COND4']  with  int
+TREE
+COND [COND4 ] 
+SYMBOL  COND4
+in symbol COND4 		(in rule  ['COND4'] )
+in producer
+check is now  int
+in match rule with  COND4 : [['EXPRESSION1', '>=', 'EXPRESSION2', ';']]
+in rule  ['EXPRESSION1', '>=', 'EXPRESSION2', ';']  with  int
+TREE
+COND4 [EXPRESSION1 >= EXPRESSION2 ; ] 
+SYMBOL  EXPRESSION1
+in symbol EXPRESSION1 		(in rule  ['EXPRESSION1', '>=', 'EXPRESSION2', ';'] )
+in producer
+check is now  int
+in match rule with  EXPRESSION1 : [['EXPRESSION']]
+in rule  ['EXPRESSION']  with  int
+TREE
+EXPRESSION1 [EXPRESSION ] 
+SYMBOL  EXPRESSION
+in symbol EXPRESSION 		(in rule  ['EXPRESSION'] )
+in producer
+check is now  int
+in match rule with  EXPRESSION : [['E']]
+in rule  ['E']  with  int
+TREE
+EXPRESSION [E ] 
+SYMBOL  E
+in symbol E 		(in rule  ['E'] )
+in producer
+check is now  int
+in match rule with  E : [['T', "E'"]]
+in rule  ['T', "E'"]  with  int
+TREE
+E [T E' ] 
+SYMBOL  T
+in symbol T 		(in rule  ['T', "E'"] )
+in producer
+check is now  int
+in match rule with  T : [['F', "T'"]]
+in rule  ['F', "T'"]  with  int
+TREE
+T [F T' ] 
+SYMBOL  F
+in symbol F 		(in rule  ['F', "T'"] )
+in producer
+check is now  int
+in match rule with  F : [['(', 'E', ')'], ['identifier'], ['number']]
+in rule  ['(', 'E', ')']  with  int
+TREE
+F [( E ) ] 
+SYMBOL  (
+in symbol ( 		(in rule  ['(', 'E', ')'] )
+else int (
+5. unmatched ( int
+TREE
+F 
+returned false  ['(', 'E', ')'] [['(', 'E', ')'], ['identifier'], ['number']]
+in rule  ['identifier']  with  int
+TREE
+F [identifier ] 
+SYMBOL  identifier
+in symbol identifier 		(in rule  ['identifier'] )
+is token
+in match token int type identifier
+4. unmatched token
+TREE
+F 
+returned false  ['identifier'] [['(', 'E', ')'], ['identifier'], ['number']]
+in rule  ['number']  with  int
+TREE
+F [number ] 
+SYMBOL  number
+in symbol number 		(in rule  ['number'] )
+is token
+in match token int type number
+4. unmatched token
+TREE
+F 
+returned false  ['number'] [['(', 'E', ')'], ['identifier'], ['number']]
+2. unmatched F int int ['F', "T'"]
+TREE
+T 
+returned false  ['F', "T'"] [['F', "T'"]]
+2. unmatched T int int ['T', "E'"]
+TREE
+E 
+returned false  ['T', "E'"] [['T', "E'"]]
+2. unmatched E int int ['E']
+TREE
+EXPRESSION 
+returned false  ['E'] [['E']]
+2. unmatched EXPRESSION int int ['EXPRESSION']
+TREE
+EXPRESSION1 
+returned false  ['EXPRESSION'] [['EXPRESSION']]
+2. unmatched EXPRESSION1 int int ['EXPRESSION1', '>=', 'EXPRESSION2', ';']
+TREE
+COND4 
+returned false  ['EXPRESSION1', '>=', 'EXPRESSION2', ';'] [['EXPRESSION1', '>=', 'EXPRESSION2', ';']]
+2. unmatched COND4 int int ['COND4']
+TREE
+COND 
+returned false  ['COND4'] [['COND1'], ['COND2'], ['COND3'], ['COND4']]
+2. unmatched COND int int ['COND', "ST'"]
+TREE
+COND_ST 
+returned false  ['COND', "ST'"] [['COND', "ST'"]]
+2. unmatched COND_ST int int ['COND_ST']
+TREE
+STATEMENT 
+returned false  ['COND_ST'] [['FOR_LOOP_ST'], ['COND_ST'], ['IF_COND_ST'], ['DEFN_ST'], ['ASSIGN_ST'], ['DECL_ST']]
+in rule  ['IF_COND_ST']  with  int
+TREE
+STATEMENT [IF_COND_ST ] 
+SYMBOL  IF_COND_ST
+in symbol IF_COND_ST 		(in rule  ['IF_COND_ST'] )
+in producer
+check is now  int
+in match rule with  IF_COND_ST : [['IF_COND', "ST'"]]
+in rule  ['IF_COND', "ST'"]  with  int
+TREE
+IF_COND_ST [IF_COND ST' ] 
+SYMBOL  IF_COND
+in symbol IF_COND 		(in rule  ['IF_COND', "ST'"] )
+in producer
+check is now  int
+in match rule with  IF_COND : [['if', '(', 'COND', ')', '{', 'STATEMENT', ';', '}', 'OP_ELSE'], ['if', '(', 'COND', ')', '{', 'STATEMENT', '}']]
+in rule  ['if', '(', 'COND', ')', '{', 'STATEMENT', ';', '}', 'OP_ELSE']  with  int
+TREE
+IF_COND [if ( COND ) { STATEMENT ; } OP_ELSE ] 
+SYMBOL  if
+in symbol if 		(in rule  ['if', '(', 'COND', ')', '{', 'STATEMENT', ';', '}', 'OP_ELSE'] )
+else int if
+5. unmatched if int
+TREE
+IF_COND 
+returned false  ['if', '(', 'COND', ')', '{', 'STATEMENT', ';', '}', 'OP_ELSE'] [['if', '(', 'COND', ')', '{', 'STATEMENT', ';', '}', 'OP_ELSE'], ['if', '(', 'COND', ')', '{', 'STATEMENT', '}']]
+in rule  ['if', '(', 'COND', ')', '{', 'STATEMENT', '}']  with  int
+TREE
+IF_COND [if ( COND ) { STATEMENT } ] 
+SYMBOL  if
+in symbol if 		(in rule  ['if', '(', 'COND', ')', '{', 'STATEMENT', '}'] )
+else int if
+5. unmatched if int
+TREE
+IF_COND 
+returned false  ['if', '(', 'COND', ')', '{', 'STATEMENT', '}'] [['if', '(', 'COND', ')', '{', 'STATEMENT', ';', '}', 'OP_ELSE'], ['if', '(', 'COND', ')', '{', 'STATEMENT', '}']]
+2. unmatched IF_COND int int ['IF_COND', "ST'"]
+TREE
+IF_COND_ST 
+returned false  ['IF_COND', "ST'"] [['IF_COND', "ST'"]]
+2. unmatched IF_COND_ST int int ['IF_COND_ST']
+TREE
+STATEMENT 
+returned false  ['IF_COND_ST'] [['FOR_LOOP_ST'], ['COND_ST'], ['IF_COND_ST'], ['DEFN_ST'], ['ASSIGN_ST'], ['DECL_ST']]
+in rule  ['DEFN_ST']  with  int
+TREE
+STATEMENT [DEFN_ST ] 
+SYMBOL  DEFN_ST
+in symbol DEFN_ST 		(in rule  ['DEFN_ST'] )
+in producer
+check is now  int
+in match rule with  DEFN_ST : [['DEFN', "ST'"]]
+in rule  ['DEFN', "ST'"]  with  int
+TREE
+DEFN_ST [DEFN ST' ] 
+SYMBOL  DEFN
+in symbol DEFN 		(in rule  ['DEFN', "ST'"] )
+in producer
+check is now  int
+in match rule with  DEFN : [['type', 'ASSIGN']]
+in rule  ['type', 'ASSIGN']  with  int
+TREE
+DEFN [type ASSIGN ] 
+SYMBOL  type
+in symbol type 		(in rule  ['type', 'ASSIGN'] )
+is token
+in match token int type type
+TOKENSET  type int
+2.SYMBOL in RULE type ['type', 'ASSIGN'] DEFN
+2. updated  l l
+3. NOT LAST
+here2 in assign_producer_vals with  type DEFN ['type', 'ASSIGN']
+here3 in assign_producer_vals ['=', (1, 'inhval'), (0, 'type')]
+TP  ['=', (1, 'inhval'), (0, 'type')]
+ENTRYYY ASSIGN None
+ENTRYYY type None
+{}
+PARAMS  ASSIGN inhval type type ['type', 'ASSIGN']
+setting = ASSIGN inhval <class 'int'> under root  DEFN with rule  ['type', 'ASSIGN'] with symbol type
+DEFN [type ASSIGN ] matched
+2. temp store l l
+SYMBOL  ASSIGN
+in symbol ASSIGN 		(in rule  ['type', 'ASSIGN'] )
+in producer
+check is now  int
+in match rule with  ASSIGN : [['identifier', '=', 'EXPRESSION', ';']]
+in rule  ['identifier', '=', 'EXPRESSION', ';']  with  l
+TREE
+ASSIGN [identifier = EXPRESSION ; ] 
+SYMBOL  identifier
+in symbol identifier 		(in rule  ['identifier', '=', 'EXPRESSION', ';'] )
+is token
+in match token l identifier identifier
+2.SYMBOL in RULE identifier ['identifier', '=', 'EXPRESSION', ';'] ASSIGN
+2. updated  ; ;
+3. NOT LAST
+here2 in assign_producer_vals with  identifier ASSIGN ['identifier', '=', 'EXPRESSION', ';']
+here3 in assign_producer_vals ['=', (0, 'type'), ('root', 'inhval')]
+TP  ['=', (0, 'type'), ('root', 'inhval')]
+ENTRYYY identifier l
+ENTRYYY ASSIGN None
+{}
+PARAMS  identifier type ASSIGN inhval ['identifier', '=', 'EXPRESSION', ';']
+setting = identifier type <class 'int'> under root  ASSIGN with rule  ['identifier', '=', 'EXPRESSION', ';'] with symbol identifier
+ASSIGN [identifier = EXPRESSION ; ] matched
+2. temp store ; ;
+SYMBOL  =
+in symbol = 		(in rule  ['identifier', '=', 'EXPRESSION', ';'] )
+else ; =
+5. unmatched = ;
+TREE
+ASSIGN 
+returned false  ['identifier', '=', 'EXPRESSION', ';'] [['identifier', '=', 'EXPRESSION', ';']]
+2. unmatched ASSIGN l ; ['type', 'ASSIGN']
+TREE
+DEFN 
+returned false  ['type', 'ASSIGN'] [['type', 'ASSIGN']]
+2. unmatched DEFN int ; ['DEFN', "ST'"]
+TREE
+DEFN_ST 
+returned false  ['DEFN', "ST'"] [['DEFN', "ST'"]]
+2. unmatched DEFN_ST int ; ['DEFN_ST']
+TREE
+STATEMENT 
+returned false  ['DEFN_ST'] [['FOR_LOOP_ST'], ['COND_ST'], ['IF_COND_ST'], ['DEFN_ST'], ['ASSIGN_ST'], ['DECL_ST']]
+in rule  ['ASSIGN_ST']  with  int
+TREE
+STATEMENT [ASSIGN_ST ] 
+SYMBOL  ASSIGN_ST
+in symbol ASSIGN_ST 		(in rule  ['ASSIGN_ST'] )
+in producer
+check is now  int
+in match rule with  ASSIGN_ST : [['ASSIGN', "ST'"]]
+in rule  ['ASSIGN', "ST'"]  with  int
+TREE
+ASSIGN_ST [ASSIGN ST' ] 
+SYMBOL  ASSIGN
+in symbol ASSIGN 		(in rule  ['ASSIGN', "ST'"] )
+in producer
+check is now  int
+in match rule with  ASSIGN : [['identifier', '=', 'EXPRESSION', ';']]
+in rule  ['identifier', '=', 'EXPRESSION', ';']  with  int
+TREE
+ASSIGN [identifier = EXPRESSION ; ] 
+SYMBOL  identifier
+in symbol identifier 		(in rule  ['identifier', '=', 'EXPRESSION', ';'] )
+is token
+in match token int type identifier
+4. unmatched token
+TREE
+ASSIGN 
+returned false  ['identifier', '=', 'EXPRESSION', ';'] [['identifier', '=', 'EXPRESSION', ';']]
+2. unmatched ASSIGN int ; ['ASSIGN', "ST'"]
+TREE
+ASSIGN_ST 
+returned false  ['ASSIGN', "ST'"] [['ASSIGN', "ST'"]]
+2. unmatched ASSIGN_ST int ; ['ASSIGN_ST']
+TREE
+STATEMENT 
+returned false  ['ASSIGN_ST'] [['FOR_LOOP_ST'], ['COND_ST'], ['IF_COND_ST'], ['DEFN_ST'], ['ASSIGN_ST'], ['DECL_ST']]
+in rule  ['DECL_ST']  with  int
+TREE
+STATEMENT [DECL_ST ] 
+SYMBOL  DECL_ST
+in symbol DECL_ST 		(in rule  ['DECL_ST'] )
+in producer
+check is now  int
+in match rule with  DECL_ST : [['DECL', "ST'"]]
+in rule  ['DECL', "ST'"]  with  int
+TREE
+DECL_ST [DECL ST' ] 
+SYMBOL  DECL
+in symbol DECL 		(in rule  ['DECL', "ST'"] )
+in producer
+check is now  int
+in match rule with  DECL : [['type', 'ID', ';']]
+in rule  ['type', 'ID', ';']  with  int
+TREE
+DECL [type ID ; ] 
+SYMBOL  type
+in symbol type 		(in rule  ['type', 'ID', ';'] )
+is token
+in match token int type type
+TOKENSET  type int
+2.SYMBOL in RULE type ['type', 'ID', ';'] DECL
+2. updated  l l
+3. NOT LAST
+here2 in assign_producer_vals with  type DECL ['type', 'ID', ';']
+here3 in assign_producer_vals ['=', (1, 'type'), (0, 'type')]
+TP  ['=', (1, 'type'), (0, 'type')]
+ENTRYYY ID None
+ENTRYYY type None
+{}
+PARAMS  ID type type type ['type', 'ID', ';']
+setting = ID type <class 'int'> under root  DECL with rule  ['type', 'ID', ';'] with symbol type
+DECL [type ID ; ] matched
+2. temp store l l
+SYMBOL  ID
+in symbol ID 		(in rule  ['type', 'ID', ';'] )
+in producer
+check is now  int
+in match rule with  ID : [['identifier', "ID'"]]
+in rule  ['identifier', "ID'"]  with  l
+TREE
+ID [identifier ID' ] 
+SYMBOL  identifier
+in symbol identifier 		(in rule  ['identifier', "ID'"] )
+is token
+in match token l identifier identifier
+2.SYMBOL in RULE identifier ['identifier', "ID'"] ID
+2. updated  ; ;
+3. NOT LAST
+here2 in assign_producer_vals with  identifier ID ['identifier', "ID'"]
+here3 in assign_producer_vals ['=', (0, 'type'), ('root', 'type')]
+TP  ['=', (0, 'type'), ('root', 'type')]
+ENTRYYY identifier l
+ENTRYYY ID None
+{}
+PARAMS  identifier type ID type ['identifier', "ID'"]
+setting = identifier type <class 'int'> under root  ID with rule  ['identifier', "ID'"] with symbol identifier
+ID [identifier ID' ] matched
+2. temp store ; ;
+SYMBOL  ID'
+in symbol ID' 		(in rule  ['identifier', "ID'"] )
+in producer
+check is now  l
+in match rule with  ID' : [[',', 'identifier', "ID'"], ['epsilon']]
+in rule  [',', 'identifier', "ID'"]  with  ;
+TREE
+ID' [, identifier ID' ] 
+SYMBOL  ,
+in symbol , 		(in rule  [',', 'identifier', "ID'"] )
+else ; ,
+5. unmatched , ;
+TREE
+ID' 
+returned false  [',', 'identifier', "ID'"] [[',', 'identifier', "ID'"], ['epsilon']]
+in rule  ['epsilon']  with  ;
+TREE
+ID' [epsilon ] 
+SYMBOL  epsilon
+in symbol epsilon 		(in rule  ['epsilon'] )
+else ; epsilon
+epsilon matched
+here we are ['epsilon'] [[',', 'identifier', "ID'"], ['epsilon']] 1 ['epsilon']
+2. LAST ['epsilon']
+2. prod epsilon not in  {'identifier': [['=', (1, 'type'), ('root', 'type')], ['=', (2, 'type'), ('root', 'type')]]}
+done
+1.SYMBOL in RULE ID' ['identifier', "ID'"]
+1. temp store ; ;
+here we are ['identifier', "ID'"] [['identifier', "ID'"]] 0 ['identifier', "ID'"]
+2. LAST ['identifier', "ID'"]
+2. prod ID' not in  {'identifier': [['=', (0, 'type'), ('root', 'type')]]}
+done
+1.SYMBOL in RULE ID ['type', 'ID', ';']
+1. updated  ; ;
+1. NOT LAST
+2. prod ID not in  {'identifier': [[['enter', (1, 'type')]]], 'type': [['=', (1, 'type'), (0, 'type')]]}
+1. temp store ; ;
+SYMBOL  ;
+in symbol ; 		(in rule  ['type', 'ID', ';'] )
+else ; ;
+3. updated  for for
+matched
+here we are ['type', 'ID', ';'] [['type', 'ID', ';']] 0 ['type', 'ID', ';']
+2. LAST ['type', 'ID', ';']
+2. prod ; not in  {'identifier': [[['enter', (1, 'type')]]], 'type': [['=', (1, 'type'), (0, 'type')]]}
+done
+1.SYMBOL in RULE DECL ['DECL', "ST'"]
+1. updated  for for
+1. NOT LAST
+1. prod  DECL_ST not in assign
+1. temp store for for
+SYMBOL  ST'
+in symbol ST' 		(in rule  ['DECL', "ST'"] )
+in producer
+check is now  int
+in match rule with  ST' : [['ST'], ['epsilon']]
+in rule  ['ST']  with  for
+TREE
+ST' [ST ] 
+SYMBOL  ST
+in symbol ST 		(in rule  ['ST'] )
+in producer
+check is now  for
+in match rule with  ST : [['STATEMENT_ST']]
+in rule  ['STATEMENT_ST']  with  for
+TREE
+ST [STATEMENT_ST ] 
+SYMBOL  STATEMENT_ST
+in symbol STATEMENT_ST 		(in rule  ['STATEMENT_ST'] )
+in producer
+check is now  for
+in match rule with  STATEMENT_ST : [['STATEMENT', "STMT'"]]
+in rule  ['STATEMENT', "STMT'"]  with  for
+TREE
+STATEMENT_ST [STATEMENT STMT' ] 
+SYMBOL  STATEMENT
+in symbol STATEMENT 		(in rule  ['STATEMENT', "STMT'"] )
 in producer
 check is now  for
 in match rule with  STATEMENT : [['FOR_LOOP_ST'], ['COND_ST'], ['IF_COND_ST'], ['DEFN_ST'], ['ASSIGN_ST'], ['DECL_ST']]
@@ -104,6 +880,9 @@ in match token i identifier identifier
 here2 in assign_producer_vals with  identifier ASSIGN ['identifier', '=', 'EXPRESSION', ';']
 here3 in assign_producer_vals ['=', (0, 'type'), ('root', 'inhval')]
 TP  ['=', (0, 'type'), ('root', 'inhval')]
+ENTRYYY identifier i
+ENTRYYY ASSIGN None
+{}
 PARAMS  identifier type ASSIGN inhval ['identifier', '=', 'EXPRESSION', ';']
 setting = identifier type None under root  ASSIGN with rule  ['identifier', '=', 'EXPRESSION', ';'] with symbol identifier
 ASSIGN [identifier = EXPRESSION ; ] matched
@@ -179,6 +958,9 @@ here we are ['number'] [['(', 'E', ')'], ['identifier'], ['number']] 2 ['number'
 here2 in assign_producer_vals with  number F ['number']
 here3 in assign_producer_vals ['=', ('root', 'synval'), (0, 'lexval')]
 TP  ['=', ('root', 'synval'), (0, 'lexval')]
+ENTRYYY F None
+ENTRYYY number None
+{}
 PARAMS  F synval number lexval ['number']
 setting = F synval 0 under root  F with rule  ['number'] with symbol number
 T [F [number ] T' ] done
@@ -188,10 +970,16 @@ T [F [number ] T' ] done
 here2 in assign_producer_vals with  F T ['F', "T'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), (0, 'synval')]
 TP  ['=', (1, 'inhval'), (0, 'synval')]
+ENTRYYY T' None
+ENTRYYY F None
+{}
 PARAMS  T' inhval F synval ['F', "T'"]
 setting = T' inhval 0 under root  T with rule  ['F', "T'"] with symbol F
 T [F [number ] T' ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY T None
+ENTRYYY F None
+{}
 PARAMS  T entry F entry ['F', "T'"]
 setting = T entry None under root  T with rule  ['F', "T'"] with symbol F
 E [T [F [number ] T' ] E' ] 1. temp store ; ;
@@ -225,6 +1013,9 @@ done
 here2 in assign_producer_vals with  M T' ['M', "T1'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), ('root', 'inhval')]
 TP  ['=', (1, 'inhval'), ('root', 'inhval')]
+ENTRYYY T1' None
+ENTRYYY T' None
+{}
 PARAMS  T1' inhval T' inhval ['M', "T1'"]
 setting = T1' inhval 0 under root  T' with rule  ['M', "T1'"] with symbol M
 T' [M [epsilon ] T1' ] 1. temp store ; ;
@@ -255,6 +1046,9 @@ here we are ['epsilon'] [['*', 'F', "T'"], ['epsilon']] 1 ['epsilon']
 here2 in assign_producer_vals with  epsilon T1' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY T1' None
+ENTRYYY T1' None
+{}
 PARAMS  T1' synval T1' inhval ['epsilon']
 setting = T1' synval 0 under root  T1' with rule  ['epsilon'] with symbol epsilon
 T' [M [epsilon ] T1' [epsilon ] ] done
@@ -288,6 +1082,9 @@ done
 here2 in assign_producer_vals with  M T' ['M', "T2'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), ('root', 'inhval')]
 TP  ['=', (1, 'inhval'), ('root', 'inhval')]
+ENTRYYY T2' None
+ENTRYYY T' None
+{}
 PARAMS  T2' inhval T' inhval ['M', "T2'"]
 setting = T2' inhval 0 under root  T' with rule  ['M', "T2'"] with symbol M
 T' [M [epsilon ] T2' ] 1. temp store ; ;
@@ -318,6 +1115,9 @@ here we are ['epsilon'] [['/', 'F', "T'"], ['epsilon']] 1 ['epsilon']
 here2 in assign_producer_vals with  epsilon T2' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY T2' None
+ENTRYYY T2' None
+{}
 PARAMS  T2' synval T2' inhval ['epsilon']
 setting = T2' synval 0 under root  T2' with rule  ['epsilon'] with symbol epsilon
 T' [M [epsilon ] T2' [epsilon ] ] done
@@ -338,6 +1138,9 @@ here we are ['epsilon'] [['M', "T1'"], ['M', "T2'"], ['epsilon']] 2 ['epsilon']
 here2 in assign_producer_vals with  epsilon T' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY T' None
+ENTRYYY T' None
+{}
 PARAMS  T' synval T' inhval ['epsilon']
 setting = T' synval 0 under root  T' with rule  ['epsilon'] with symbol epsilon
 T [F [number ] T' [epsilon ] ] done
@@ -348,10 +1151,16 @@ here we are ['F', "T'"] [['F', "T'"]] 0 ['F', "T'"]
 here2 in assign_producer_vals with  T' T ['F', "T'"]
 here3 in assign_producer_vals ['=', ('root', 'synval'), (1, 'synval')]
 TP  ['=', ('root', 'synval'), (1, 'synval')]
+ENTRYYY T None
+ENTRYYY T' None
+{}
 PARAMS  T synval T' synval ['F', "T'"]
 setting = T synval 0 under root  T with rule  ['F', "T'"] with symbol T'
 E [T [F [number ] T' [epsilon ] ] E' ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY T None
+ENTRYYY F None
+{}
 PARAMS  T entry F entry ['F', "T'"]
 setting = T entry None under root  T with rule  ['F', "T'"] with symbol T'
 E [T [F [number ] T' [epsilon ] ] E' ] done
@@ -361,10 +1170,16 @@ E [T [F [number ] T' [epsilon ] ] E' ] done
 here2 in assign_producer_vals with  T E ['T', "E'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), (0, 'synval')]
 TP  ['=', (1, 'inhval'), (0, 'synval')]
+ENTRYYY E' None
+ENTRYYY T None
+{}
 PARAMS  E' inhval T synval ['T', "E'"]
 setting = E' inhval 0 under root  E with rule  ['T', "E'"] with symbol T
 E [T [F [number ] T' [epsilon ] ] E' ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY E None
+ENTRYYY T None
+{}
 PARAMS  E entry T entry ['T', "E'"]
 setting = E entry None under root  E with rule  ['T', "E'"] with symbol T
 EXPRESSION [E [T [F [number ] T' [epsilon ] ] E' ] ] 1. temp store ; ;
@@ -398,6 +1213,9 @@ done
 here2 in assign_producer_vals with  M E' ['M', "E1'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), ('root', 'inhval')]
 TP  ['=', (1, 'inhval'), ('root', 'inhval')]
+ENTRYYY E1' None
+ENTRYYY E' None
+{}
 PARAMS  E1' inhval E' inhval ['M', "E1'"]
 setting = E1' inhval 0 under root  E' with rule  ['M', "E1'"] with symbol M
 E' [M [epsilon ] E1' ] 1. temp store ; ;
@@ -428,6 +1246,9 @@ here we are ['epsilon'] [['+', 'T', "E'"], ['epsilon']] 1 ['epsilon']
 here2 in assign_producer_vals with  epsilon E1' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY E1' None
+ENTRYYY E1' None
+{}
 PARAMS  E1' synval E1' inhval ['epsilon']
 setting = E1' synval 0 under root  E1' with rule  ['epsilon'] with symbol epsilon
 E' [M [epsilon ] E1' [epsilon ] ] done
@@ -461,6 +1282,9 @@ done
 here2 in assign_producer_vals with  M E' ['M', "E2'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), ('root', 'inhval')]
 TP  ['=', (1, 'inhval'), ('root', 'inhval')]
+ENTRYYY E2' None
+ENTRYYY E' None
+{}
 PARAMS  E2' inhval E' inhval ['M', "E2'"]
 setting = E2' inhval 0 under root  E' with rule  ['M', "E2'"] with symbol M
 E' [M [epsilon ] E2' ] 1. temp store ; ;
@@ -491,6 +1315,9 @@ here we are ['epsilon'] [['-', 'T', "E'"], ['epsilon']] 1 ['epsilon']
 here2 in assign_producer_vals with  epsilon E2' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY E2' None
+ENTRYYY E2' None
+{}
 PARAMS  E2' synval E2' inhval ['epsilon']
 setting = E2' synval 0 under root  E2' with rule  ['epsilon'] with symbol epsilon
 E' [M [epsilon ] E2' [epsilon ] ] done
@@ -511,6 +1338,9 @@ here we are ['epsilon'] [['M', "E1'"], ['M', "E2'"], ['epsilon']] 2 ['epsilon']
 here2 in assign_producer_vals with  epsilon E' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY E' None
+ENTRYYY E' None
+{}
 PARAMS  E' synval E' inhval ['epsilon']
 setting = E' synval 0 under root  E' with rule  ['epsilon'] with symbol epsilon
 E [T [F [number ] T' [epsilon ] ] E' [epsilon ] ] done
@@ -521,10 +1351,16 @@ here we are ['T', "E'"] [['T', "E'"]] 0 ['T', "E'"]
 here2 in assign_producer_vals with  E' E ['T', "E'"]
 here3 in assign_producer_vals ['=', ('root', 'synval'), (1, 'synval')]
 TP  ['=', ('root', 'synval'), (1, 'synval')]
+ENTRYYY E None
+ENTRYYY E' None
+{}
 PARAMS  E synval E' synval ['T', "E'"]
 setting = E synval 0 under root  E with rule  ['T', "E'"] with symbol E'
 EXPRESSION [E [T [F [number ] T' [epsilon ] ] E' [epsilon ] ] ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY E None
+ENTRYYY T None
+{}
 PARAMS  E entry T entry ['T', "E'"]
 setting = E entry None under root  E with rule  ['T', "E'"] with symbol E'
 EXPRESSION [E [T [F [number ] T' [epsilon ] ] E' [epsilon ] ] ] done
@@ -535,10 +1371,16 @@ here we are ['E'] [['E']] 0 ['E']
 here2 in assign_producer_vals with  E EXPRESSION ['E']
 here3 in assign_producer_vals ['=', ('root', 'val'), (0, 'synval')]
 TP  ['=', ('root', 'val'), (0, 'synval')]
+ENTRYYY EXPRESSION None
+ENTRYYY E None
+{}
 PARAMS  EXPRESSION val E synval ['E']
 setting = EXPRESSION val 0 under root  EXPRESSION with rule  ['E'] with symbol E
 ASSIGN [identifier = EXPRESSION [E [T [F [number ] T' [epsilon ] ] E' [epsilon ] ] ] ; ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY EXPRESSION None
+ENTRYYY E None
+{}
 PARAMS  EXPRESSION entry E entry ['E']
 setting = EXPRESSION entry None under root  EXPRESSION with rule  ['E'] with symbol E
 ASSIGN [identifier = EXPRESSION [E [T [F [number ] T' [epsilon ] ] E' [epsilon ] ] ] ; ] done
@@ -548,9 +1390,13 @@ ASSIGN [identifier = EXPRESSION [E [T [F [number ] T' [epsilon ] ] E' [epsilon ]
 here2 in assign_producer_vals with  EXPRESSION ASSIGN ['identifier', '=', 'EXPRESSION', ';']
 here3 in assign_producer_vals ['=', (0, 'val'), (2, 'val')]
 TP  ['=', (0, 'val'), (2, 'val')]
+ENTRYYY identifier i
+ENTRYYY EXPRESSION None
+{}
+y_val 0
+QUAD  ('=', 0, '_', 'i')
 PARAMS  identifier val EXPRESSION val ['identifier', '=', 'EXPRESSION', ';']
 setting = identifier val 0 under root  ASSIGN with rule  ['identifier', '=', 'EXPRESSION', ';'] with symbol EXPRESSION
-QUAD  ('=', 'EXPRESSION', '_', 'i')
 ASSIGN [identifier = EXPRESSION [E [T [F [number ] T' [epsilon ] ] E' [epsilon ] ] ] ; ] here3 in assign_producer_vals ['addToST', (0, 'entry'), (0, 'val')]
 in add Symbol ['addToST', (0, 'entry'), (0, 'val')]
 TP  ['addToST', (0, 'entry'), (0, 'val')]
@@ -651,10 +1497,18 @@ here we are ['identifier'] [['(', 'E', ')'], ['identifier'], ['number']] 1 ['ide
 here2 in assign_producer_vals with  identifier F ['identifier']
 here3 in assign_producer_vals ['=', ('root', 'synval'), (0, 'val')]
 TP  ['=', ('root', 'synval'), (0, 'val')]
+ENTRYYY F None
+ENTRYYY identifier i
+{'i': 0}
+y= i
 PARAMS  F synval identifier val ['identifier']
-setting = F synval None under root  F with rule  ['identifier'] with symbol identifier
+setting = F synval 0 under root  F with rule  ['identifier'] with symbol identifier
 T [F [identifier ] T' ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY F None
+ENTRYYY identifier i
+{'i': 0}
+y= i
 PARAMS  F entry identifier entry ['identifier']
 setting = F entry i under root  F with rule  ['identifier'] with symbol identifier
 T [F [identifier ] T' ] done
@@ -664,10 +1518,18 @@ T [F [identifier ] T' ] done
 here2 in assign_producer_vals with  F T ['F', "T'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), (0, 'synval')]
 TP  ['=', (1, 'inhval'), (0, 'synval')]
+ENTRYYY T' None
+ENTRYYY F i
+{'i': 0}
+y= i
 PARAMS  T' inhval F synval ['F', "T'"]
-setting = T' inhval None under root  T with rule  ['F', "T'"] with symbol F
+setting = T' inhval 0 under root  T with rule  ['F', "T'"] with symbol F
 T [F [identifier ] T' ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY T None
+ENTRYYY F i
+{'i': 0}
+y= i
 PARAMS  T entry F entry ['F', "T'"]
 setting = T entry i under root  T with rule  ['F', "T'"] with symbol F
 E [T [F [identifier ] T' ] E' ] 1. temp store < <
@@ -701,8 +1563,11 @@ done
 here2 in assign_producer_vals with  M T' ['M', "T1'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), ('root', 'inhval')]
 TP  ['=', (1, 'inhval'), ('root', 'inhval')]
+ENTRYYY T1' None
+ENTRYYY T' None
+{'i': 0}
 PARAMS  T1' inhval T' inhval ['M', "T1'"]
-setting = T1' inhval None under root  T' with rule  ['M', "T1'"] with symbol M
+setting = T1' inhval 0 under root  T' with rule  ['M', "T1'"] with symbol M
 T' [M [epsilon ] T1' ] 1. temp store < <
 SYMBOL  T1'
 in symbol T1' 		(in rule  ['M', "T1'"] )
@@ -731,8 +1596,11 @@ here we are ['epsilon'] [['*', 'F', "T'"], ['epsilon']] 1 ['epsilon']
 here2 in assign_producer_vals with  epsilon T1' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY T1' None
+ENTRYYY T1' None
+{'i': 0}
 PARAMS  T1' synval T1' inhval ['epsilon']
-setting = T1' synval None under root  T1' with rule  ['epsilon'] with symbol epsilon
+setting = T1' synval 0 under root  T1' with rule  ['epsilon'] with symbol epsilon
 T' [M [epsilon ] T1' [epsilon ] ] done
 has not proceeded  < <
 1. unmatched T1' < < ['M', "T1'"]
@@ -764,8 +1632,11 @@ done
 here2 in assign_producer_vals with  M T' ['M', "T2'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), ('root', 'inhval')]
 TP  ['=', (1, 'inhval'), ('root', 'inhval')]
+ENTRYYY T2' None
+ENTRYYY T' None
+{'i': 0}
 PARAMS  T2' inhval T' inhval ['M', "T2'"]
-setting = T2' inhval None under root  T' with rule  ['M', "T2'"] with symbol M
+setting = T2' inhval 0 under root  T' with rule  ['M', "T2'"] with symbol M
 T' [M [epsilon ] T2' ] 1. temp store < <
 SYMBOL  T2'
 in symbol T2' 		(in rule  ['M', "T2'"] )
@@ -794,8 +1665,11 @@ here we are ['epsilon'] [['/', 'F', "T'"], ['epsilon']] 1 ['epsilon']
 here2 in assign_producer_vals with  epsilon T2' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY T2' None
+ENTRYYY T2' None
+{'i': 0}
 PARAMS  T2' synval T2' inhval ['epsilon']
-setting = T2' synval None under root  T2' with rule  ['epsilon'] with symbol epsilon
+setting = T2' synval 0 under root  T2' with rule  ['epsilon'] with symbol epsilon
 T' [M [epsilon ] T2' [epsilon ] ] done
 has not proceeded  < <
 1. unmatched T2' < < ['M', "T2'"]
@@ -814,8 +1688,11 @@ here we are ['epsilon'] [['M', "T1'"], ['M', "T2'"], ['epsilon']] 2 ['epsilon']
 here2 in assign_producer_vals with  epsilon T' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY T' None
+ENTRYYY T' None
+{'i': 0}
 PARAMS  T' synval T' inhval ['epsilon']
-setting = T' synval None under root  T' with rule  ['epsilon'] with symbol epsilon
+setting = T' synval 0 under root  T' with rule  ['epsilon'] with symbol epsilon
 T [F [identifier ] T' [epsilon ] ] done
 1.SYMBOL in RULE T' ['F', "T'"]
 1. temp store < <
@@ -824,10 +1701,17 @@ here we are ['F', "T'"] [['F', "T'"]] 0 ['F', "T'"]
 here2 in assign_producer_vals with  T' T ['F', "T'"]
 here3 in assign_producer_vals ['=', ('root', 'synval'), (1, 'synval')]
 TP  ['=', ('root', 'synval'), (1, 'synval')]
+ENTRYYY T i
+ENTRYYY T' None
+{'i': 0}
 PARAMS  T synval T' synval ['F', "T'"]
-setting = T synval None under root  T with rule  ['F', "T'"] with symbol T'
+setting = T synval 0 under root  T with rule  ['F', "T'"] with symbol T'
 E [T [F [identifier ] T' [epsilon ] ] E' ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY T i
+ENTRYYY F i
+{'i': 0}
+y= i
 PARAMS  T entry F entry ['F', "T'"]
 setting = T entry i under root  T with rule  ['F', "T'"] with symbol T'
 E [T [F [identifier ] T' [epsilon ] ] E' ] done
@@ -837,10 +1721,18 @@ E [T [F [identifier ] T' [epsilon ] ] E' ] done
 here2 in assign_producer_vals with  T E ['T', "E'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), (0, 'synval')]
 TP  ['=', (1, 'inhval'), (0, 'synval')]
+ENTRYYY E' None
+ENTRYYY T i
+{'i': 0}
+y= i
 PARAMS  E' inhval T synval ['T', "E'"]
-setting = E' inhval None under root  E with rule  ['T', "E'"] with symbol T
+setting = E' inhval 0 under root  E with rule  ['T', "E'"] with symbol T
 E [T [F [identifier ] T' [epsilon ] ] E' ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY E None
+ENTRYYY T i
+{'i': 0}
+y= i
 PARAMS  E entry T entry ['T', "E'"]
 setting = E entry i under root  E with rule  ['T', "E'"] with symbol T
 EXPRESSION [E [T [F [identifier ] T' [epsilon ] ] E' ] ] 1. temp store < <
@@ -874,8 +1766,11 @@ done
 here2 in assign_producer_vals with  M E' ['M', "E1'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), ('root', 'inhval')]
 TP  ['=', (1, 'inhval'), ('root', 'inhval')]
+ENTRYYY E1' None
+ENTRYYY E' None
+{'i': 0}
 PARAMS  E1' inhval E' inhval ['M', "E1'"]
-setting = E1' inhval None under root  E' with rule  ['M', "E1'"] with symbol M
+setting = E1' inhval 0 under root  E' with rule  ['M', "E1'"] with symbol M
 E' [M [epsilon ] E1' ] 1. temp store < <
 SYMBOL  E1'
 in symbol E1' 		(in rule  ['M', "E1'"] )
@@ -904,8 +1799,11 @@ here we are ['epsilon'] [['+', 'T', "E'"], ['epsilon']] 1 ['epsilon']
 here2 in assign_producer_vals with  epsilon E1' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY E1' None
+ENTRYYY E1' None
+{'i': 0}
 PARAMS  E1' synval E1' inhval ['epsilon']
-setting = E1' synval None under root  E1' with rule  ['epsilon'] with symbol epsilon
+setting = E1' synval 0 under root  E1' with rule  ['epsilon'] with symbol epsilon
 E' [M [epsilon ] E1' [epsilon ] ] done
 has not proceeded  < <
 1. unmatched E1' < < ['M', "E1'"]
@@ -937,8 +1835,11 @@ done
 here2 in assign_producer_vals with  M E' ['M', "E2'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), ('root', 'inhval')]
 TP  ['=', (1, 'inhval'), ('root', 'inhval')]
+ENTRYYY E2' None
+ENTRYYY E' None
+{'i': 0}
 PARAMS  E2' inhval E' inhval ['M', "E2'"]
-setting = E2' inhval None under root  E' with rule  ['M', "E2'"] with symbol M
+setting = E2' inhval 0 under root  E' with rule  ['M', "E2'"] with symbol M
 E' [M [epsilon ] E2' ] 1. temp store < <
 SYMBOL  E2'
 in symbol E2' 		(in rule  ['M', "E2'"] )
@@ -967,8 +1868,11 @@ here we are ['epsilon'] [['-', 'T', "E'"], ['epsilon']] 1 ['epsilon']
 here2 in assign_producer_vals with  epsilon E2' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY E2' None
+ENTRYYY E2' None
+{'i': 0}
 PARAMS  E2' synval E2' inhval ['epsilon']
-setting = E2' synval None under root  E2' with rule  ['epsilon'] with symbol epsilon
+setting = E2' synval 0 under root  E2' with rule  ['epsilon'] with symbol epsilon
 E' [M [epsilon ] E2' [epsilon ] ] done
 has not proceeded  < <
 1. unmatched E2' < < ['M', "E2'"]
@@ -987,8 +1891,11 @@ here we are ['epsilon'] [['M', "E1'"], ['M', "E2'"], ['epsilon']] 2 ['epsilon']
 here2 in assign_producer_vals with  epsilon E' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY E' None
+ENTRYYY E' None
+{'i': 0}
 PARAMS  E' synval E' inhval ['epsilon']
-setting = E' synval None under root  E' with rule  ['epsilon'] with symbol epsilon
+setting = E' synval 0 under root  E' with rule  ['epsilon'] with symbol epsilon
 E [T [F [identifier ] T' [epsilon ] ] E' [epsilon ] ] done
 1.SYMBOL in RULE E' ['T', "E'"]
 1. temp store < <
@@ -997,10 +1904,17 @@ here we are ['T', "E'"] [['T', "E'"]] 0 ['T', "E'"]
 here2 in assign_producer_vals with  E' E ['T', "E'"]
 here3 in assign_producer_vals ['=', ('root', 'synval'), (1, 'synval')]
 TP  ['=', ('root', 'synval'), (1, 'synval')]
+ENTRYYY E i
+ENTRYYY E' None
+{'i': 0}
 PARAMS  E synval E' synval ['T', "E'"]
-setting = E synval None under root  E with rule  ['T', "E'"] with symbol E'
+setting = E synval 0 under root  E with rule  ['T', "E'"] with symbol E'
 EXPRESSION [E [T [F [identifier ] T' [epsilon ] ] E' [epsilon ] ] ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY E i
+ENTRYYY T i
+{'i': 0}
+y= i
 PARAMS  E entry T entry ['T', "E'"]
 setting = E entry i under root  E with rule  ['T', "E'"] with symbol E'
 EXPRESSION [E [T [F [identifier ] T' [epsilon ] ] E' [epsilon ] ] ] done
@@ -1011,10 +1925,18 @@ here we are ['E'] [['E']] 0 ['E']
 here2 in assign_producer_vals with  E EXPRESSION ['E']
 here3 in assign_producer_vals ['=', ('root', 'val'), (0, 'synval')]
 TP  ['=', ('root', 'val'), (0, 'synval')]
+ENTRYYY EXPRESSION None
+ENTRYYY E i
+{'i': 0}
+y= i
 PARAMS  EXPRESSION val E synval ['E']
-setting = EXPRESSION val None under root  EXPRESSION with rule  ['E'] with symbol E
+setting = EXPRESSION val 0 under root  EXPRESSION with rule  ['E'] with symbol E
 EXPRESSION1 [EXPRESSION [E [T [F [identifier ] T' [epsilon ] ] E' [epsilon ] ] ] ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY EXPRESSION None
+ENTRYYY E i
+{'i': 0}
+y= i
 PARAMS  EXPRESSION entry E entry ['E']
 setting = EXPRESSION entry i under root  EXPRESSION with rule  ['E'] with symbol E
 EXPRESSION1 [EXPRESSION [E [T [F [identifier ] T' [epsilon ] ] E' [epsilon ] ] ] ] done
@@ -1025,10 +1947,18 @@ here we are ['EXPRESSION'] [['EXPRESSION']] 0 ['EXPRESSION']
 here2 in assign_producer_vals with  EXPRESSION EXPRESSION1 ['EXPRESSION']
 here3 in assign_producer_vals ['=', ('root', 'val'), (0, 'val')]
 TP  ['=', ('root', 'val'), (0, 'val')]
+ENTRYYY EXPRESSION1 None
+ENTRYYY EXPRESSION i
+{'i': 0}
+y= i
 PARAMS  EXPRESSION1 val EXPRESSION val ['EXPRESSION']
-setting = EXPRESSION1 val None under root  EXPRESSION1 with rule  ['EXPRESSION'] with symbol EXPRESSION
+setting = EXPRESSION1 val 0 under root  EXPRESSION1 with rule  ['EXPRESSION'] with symbol EXPRESSION
 COND1 [EXPRESSION1 [EXPRESSION [E [T [F [identifier ] T' [epsilon ] ] E' [epsilon ] ] ] ] < EXPRESSION2 ; ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY EXPRESSION1 None
+ENTRYYY EXPRESSION i
+{'i': 0}
+y= i
 PARAMS  EXPRESSION1 entry EXPRESSION entry ['EXPRESSION']
 setting = EXPRESSION1 entry i under root  EXPRESSION1 with rule  ['EXPRESSION'] with symbol EXPRESSION
 COND1 [EXPRESSION1 [EXPRESSION [E [T [F [identifier ] T' [epsilon ] ] E' [epsilon ] ] ] ] < EXPRESSION2 ; ] done
@@ -1116,6 +2046,9 @@ here we are ['number'] [['(', 'E', ')'], ['identifier'], ['number']] 2 ['number'
 here2 in assign_producer_vals with  number F ['number']
 here3 in assign_producer_vals ['=', ('root', 'synval'), (0, 'lexval')]
 TP  ['=', ('root', 'synval'), (0, 'lexval')]
+ENTRYYY F None
+ENTRYYY number None
+{'i': 0}
 PARAMS  F synval number lexval ['number']
 setting = F synval 10 under root  F with rule  ['number'] with symbol number
 T [F [number ] T' ] done
@@ -1125,10 +2058,16 @@ T [F [number ] T' ] done
 here2 in assign_producer_vals with  F T ['F', "T'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), (0, 'synval')]
 TP  ['=', (1, 'inhval'), (0, 'synval')]
+ENTRYYY T' None
+ENTRYYY F None
+{'i': 0}
 PARAMS  T' inhval F synval ['F', "T'"]
 setting = T' inhval 10 under root  T with rule  ['F', "T'"] with symbol F
 T [F [number ] T' ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY T None
+ENTRYYY F None
+{'i': 0}
 PARAMS  T entry F entry ['F', "T'"]
 setting = T entry None under root  T with rule  ['F', "T'"] with symbol F
 E [T [F [number ] T' ] E' ] 1. temp store ; ;
@@ -1162,6 +2101,9 @@ done
 here2 in assign_producer_vals with  M T' ['M', "T1'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), ('root', 'inhval')]
 TP  ['=', (1, 'inhval'), ('root', 'inhval')]
+ENTRYYY T1' None
+ENTRYYY T' None
+{'i': 0}
 PARAMS  T1' inhval T' inhval ['M', "T1'"]
 setting = T1' inhval 10 under root  T' with rule  ['M', "T1'"] with symbol M
 T' [M [epsilon ] T1' ] 1. temp store ; ;
@@ -1192,6 +2134,9 @@ here we are ['epsilon'] [['*', 'F', "T'"], ['epsilon']] 1 ['epsilon']
 here2 in assign_producer_vals with  epsilon T1' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY T1' None
+ENTRYYY T1' None
+{'i': 0}
 PARAMS  T1' synval T1' inhval ['epsilon']
 setting = T1' synval 10 under root  T1' with rule  ['epsilon'] with symbol epsilon
 T' [M [epsilon ] T1' [epsilon ] ] done
@@ -1225,6 +2170,9 @@ done
 here2 in assign_producer_vals with  M T' ['M', "T2'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), ('root', 'inhval')]
 TP  ['=', (1, 'inhval'), ('root', 'inhval')]
+ENTRYYY T2' None
+ENTRYYY T' None
+{'i': 0}
 PARAMS  T2' inhval T' inhval ['M', "T2'"]
 setting = T2' inhval 10 under root  T' with rule  ['M', "T2'"] with symbol M
 T' [M [epsilon ] T2' ] 1. temp store ; ;
@@ -1255,6 +2203,9 @@ here we are ['epsilon'] [['/', 'F', "T'"], ['epsilon']] 1 ['epsilon']
 here2 in assign_producer_vals with  epsilon T2' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY T2' None
+ENTRYYY T2' None
+{'i': 0}
 PARAMS  T2' synval T2' inhval ['epsilon']
 setting = T2' synval 10 under root  T2' with rule  ['epsilon'] with symbol epsilon
 T' [M [epsilon ] T2' [epsilon ] ] done
@@ -1275,6 +2226,9 @@ here we are ['epsilon'] [['M', "T1'"], ['M', "T2'"], ['epsilon']] 2 ['epsilon']
 here2 in assign_producer_vals with  epsilon T' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY T' None
+ENTRYYY T' None
+{'i': 0}
 PARAMS  T' synval T' inhval ['epsilon']
 setting = T' synval 10 under root  T' with rule  ['epsilon'] with symbol epsilon
 T [F [number ] T' [epsilon ] ] done
@@ -1285,10 +2239,16 @@ here we are ['F', "T'"] [['F', "T'"]] 0 ['F', "T'"]
 here2 in assign_producer_vals with  T' T ['F', "T'"]
 here3 in assign_producer_vals ['=', ('root', 'synval'), (1, 'synval')]
 TP  ['=', ('root', 'synval'), (1, 'synval')]
+ENTRYYY T None
+ENTRYYY T' None
+{'i': 0}
 PARAMS  T synval T' synval ['F', "T'"]
 setting = T synval 10 under root  T with rule  ['F', "T'"] with symbol T'
 E [T [F [number ] T' [epsilon ] ] E' ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY T None
+ENTRYYY F None
+{'i': 0}
 PARAMS  T entry F entry ['F', "T'"]
 setting = T entry None under root  T with rule  ['F', "T'"] with symbol T'
 E [T [F [number ] T' [epsilon ] ] E' ] done
@@ -1298,10 +2258,16 @@ E [T [F [number ] T' [epsilon ] ] E' ] done
 here2 in assign_producer_vals with  T E ['T', "E'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), (0, 'synval')]
 TP  ['=', (1, 'inhval'), (0, 'synval')]
+ENTRYYY E' None
+ENTRYYY T None
+{'i': 0}
 PARAMS  E' inhval T synval ['T', "E'"]
 setting = E' inhval 10 under root  E with rule  ['T', "E'"] with symbol T
 E [T [F [number ] T' [epsilon ] ] E' ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY E None
+ENTRYYY T None
+{'i': 0}
 PARAMS  E entry T entry ['T', "E'"]
 setting = E entry None under root  E with rule  ['T', "E'"] with symbol T
 EXPRESSION [E [T [F [number ] T' [epsilon ] ] E' ] ] 1. temp store ; ;
@@ -1335,6 +2301,9 @@ done
 here2 in assign_producer_vals with  M E' ['M', "E1'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), ('root', 'inhval')]
 TP  ['=', (1, 'inhval'), ('root', 'inhval')]
+ENTRYYY E1' None
+ENTRYYY E' None
+{'i': 0}
 PARAMS  E1' inhval E' inhval ['M', "E1'"]
 setting = E1' inhval 10 under root  E' with rule  ['M', "E1'"] with symbol M
 E' [M [epsilon ] E1' ] 1. temp store ; ;
@@ -1365,6 +2334,9 @@ here we are ['epsilon'] [['+', 'T', "E'"], ['epsilon']] 1 ['epsilon']
 here2 in assign_producer_vals with  epsilon E1' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY E1' None
+ENTRYYY E1' None
+{'i': 0}
 PARAMS  E1' synval E1' inhval ['epsilon']
 setting = E1' synval 10 under root  E1' with rule  ['epsilon'] with symbol epsilon
 E' [M [epsilon ] E1' [epsilon ] ] done
@@ -1398,6 +2370,9 @@ done
 here2 in assign_producer_vals with  M E' ['M', "E2'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), ('root', 'inhval')]
 TP  ['=', (1, 'inhval'), ('root', 'inhval')]
+ENTRYYY E2' None
+ENTRYYY E' None
+{'i': 0}
 PARAMS  E2' inhval E' inhval ['M', "E2'"]
 setting = E2' inhval 10 under root  E' with rule  ['M', "E2'"] with symbol M
 E' [M [epsilon ] E2' ] 1. temp store ; ;
@@ -1428,6 +2403,9 @@ here we are ['epsilon'] [['-', 'T', "E'"], ['epsilon']] 1 ['epsilon']
 here2 in assign_producer_vals with  epsilon E2' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY E2' None
+ENTRYYY E2' None
+{'i': 0}
 PARAMS  E2' synval E2' inhval ['epsilon']
 setting = E2' synval 10 under root  E2' with rule  ['epsilon'] with symbol epsilon
 E' [M [epsilon ] E2' [epsilon ] ] done
@@ -1448,6 +2426,9 @@ here we are ['epsilon'] [['M', "E1'"], ['M', "E2'"], ['epsilon']] 2 ['epsilon']
 here2 in assign_producer_vals with  epsilon E' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY E' None
+ENTRYYY E' None
+{'i': 0}
 PARAMS  E' synval E' inhval ['epsilon']
 setting = E' synval 10 under root  E' with rule  ['epsilon'] with symbol epsilon
 E [T [F [number ] T' [epsilon ] ] E' [epsilon ] ] done
@@ -1458,10 +2439,16 @@ here we are ['T', "E'"] [['T', "E'"]] 0 ['T', "E'"]
 here2 in assign_producer_vals with  E' E ['T', "E'"]
 here3 in assign_producer_vals ['=', ('root', 'synval'), (1, 'synval')]
 TP  ['=', ('root', 'synval'), (1, 'synval')]
+ENTRYYY E None
+ENTRYYY E' None
+{'i': 0}
 PARAMS  E synval E' synval ['T', "E'"]
 setting = E synval 10 under root  E with rule  ['T', "E'"] with symbol E'
 EXPRESSION [E [T [F [number ] T' [epsilon ] ] E' [epsilon ] ] ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY E None
+ENTRYYY T None
+{'i': 0}
 PARAMS  E entry T entry ['T', "E'"]
 setting = E entry None under root  E with rule  ['T', "E'"] with symbol E'
 EXPRESSION [E [T [F [number ] T' [epsilon ] ] E' [epsilon ] ] ] done
@@ -1472,10 +2459,16 @@ here we are ['E'] [['E']] 0 ['E']
 here2 in assign_producer_vals with  E EXPRESSION ['E']
 here3 in assign_producer_vals ['=', ('root', 'val'), (0, 'synval')]
 TP  ['=', ('root', 'val'), (0, 'synval')]
+ENTRYYY EXPRESSION None
+ENTRYYY E None
+{'i': 0}
 PARAMS  EXPRESSION val E synval ['E']
 setting = EXPRESSION val 10 under root  EXPRESSION with rule  ['E'] with symbol E
 EXPRESSION2 [EXPRESSION [E [T [F [number ] T' [epsilon ] ] E' [epsilon ] ] ] ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY EXPRESSION None
+ENTRYYY E None
+{'i': 0}
 PARAMS  EXPRESSION entry E entry ['E']
 setting = EXPRESSION entry None under root  EXPRESSION with rule  ['E'] with symbol E
 EXPRESSION2 [EXPRESSION [E [T [F [number ] T' [epsilon ] ] E' [epsilon ] ] ] ] done
@@ -1486,10 +2479,16 @@ here we are ['EXPRESSION'] [['EXPRESSION']] 0 ['EXPRESSION']
 here2 in assign_producer_vals with  EXPRESSION EXPRESSION2 ['EXPRESSION']
 here3 in assign_producer_vals ['=', ('root', 'val'), (0, 'val')]
 TP  ['=', ('root', 'val'), (0, 'val')]
+ENTRYYY EXPRESSION2 None
+ENTRYYY EXPRESSION None
+{'i': 0}
 PARAMS  EXPRESSION2 val EXPRESSION val ['EXPRESSION']
 setting = EXPRESSION2 val 10 under root  EXPRESSION2 with rule  ['EXPRESSION'] with symbol EXPRESSION
 COND1 [EXPRESSION1 [EXPRESSION [E [T [F [identifier ] T' [epsilon ] ] E' [epsilon ] ] ] ] < EXPRESSION2 [EXPRESSION [E [T [F [number ] T' [epsilon ] ] E' [epsilon ] ] ] ] ; ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY EXPRESSION2 None
+ENTRYYY EXPRESSION None
+{'i': 0}
 PARAMS  EXPRESSION2 entry EXPRESSION entry ['EXPRESSION']
 setting = EXPRESSION2 entry None under root  EXPRESSION2 with rule  ['EXPRESSION'] with symbol EXPRESSION
 COND1 [EXPRESSION1 [EXPRESSION [E [T [F [identifier ] T' [epsilon ] ] E' [epsilon ] ] ] ] < EXPRESSION2 [EXPRESSION [E [T [F [number ] T' [epsilon ] ] E' [epsilon ] ] ] ] ; ] done
@@ -1500,9 +2499,11 @@ here2 in assign_producer_vals with  EXPRESSION2 COND1 ['EXPRESSION1', '<', 'EXPR
 here3 in assign_producer_vals ['<', ('root', 'val'), (0, 'val'), (2, 'val')]
 TP  ['<', ('root', 'val'), (0, 'val'), (2, 'val')]
 PARAMS  COND1 val EXPRESSION1 val EXPRESSION2 val
-vals  None 10
 stak1.
-QUAD ('<', 0, 10, 'COND1')
+y_attr val
+true i
+vals  0 10
+QUAD ('<', 'i', 10, 'COND1')
 ENTRYYY COND1 None
 ENTRYYY EXPRESSION1 i
 ENTRYYY EXPRESSION2 None
@@ -1511,45 +2512,45 @@ COND [COND1 [EXPRESSION1 [EXPRESSION [E [T [F [identifier ] T' [epsilon ] ] E' [
 SYMBOL  ;
 in symbol ; 		(in rule  ['EXPRESSION1', '<', 'EXPRESSION2', ';'] )
 else ; ;
-3. updated  j j
+3. updated  i i
 matched
 here we are ['EXPRESSION1', '<', 'EXPRESSION2', ';'] [['EXPRESSION1', '<', 'EXPRESSION2', ';']] 0 ['EXPRESSION1', '<', 'EXPRESSION2', ';']
 2. LAST ['EXPRESSION1', '<', 'EXPRESSION2', ';']
 2. prod ; not in  {'EXPRESSION2': [['<', ('root', 'val'), (0, 'val'), (2, 'val')]]}
 done
 1.SYMBOL in RULE COND1 ['COND1']
-1. temp store i j
+1. temp store i i
 here we are ['COND1'] [['COND1'], ['COND2'], ['COND3'], ['COND4']] 0 ['COND1']
 2. LAST ['COND1']
 1. prod  COND not in assign
 done
 1.SYMBOL in RULE COND ['for', '(', 'ASSIGN', 'COND', 'INCREMENT', ')', '{', 'STATEMENT', '}']
-1. updated  j j
+1. updated  i i
 1. NOT LAST
 here2 in assign_producer_vals with  COND FOR_LOOP ['for', '(', 'ASSIGN', 'COND', 'INCREMENT', ')', '{', 'STATEMENT', '}']
 here3 in assign_producer_vals ['code', (3, 'code'), [('ifFalse', 'COND', '_', 'L1'), 'dummy1']]
 in CODE ['code', (3, 'code'), [('ifFalse', 'COND', '_', 'L1'), 'dummy1']]
-1. temp store j j
+1. temp store i i
 SYMBOL  INCREMENT
 in symbol INCREMENT 		(in rule  ['for', '(', 'ASSIGN', 'COND', 'INCREMENT', ')', '{', 'STATEMENT', '}'] )
 in producer
 check is now  for
 in match rule with  INCREMENT : [['I_ASSIGN'], ['I_COND'], ['EXPRESSION']]
-in rule  ['I_ASSIGN']  with  j
+in rule  ['I_ASSIGN']  with  i
 TREE
 INCREMENT [I_ASSIGN ] 
 SYMBOL  I_ASSIGN
 in symbol I_ASSIGN 		(in rule  ['I_ASSIGN'] )
 in producer
-check is now  j
+check is now  i
 in match rule with  I_ASSIGN : [['identifier', '=', 'EXPRESSION']]
-in rule  ['identifier', '=', 'EXPRESSION']  with  j
+in rule  ['identifier', '=', 'EXPRESSION']  with  i
 TREE
 I_ASSIGN [identifier = EXPRESSION ] 
 SYMBOL  identifier
 in symbol identifier 		(in rule  ['identifier', '=', 'EXPRESSION'] )
 is token
-in match token j identifier identifier
+in match token i identifier identifier
 2.SYMBOL in RULE identifier ['identifier', '=', 'EXPRESSION'] I_ASSIGN
 2. updated  = =
 3. NOT LAST
@@ -1559,94 +2560,102 @@ matched
 SYMBOL  =
 in symbol = 		(in rule  ['identifier', '=', 'EXPRESSION'] )
 else = =
-3. updated  1 1
+3. updated  i i
 matched
 SYMBOL  EXPRESSION
 in symbol EXPRESSION 		(in rule  ['identifier', '=', 'EXPRESSION'] )
 in producer
-check is now  j
+check is now  i
 in match rule with  EXPRESSION : [['E']]
-in rule  ['E']  with  1
+in rule  ['E']  with  i
 TREE
 EXPRESSION [E ] 
 SYMBOL  E
 in symbol E 		(in rule  ['E'] )
 in producer
-check is now  1
+check is now  i
 in match rule with  E : [['T', "E'"]]
-in rule  ['T', "E'"]  with  1
+in rule  ['T', "E'"]  with  i
 TREE
 E [T E' ] 
 SYMBOL  T
 in symbol T 		(in rule  ['T', "E'"] )
 in producer
-check is now  1
+check is now  i
 in match rule with  T : [['F', "T'"]]
-in rule  ['F', "T'"]  with  1
+in rule  ['F', "T'"]  with  i
 TREE
 T [F T' ] 
 SYMBOL  F
 in symbol F 		(in rule  ['F', "T'"] )
 in producer
-check is now  1
+check is now  i
 in match rule with  F : [['(', 'E', ')'], ['identifier'], ['number']]
-in rule  ['(', 'E', ')']  with  1
+in rule  ['(', 'E', ')']  with  i
 TREE
 F [( E ) ] 
 SYMBOL  (
 in symbol ( 		(in rule  ['(', 'E', ')'] )
-else 1 (
-5. unmatched ( 1
+else i (
+5. unmatched ( i
 TREE
 F 
 returned false  ['(', 'E', ')'] [['(', 'E', ')'], ['identifier'], ['number']]
-in rule  ['identifier']  with  1
+in rule  ['identifier']  with  i
 TREE
 F [identifier ] 
 SYMBOL  identifier
 in symbol identifier 		(in rule  ['identifier'] )
 is token
-in match token 1 number identifier
-4. unmatched token
-TREE
-F 
-returned false  ['identifier'] [['(', 'E', ')'], ['identifier'], ['number']]
-in rule  ['number']  with  1
-TREE
-F [number ] 
-SYMBOL  number
-in symbol number 		(in rule  ['number'] )
-is token
-in match token 1 number number
-TOKENSET  number 1
-2.SYMBOL in RULE number ['number'] F
+in match token i identifier identifier
+2.SYMBOL in RULE identifier ['identifier'] F
 matched
-2. temp store 1 +
-here we are ['number'] [['(', 'E', ')'], ['identifier'], ['number']] 2 ['number']
-2. LAST ['number']
-here2 in assign_producer_vals with  number F ['number']
-here3 in assign_producer_vals ['=', ('root', 'synval'), (0, 'lexval')]
-TP  ['=', ('root', 'synval'), (0, 'lexval')]
-PARAMS  F synval number lexval ['number']
-setting = F synval 1 under root  F with rule  ['number'] with symbol number
-T [F [number ] T' ] done
+2. temp store i +
+here we are ['identifier'] [['(', 'E', ')'], ['identifier'], ['number']] 1 ['identifier']
+2. LAST ['identifier']
+here2 in assign_producer_vals with  identifier F ['identifier']
+here3 in assign_producer_vals ['=', ('root', 'synval'), (0, 'val')]
+TP  ['=', ('root', 'synval'), (0, 'val')]
+ENTRYYY F None
+ENTRYYY identifier i
+{'i': 0}
+y= i
+PARAMS  F synval identifier val ['identifier']
+setting = F synval 0 under root  F with rule  ['identifier'] with symbol identifier
+T [F [identifier ] T' ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
+TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY F None
+ENTRYYY identifier i
+{'i': 0}
+y= i
+PARAMS  F entry identifier entry ['identifier']
+setting = F entry i under root  F with rule  ['identifier'] with symbol identifier
+T [F [identifier ] T' ] done
 1.SYMBOL in RULE F ['F', "T'"]
 1. updated  + +
 1. NOT LAST
 here2 in assign_producer_vals with  F T ['F', "T'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), (0, 'synval')]
 TP  ['=', (1, 'inhval'), (0, 'synval')]
+ENTRYYY T' None
+ENTRYYY F i
+{'i': 0}
+y= i
 PARAMS  T' inhval F synval ['F', "T'"]
-setting = T' inhval 1 under root  T with rule  ['F', "T'"] with symbol F
-T [F [number ] T' ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
+setting = T' inhval 0 under root  T with rule  ['F', "T'"] with symbol F
+T [F [identifier ] T' ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY T None
+ENTRYYY F i
+{'i': 0}
+y= i
 PARAMS  T entry F entry ['F', "T'"]
-setting = T entry None under root  T with rule  ['F', "T'"] with symbol F
-E [T [F [number ] T' ] E' ] 1. temp store + +
+setting = T entry i under root  T with rule  ['F', "T'"] with symbol F
+E [T [F [identifier ] T' ] E' ] 1. temp store + +
 SYMBOL  T'
 in symbol T' 		(in rule  ['F', "T'"] )
 in producer
-check is now  1
+check is now  i
 in match rule with  T' : [['M', "T1'"], ['M', "T2'"], ['epsilon']]
 in rule  ['M', "T1'"]  with  +
 TREE
@@ -1673,8 +2682,11 @@ done
 here2 in assign_producer_vals with  M T' ['M', "T1'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), ('root', 'inhval')]
 TP  ['=', (1, 'inhval'), ('root', 'inhval')]
+ENTRYYY T1' None
+ENTRYYY T' None
+{'i': 0}
 PARAMS  T1' inhval T' inhval ['M', "T1'"]
-setting = T1' inhval 1 under root  T' with rule  ['M', "T1'"] with symbol M
+setting = T1' inhval 0 under root  T' with rule  ['M', "T1'"] with symbol M
 T' [M [epsilon ] T1' ] 1. temp store + +
 SYMBOL  T1'
 in symbol T1' 		(in rule  ['M', "T1'"] )
@@ -1703,8 +2715,11 @@ here we are ['epsilon'] [['*', 'F', "T'"], ['epsilon']] 1 ['epsilon']
 here2 in assign_producer_vals with  epsilon T1' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY T1' None
+ENTRYYY T1' None
+{'i': 0}
 PARAMS  T1' synval T1' inhval ['epsilon']
-setting = T1' synval 1 under root  T1' with rule  ['epsilon'] with symbol epsilon
+setting = T1' synval 0 under root  T1' with rule  ['epsilon'] with symbol epsilon
 T' [M [epsilon ] T1' [epsilon ] ] done
 has not proceeded  + +
 1. unmatched T1' + + ['M', "T1'"]
@@ -1736,8 +2751,11 @@ done
 here2 in assign_producer_vals with  M T' ['M', "T2'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), ('root', 'inhval')]
 TP  ['=', (1, 'inhval'), ('root', 'inhval')]
+ENTRYYY T2' None
+ENTRYYY T' None
+{'i': 0}
 PARAMS  T2' inhval T' inhval ['M', "T2'"]
-setting = T2' inhval 1 under root  T' with rule  ['M', "T2'"] with symbol M
+setting = T2' inhval 0 under root  T' with rule  ['M', "T2'"] with symbol M
 T' [M [epsilon ] T2' ] 1. temp store + +
 SYMBOL  T2'
 in symbol T2' 		(in rule  ['M', "T2'"] )
@@ -1766,8 +2784,11 @@ here we are ['epsilon'] [['/', 'F', "T'"], ['epsilon']] 1 ['epsilon']
 here2 in assign_producer_vals with  epsilon T2' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY T2' None
+ENTRYYY T2' None
+{'i': 0}
 PARAMS  T2' synval T2' inhval ['epsilon']
-setting = T2' synval 1 under root  T2' with rule  ['epsilon'] with symbol epsilon
+setting = T2' synval 0 under root  T2' with rule  ['epsilon'] with symbol epsilon
 T' [M [epsilon ] T2' [epsilon ] ] done
 has not proceeded  + +
 1. unmatched T2' + + ['M', "T2'"]
@@ -1786,9 +2807,12 @@ here we are ['epsilon'] [['M', "T1'"], ['M', "T2'"], ['epsilon']] 2 ['epsilon']
 here2 in assign_producer_vals with  epsilon T' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY T' None
+ENTRYYY T' None
+{'i': 0}
 PARAMS  T' synval T' inhval ['epsilon']
-setting = T' synval 1 under root  T' with rule  ['epsilon'] with symbol epsilon
-T [F [number ] T' [epsilon ] ] done
+setting = T' synval 0 under root  T' with rule  ['epsilon'] with symbol epsilon
+T [F [identifier ] T' [epsilon ] ] done
 1.SYMBOL in RULE T' ['F', "T'"]
 1. temp store + +
 here we are ['F', "T'"] [['F', "T'"]] 0 ['F', "T'"]
@@ -1796,30 +2820,45 @@ here we are ['F', "T'"] [['F', "T'"]] 0 ['F', "T'"]
 here2 in assign_producer_vals with  T' T ['F', "T'"]
 here3 in assign_producer_vals ['=', ('root', 'synval'), (1, 'synval')]
 TP  ['=', ('root', 'synval'), (1, 'synval')]
+ENTRYYY T i
+ENTRYYY T' None
+{'i': 0}
 PARAMS  T synval T' synval ['F', "T'"]
-setting = T synval 1 under root  T with rule  ['F', "T'"] with symbol T'
-E [T [F [number ] T' [epsilon ] ] E' ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
+setting = T synval 0 under root  T with rule  ['F', "T'"] with symbol T'
+E [T [F [identifier ] T' [epsilon ] ] E' ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY T i
+ENTRYYY F i
+{'i': 0}
+y= i
 PARAMS  T entry F entry ['F', "T'"]
-setting = T entry None under root  T with rule  ['F', "T'"] with symbol T'
-E [T [F [number ] T' [epsilon ] ] E' ] done
+setting = T entry i under root  T with rule  ['F', "T'"] with symbol T'
+E [T [F [identifier ] T' [epsilon ] ] E' ] done
 1.SYMBOL in RULE T ['T', "E'"]
 1. updated  + +
 1. NOT LAST
 here2 in assign_producer_vals with  T E ['T', "E'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), (0, 'synval')]
 TP  ['=', (1, 'inhval'), (0, 'synval')]
+ENTRYYY E' None
+ENTRYYY T i
+{'i': 0}
+y= i
 PARAMS  E' inhval T synval ['T', "E'"]
-setting = E' inhval 1 under root  E with rule  ['T', "E'"] with symbol T
-E [T [F [number ] T' [epsilon ] ] E' ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
+setting = E' inhval 0 under root  E with rule  ['T', "E'"] with symbol T
+E [T [F [identifier ] T' [epsilon ] ] E' ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY E None
+ENTRYYY T i
+{'i': 0}
+y= i
 PARAMS  E entry T entry ['T', "E'"]
-setting = E entry None under root  E with rule  ['T', "E'"] with symbol T
-EXPRESSION [E [T [F [number ] T' [epsilon ] ] E' ] ] 1. temp store + +
+setting = E entry i under root  E with rule  ['T', "E'"] with symbol T
+EXPRESSION [E [T [F [identifier ] T' [epsilon ] ] E' ] ] 1. temp store + +
 SYMBOL  E'
 in symbol E' 		(in rule  ['T', "E'"] )
 in producer
-check is now  1
+check is now  i
 in match rule with  E' : [['M', "E1'"], ['M', "E2'"], ['epsilon']]
 in rule  ['M', "E1'"]  with  +
 TREE
@@ -1846,8 +2885,11 @@ done
 here2 in assign_producer_vals with  M E' ['M', "E1'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), ('root', 'inhval')]
 TP  ['=', (1, 'inhval'), ('root', 'inhval')]
+ENTRYYY E1' None
+ENTRYYY E' None
+{'i': 0}
 PARAMS  E1' inhval E' inhval ['M', "E1'"]
-setting = E1' inhval 1 under root  E' with rule  ['M', "E1'"] with symbol M
+setting = E1' inhval 0 under root  E' with rule  ['M', "E1'"] with symbol M
 E' [M [epsilon ] E1' ] 1. temp store + +
 SYMBOL  E1'
 in symbol E1' 		(in rule  ['M', "E1'"] )
@@ -1912,6 +2954,9 @@ here we are ['number'] [['(', 'E', ')'], ['identifier'], ['number']] 2 ['number'
 here2 in assign_producer_vals with  number F ['number']
 here3 in assign_producer_vals ['=', ('root', 'synval'), (0, 'lexval')]
 TP  ['=', ('root', 'synval'), (0, 'lexval')]
+ENTRYYY F None
+ENTRYYY number None
+{'i': 0}
 PARAMS  F synval number lexval ['number']
 setting = F synval 1 under root  F with rule  ['number'] with symbol number
 T [F [number ] T' ] done
@@ -1921,10 +2966,16 @@ T [F [number ] T' ] done
 here2 in assign_producer_vals with  F T ['F', "T'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), (0, 'synval')]
 TP  ['=', (1, 'inhval'), (0, 'synval')]
+ENTRYYY T' None
+ENTRYYY F None
+{'i': 0}
 PARAMS  T' inhval F synval ['F', "T'"]
 setting = T' inhval 1 under root  T with rule  ['F', "T'"] with symbol F
 T [F [number ] T' ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY T None
+ENTRYYY F None
+{'i': 0}
 PARAMS  T entry F entry ['F', "T'"]
 setting = T entry None under root  T with rule  ['F', "T'"] with symbol F
 E1' [+ T [F [number ] T' ] E' ] 1. temp store ) )
@@ -1958,6 +3009,9 @@ done
 here2 in assign_producer_vals with  M T' ['M', "T1'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), ('root', 'inhval')]
 TP  ['=', (1, 'inhval'), ('root', 'inhval')]
+ENTRYYY T1' None
+ENTRYYY T' None
+{'i': 0}
 PARAMS  T1' inhval T' inhval ['M', "T1'"]
 setting = T1' inhval 1 under root  T' with rule  ['M', "T1'"] with symbol M
 T' [M [epsilon ] T1' ] 1. temp store ) )
@@ -1988,6 +3042,9 @@ here we are ['epsilon'] [['*', 'F', "T'"], ['epsilon']] 1 ['epsilon']
 here2 in assign_producer_vals with  epsilon T1' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY T1' None
+ENTRYYY T1' None
+{'i': 0}
 PARAMS  T1' synval T1' inhval ['epsilon']
 setting = T1' synval 1 under root  T1' with rule  ['epsilon'] with symbol epsilon
 T' [M [epsilon ] T1' [epsilon ] ] done
@@ -2021,6 +3078,9 @@ done
 here2 in assign_producer_vals with  M T' ['M', "T2'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), ('root', 'inhval')]
 TP  ['=', (1, 'inhval'), ('root', 'inhval')]
+ENTRYYY T2' None
+ENTRYYY T' None
+{'i': 0}
 PARAMS  T2' inhval T' inhval ['M', "T2'"]
 setting = T2' inhval 1 under root  T' with rule  ['M', "T2'"] with symbol M
 T' [M [epsilon ] T2' ] 1. temp store ) )
@@ -2051,6 +3111,9 @@ here we are ['epsilon'] [['/', 'F', "T'"], ['epsilon']] 1 ['epsilon']
 here2 in assign_producer_vals with  epsilon T2' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY T2' None
+ENTRYYY T2' None
+{'i': 0}
 PARAMS  T2' synval T2' inhval ['epsilon']
 setting = T2' synval 1 under root  T2' with rule  ['epsilon'] with symbol epsilon
 T' [M [epsilon ] T2' [epsilon ] ] done
@@ -2071,6 +3134,9 @@ here we are ['epsilon'] [['M', "T1'"], ['M', "T2'"], ['epsilon']] 2 ['epsilon']
 here2 in assign_producer_vals with  epsilon T' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY T' None
+ENTRYYY T' None
+{'i': 0}
 PARAMS  T' synval T' inhval ['epsilon']
 setting = T' synval 1 under root  T' with rule  ['epsilon'] with symbol epsilon
 T [F [number ] T' [epsilon ] ] done
@@ -2081,10 +3147,16 @@ here we are ['F', "T'"] [['F', "T'"]] 0 ['F', "T'"]
 here2 in assign_producer_vals with  T' T ['F', "T'"]
 here3 in assign_producer_vals ['=', ('root', 'synval'), (1, 'synval')]
 TP  ['=', ('root', 'synval'), (1, 'synval')]
+ENTRYYY T None
+ENTRYYY T' None
+{'i': 0}
 PARAMS  T synval T' synval ['F', "T'"]
 setting = T synval 1 under root  T with rule  ['F', "T'"] with symbol T'
 E1' [+ T [F [number ] T' [epsilon ] ] E' ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY T None
+ENTRYYY F None
+{'i': 0}
 PARAMS  T entry F entry ['F', "T'"]
 setting = T entry None under root  T with rule  ['F', "T'"] with symbol T'
 E1' [+ T [F [number ] T' [epsilon ] ] E' ] done
@@ -2095,14 +3167,22 @@ here2 in assign_producer_vals with  T E1' ['+', 'T', "E'"]
 here3 in assign_producer_vals ['+', (2, 'inhval'), ('root', 'inhval'), (1, 'synval')]
 TP  ['+', (2, 'inhval'), ('root', 'inhval'), (1, 'synval')]
 PARAMS  E' inhval E1' inhval T synval
-vals  1 1
 stak2.
-QUAD ('+', 1, 'T', "E'")
+y_attr inhval
+vals  0 1
+QUAD ('+', 0, 'T', "E'")
 ENTRYYY E' None
 ENTRYYY E1' None
 ENTRYYY T None
-setting + E' inhval 2 under root  E1' with rule  ['+', 'T', "E'"] with symbol T
-E1' [+ T [F [number ] T' [epsilon ] ] E' ] 1. temp store ) )
+setting + E' inhval 1 under root  E1' with rule  ['+', 'T', "E'"] with symbol T
+E1' [+ T [F [number ] T' [epsilon ] ] E' ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
+TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY E1' None
+ENTRYYY + None
+{'i': 0}
+PARAMS  E1' entry + entry ['+', 'T', "E'"]
+setting = E1' entry None under root  E1' with rule  ['+', 'T', "E'"] with symbol T
+E' [M [epsilon ] E1' [+ T [F [number ] T' [epsilon ] ] E' ] ] 1. temp store ) )
 SYMBOL  E'
 in symbol E' 		(in rule  ['+', 'T', "E'"] )
 in producer
@@ -2133,8 +3213,11 @@ done
 here2 in assign_producer_vals with  M E' ['M', "E1'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), ('root', 'inhval')]
 TP  ['=', (1, 'inhval'), ('root', 'inhval')]
+ENTRYYY E1' None
+ENTRYYY E' None
+{'i': 0}
 PARAMS  E1' inhval E' inhval ['M', "E1'"]
-setting = E1' inhval 2 under root  E' with rule  ['M', "E1'"] with symbol M
+setting = E1' inhval 1 under root  E' with rule  ['M', "E1'"] with symbol M
 E' [M [epsilon ] E1' ] 1. temp store ) )
 SYMBOL  E1'
 in symbol E1' 		(in rule  ['M', "E1'"] )
@@ -2163,8 +3246,11 @@ here we are ['epsilon'] [['+', 'T', "E'"], ['epsilon']] 1 ['epsilon']
 here2 in assign_producer_vals with  epsilon E1' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY E1' None
+ENTRYYY E1' None
+{'i': 0}
 PARAMS  E1' synval E1' inhval ['epsilon']
-setting = E1' synval 2 under root  E1' with rule  ['epsilon'] with symbol epsilon
+setting = E1' synval 1 under root  E1' with rule  ['epsilon'] with symbol epsilon
 E' [M [epsilon ] E1' [epsilon ] ] done
 has not proceeded  ) )
 1. unmatched E1' ) ) ['M', "E1'"]
@@ -2196,8 +3282,11 @@ done
 here2 in assign_producer_vals with  M E' ['M', "E2'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), ('root', 'inhval')]
 TP  ['=', (1, 'inhval'), ('root', 'inhval')]
+ENTRYYY E2' None
+ENTRYYY E' None
+{'i': 0}
 PARAMS  E2' inhval E' inhval ['M', "E2'"]
-setting = E2' inhval 2 under root  E' with rule  ['M', "E2'"] with symbol M
+setting = E2' inhval 1 under root  E' with rule  ['M', "E2'"] with symbol M
 E' [M [epsilon ] E2' ] 1. temp store ) )
 SYMBOL  E2'
 in symbol E2' 		(in rule  ['M', "E2'"] )
@@ -2226,8 +3315,11 @@ here we are ['epsilon'] [['-', 'T', "E'"], ['epsilon']] 1 ['epsilon']
 here2 in assign_producer_vals with  epsilon E2' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY E2' None
+ENTRYYY E2' None
+{'i': 0}
 PARAMS  E2' synval E2' inhval ['epsilon']
-setting = E2' synval 2 under root  E2' with rule  ['epsilon'] with symbol epsilon
+setting = E2' synval 1 under root  E2' with rule  ['epsilon'] with symbol epsilon
 E' [M [epsilon ] E2' [epsilon ] ] done
 has not proceeded  ) )
 1. unmatched E2' ) ) ['M', "E2'"]
@@ -2246,8 +3338,11 @@ here we are ['epsilon'] [['M', "E1'"], ['M', "E2'"], ['epsilon']] 2 ['epsilon']
 here2 in assign_producer_vals with  epsilon E' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY E' None
+ENTRYYY E' None
+{'i': 0}
 PARAMS  E' synval E' inhval ['epsilon']
-setting = E' synval 2 under root  E' with rule  ['epsilon'] with symbol epsilon
+setting = E' synval 1 under root  E' with rule  ['epsilon'] with symbol epsilon
 E1' [+ T [F [number ] T' [epsilon ] ] E' [epsilon ] ] done
 1.SYMBOL in RULE E' ['+', 'T', "E'"]
 1. temp store ) )
@@ -2256,10 +3351,16 @@ here we are ['+', 'T', "E'"] [['+', 'T', "E'"], ['epsilon']] 0 ['+', 'T', "E'"]
 here2 in assign_producer_vals with  E' E1' ['+', 'T', "E'"]
 here3 in assign_producer_vals ['=', ('root', 'synval'), (2, 'synval')]
 TP  ['=', ('root', 'synval'), (2, 'synval')]
+ENTRYYY E1' None
+ENTRYYY E' None
+{'i': 0}
 PARAMS  E1' synval E' synval ['+', 'T', "E'"]
-setting = E1' synval 2 under root  E1' with rule  ['+', 'T', "E'"] with symbol E'
+setting = E1' synval 1 under root  E1' with rule  ['+', 'T', "E'"] with symbol E'
 E' [M [epsilon ] E1' [+ T [F [number ] T' [epsilon ] ] E' [epsilon ] ] ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY E1' None
+ENTRYYY + None
+{'i': 0}
 PARAMS  E1' entry + entry ['+', 'T', "E'"]
 setting = E1' entry None under root  E1' with rule  ['+', 'T', "E'"] with symbol E'
 E' [M [epsilon ] E1' [+ T [F [number ] T' [epsilon ] ] E' [epsilon ] ] ] done
@@ -2270,13 +3371,19 @@ here we are ['M', "E1'"] [['M', "E1'"], ['M', "E2'"], ['epsilon']] 0 ['M', "E1'"
 here2 in assign_producer_vals with  E1' E' ['M', "E1'"]
 here3 in assign_producer_vals ['=', ('root', 'synval'), (1, 'synval')]
 TP  ['=', ('root', 'synval'), (1, 'synval')]
+ENTRYYY E' None
+ENTRYYY E1' None
+{'i': 0}
 PARAMS  E' synval E1' synval ['M', "E1'"]
-setting = E' synval 2 under root  E' with rule  ['M', "E1'"] with symbol E1'
-E [T [F [number ] T' [epsilon ] ] E' [M [epsilon ] E1' [+ T [F [number ] T' [epsilon ] ] E' [epsilon ] ] ] ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
+setting = E' synval 1 under root  E' with rule  ['M', "E1'"] with symbol E1'
+E [T [F [identifier ] T' [epsilon ] ] E' [M [epsilon ] E1' [+ T [F [number ] T' [epsilon ] ] E' [epsilon ] ] ] ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY E' None
+ENTRYYY M None
+{'i': 0}
 PARAMS  E' entry M entry ['M', "E1'"]
 setting = E' entry None under root  E' with rule  ['M', "E1'"] with symbol E1'
-E [T [F [number ] T' [epsilon ] ] E' [M [epsilon ] E1' [+ T [F [number ] T' [epsilon ] ] E' [epsilon ] ] ] ] done
+E [T [F [identifier ] T' [epsilon ] ] E' [M [epsilon ] E1' [+ T [F [number ] T' [epsilon ] ] E' [epsilon ] ] ] ] done
 1.SYMBOL in RULE E' ['T', "E'"]
 1. temp store + )
 here we are ['T', "E'"] [['T', "E'"]] 0 ['T', "E'"]
@@ -2284,35 +3391,50 @@ here we are ['T', "E'"] [['T', "E'"]] 0 ['T', "E'"]
 here2 in assign_producer_vals with  E' E ['T', "E'"]
 here3 in assign_producer_vals ['=', ('root', 'synval'), (1, 'synval')]
 TP  ['=', ('root', 'synval'), (1, 'synval')]
+ENTRYYY E i
+ENTRYYY E' None
+{'i': 0}
 PARAMS  E synval E' synval ['T', "E'"]
-setting = E synval 2 under root  E with rule  ['T', "E'"] with symbol E'
-EXPRESSION [E [T [F [number ] T' [epsilon ] ] E' [M [epsilon ] E1' [+ T [F [number ] T' [epsilon ] ] E' [epsilon ] ] ] ] ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
+setting = E synval 1 under root  E with rule  ['T', "E'"] with symbol E'
+EXPRESSION [E [T [F [identifier ] T' [epsilon ] ] E' [M [epsilon ] E1' [+ T [F [number ] T' [epsilon ] ] E' [epsilon ] ] ] ] ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY E i
+ENTRYYY T i
+{'i': 0}
+y= i
 PARAMS  E entry T entry ['T', "E'"]
-setting = E entry None under root  E with rule  ['T', "E'"] with symbol E'
-EXPRESSION [E [T [F [number ] T' [epsilon ] ] E' [M [epsilon ] E1' [+ T [F [number ] T' [epsilon ] ] E' [epsilon ] ] ] ] ] done
+setting = E entry i under root  E with rule  ['T', "E'"] with symbol E'
+EXPRESSION [E [T [F [identifier ] T' [epsilon ] ] E' [M [epsilon ] E1' [+ T [F [number ] T' [epsilon ] ] E' [epsilon ] ] ] ] ] done
 1.SYMBOL in RULE E ['E']
-1. temp store 1 )
+1. temp store i )
 here we are ['E'] [['E']] 0 ['E']
 2. LAST ['E']
 here2 in assign_producer_vals with  E EXPRESSION ['E']
 here3 in assign_producer_vals ['=', ('root', 'val'), (0, 'synval')]
 TP  ['=', ('root', 'val'), (0, 'synval')]
+ENTRYYY EXPRESSION None
+ENTRYYY E i
+{'i': 0}
+y= i
 PARAMS  EXPRESSION val E synval ['E']
-setting = EXPRESSION val 2 under root  EXPRESSION with rule  ['E'] with symbol E
-I_ASSIGN [identifier = EXPRESSION [E [T [F [number ] T' [epsilon ] ] E' [M [epsilon ] E1' [+ T [F [number ] T' [epsilon ] ] E' [epsilon ] ] ] ] ] ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
+setting = EXPRESSION val 0 under root  EXPRESSION with rule  ['E'] with symbol E
+I_ASSIGN [identifier = EXPRESSION [E [T [F [identifier ] T' [epsilon ] ] E' [M [epsilon ] E1' [+ T [F [number ] T' [epsilon ] ] E' [epsilon ] ] ] ] ] ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY EXPRESSION None
+ENTRYYY E i
+{'i': 0}
+y= i
 PARAMS  EXPRESSION entry E entry ['E']
-setting = EXPRESSION entry None under root  EXPRESSION with rule  ['E'] with symbol E
-I_ASSIGN [identifier = EXPRESSION [E [T [F [number ] T' [epsilon ] ] E' [M [epsilon ] E1' [+ T [F [number ] T' [epsilon ] ] E' [epsilon ] ] ] ] ] ] done
+setting = EXPRESSION entry i under root  EXPRESSION with rule  ['E'] with symbol E
+I_ASSIGN [identifier = EXPRESSION [E [T [F [identifier ] T' [epsilon ] ] E' [M [epsilon ] E1' [+ T [F [number ] T' [epsilon ] ] E' [epsilon ] ] ] ] ] ] done
 1.SYMBOL in RULE EXPRESSION ['identifier', '=', 'EXPRESSION']
-1. temp store 1 )
+1. temp store i )
 here we are ['identifier', '=', 'EXPRESSION'] [['identifier', '=', 'EXPRESSION']] 0 ['identifier', '=', 'EXPRESSION']
 2. LAST ['identifier', '=', 'EXPRESSION']
 1. prod  I_ASSIGN not in assign
 done
 1.SYMBOL in RULE I_ASSIGN ['I_ASSIGN']
-1. temp store j )
+1. temp store i )
 here we are ['I_ASSIGN'] [['I_ASSIGN'], ['I_COND'], ['EXPRESSION']] 0 ['I_ASSIGN']
 2. LAST ['I_ASSIGN']
 1. prod  INCREMENT not in assign
@@ -2462,10 +3584,18 @@ here we are ['identifier'] [['(', 'E', ')'], ['identifier'], ['number']] 1 ['ide
 here2 in assign_producer_vals with  identifier F ['identifier']
 here3 in assign_producer_vals ['=', ('root', 'synval'), (0, 'val')]
 TP  ['=', ('root', 'synval'), (0, 'val')]
+ENTRYYY F None
+ENTRYYY identifier l
+{'i': 0}
+y= l
 PARAMS  F synval identifier val ['identifier']
 setting = F synval None under root  F with rule  ['identifier'] with symbol identifier
 T [F [identifier ] T' ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY F None
+ENTRYYY identifier l
+{'i': 0}
+y= l
 PARAMS  F entry identifier entry ['identifier']
 setting = F entry l under root  F with rule  ['identifier'] with symbol identifier
 T [F [identifier ] T' ] done
@@ -2475,10 +3605,18 @@ T [F [identifier ] T' ] done
 here2 in assign_producer_vals with  F T ['F', "T'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), (0, 'synval')]
 TP  ['=', (1, 'inhval'), (0, 'synval')]
+ENTRYYY T' None
+ENTRYYY F l
+{'i': 0}
+y= l
 PARAMS  T' inhval F synval ['F', "T'"]
 setting = T' inhval None under root  T with rule  ['F', "T'"] with symbol F
 T [F [identifier ] T' ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY T None
+ENTRYYY F l
+{'i': 0}
+y= l
 PARAMS  T entry F entry ['F', "T'"]
 setting = T entry l under root  T with rule  ['F', "T'"] with symbol F
 E [T [F [identifier ] T' ] E' ] 1. temp store = =
@@ -2512,6 +3650,9 @@ done
 here2 in assign_producer_vals with  M T' ['M', "T1'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), ('root', 'inhval')]
 TP  ['=', (1, 'inhval'), ('root', 'inhval')]
+ENTRYYY T1' None
+ENTRYYY T' None
+{'i': 0}
 PARAMS  T1' inhval T' inhval ['M', "T1'"]
 setting = T1' inhval None under root  T' with rule  ['M', "T1'"] with symbol M
 T' [M [epsilon ] T1' ] 1. temp store = =
@@ -2542,6 +3683,9 @@ here we are ['epsilon'] [['*', 'F', "T'"], ['epsilon']] 1 ['epsilon']
 here2 in assign_producer_vals with  epsilon T1' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY T1' None
+ENTRYYY T1' None
+{'i': 0}
 PARAMS  T1' synval T1' inhval ['epsilon']
 setting = T1' synval None under root  T1' with rule  ['epsilon'] with symbol epsilon
 T' [M [epsilon ] T1' [epsilon ] ] done
@@ -2575,6 +3719,9 @@ done
 here2 in assign_producer_vals with  M T' ['M', "T2'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), ('root', 'inhval')]
 TP  ['=', (1, 'inhval'), ('root', 'inhval')]
+ENTRYYY T2' None
+ENTRYYY T' None
+{'i': 0}
 PARAMS  T2' inhval T' inhval ['M', "T2'"]
 setting = T2' inhval None under root  T' with rule  ['M', "T2'"] with symbol M
 T' [M [epsilon ] T2' ] 1. temp store = =
@@ -2605,6 +3752,9 @@ here we are ['epsilon'] [['/', 'F', "T'"], ['epsilon']] 1 ['epsilon']
 here2 in assign_producer_vals with  epsilon T2' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY T2' None
+ENTRYYY T2' None
+{'i': 0}
 PARAMS  T2' synval T2' inhval ['epsilon']
 setting = T2' synval None under root  T2' with rule  ['epsilon'] with symbol epsilon
 T' [M [epsilon ] T2' [epsilon ] ] done
@@ -2625,6 +3775,9 @@ here we are ['epsilon'] [['M', "T1'"], ['M', "T2'"], ['epsilon']] 2 ['epsilon']
 here2 in assign_producer_vals with  epsilon T' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY T' None
+ENTRYYY T' None
+{'i': 0}
 PARAMS  T' synval T' inhval ['epsilon']
 setting = T' synval None under root  T' with rule  ['epsilon'] with symbol epsilon
 T [F [identifier ] T' [epsilon ] ] done
@@ -2635,10 +3788,17 @@ here we are ['F', "T'"] [['F', "T'"]] 0 ['F', "T'"]
 here2 in assign_producer_vals with  T' T ['F', "T'"]
 here3 in assign_producer_vals ['=', ('root', 'synval'), (1, 'synval')]
 TP  ['=', ('root', 'synval'), (1, 'synval')]
+ENTRYYY T l
+ENTRYYY T' None
+{'i': 0}
 PARAMS  T synval T' synval ['F', "T'"]
 setting = T synval None under root  T with rule  ['F', "T'"] with symbol T'
 E [T [F [identifier ] T' [epsilon ] ] E' ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY T l
+ENTRYYY F l
+{'i': 0}
+y= l
 PARAMS  T entry F entry ['F', "T'"]
 setting = T entry l under root  T with rule  ['F', "T'"] with symbol T'
 E [T [F [identifier ] T' [epsilon ] ] E' ] done
@@ -2648,10 +3808,18 @@ E [T [F [identifier ] T' [epsilon ] ] E' ] done
 here2 in assign_producer_vals with  T E ['T', "E'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), (0, 'synval')]
 TP  ['=', (1, 'inhval'), (0, 'synval')]
+ENTRYYY E' None
+ENTRYYY T l
+{'i': 0}
+y= l
 PARAMS  E' inhval T synval ['T', "E'"]
 setting = E' inhval None under root  E with rule  ['T', "E'"] with symbol T
 E [T [F [identifier ] T' [epsilon ] ] E' ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY E None
+ENTRYYY T l
+{'i': 0}
+y= l
 PARAMS  E entry T entry ['T', "E'"]
 setting = E entry l under root  E with rule  ['T', "E'"] with symbol T
 EXPRESSION [E [T [F [identifier ] T' [epsilon ] ] E' ] ] 1. temp store = =
@@ -2685,6 +3853,9 @@ done
 here2 in assign_producer_vals with  M E' ['M', "E1'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), ('root', 'inhval')]
 TP  ['=', (1, 'inhval'), ('root', 'inhval')]
+ENTRYYY E1' None
+ENTRYYY E' None
+{'i': 0}
 PARAMS  E1' inhval E' inhval ['M', "E1'"]
 setting = E1' inhval None under root  E' with rule  ['M', "E1'"] with symbol M
 E' [M [epsilon ] E1' ] 1. temp store = =
@@ -2715,6 +3886,9 @@ here we are ['epsilon'] [['+', 'T', "E'"], ['epsilon']] 1 ['epsilon']
 here2 in assign_producer_vals with  epsilon E1' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY E1' None
+ENTRYYY E1' None
+{'i': 0}
 PARAMS  E1' synval E1' inhval ['epsilon']
 setting = E1' synval None under root  E1' with rule  ['epsilon'] with symbol epsilon
 E' [M [epsilon ] E1' [epsilon ] ] done
@@ -2748,6 +3922,9 @@ done
 here2 in assign_producer_vals with  M E' ['M', "E2'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), ('root', 'inhval')]
 TP  ['=', (1, 'inhval'), ('root', 'inhval')]
+ENTRYYY E2' None
+ENTRYYY E' None
+{'i': 0}
 PARAMS  E2' inhval E' inhval ['M', "E2'"]
 setting = E2' inhval None under root  E' with rule  ['M', "E2'"] with symbol M
 E' [M [epsilon ] E2' ] 1. temp store = =
@@ -2778,6 +3955,9 @@ here we are ['epsilon'] [['-', 'T', "E'"], ['epsilon']] 1 ['epsilon']
 here2 in assign_producer_vals with  epsilon E2' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY E2' None
+ENTRYYY E2' None
+{'i': 0}
 PARAMS  E2' synval E2' inhval ['epsilon']
 setting = E2' synval None under root  E2' with rule  ['epsilon'] with symbol epsilon
 E' [M [epsilon ] E2' [epsilon ] ] done
@@ -2798,6 +3978,9 @@ here we are ['epsilon'] [['M', "E1'"], ['M', "E2'"], ['epsilon']] 2 ['epsilon']
 here2 in assign_producer_vals with  epsilon E' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY E' None
+ENTRYYY E' None
+{'i': 0}
 PARAMS  E' synval E' inhval ['epsilon']
 setting = E' synval None under root  E' with rule  ['epsilon'] with symbol epsilon
 E [T [F [identifier ] T' [epsilon ] ] E' [epsilon ] ] done
@@ -2808,10 +3991,17 @@ here we are ['T', "E'"] [['T', "E'"]] 0 ['T', "E'"]
 here2 in assign_producer_vals with  E' E ['T', "E'"]
 here3 in assign_producer_vals ['=', ('root', 'synval'), (1, 'synval')]
 TP  ['=', ('root', 'synval'), (1, 'synval')]
+ENTRYYY E l
+ENTRYYY E' None
+{'i': 0}
 PARAMS  E synval E' synval ['T', "E'"]
 setting = E synval None under root  E with rule  ['T', "E'"] with symbol E'
 EXPRESSION [E [T [F [identifier ] T' [epsilon ] ] E' [epsilon ] ] ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY E l
+ENTRYYY T l
+{'i': 0}
+y= l
 PARAMS  E entry T entry ['T', "E'"]
 setting = E entry l under root  E with rule  ['T', "E'"] with symbol E'
 EXPRESSION [E [T [F [identifier ] T' [epsilon ] ] E' [epsilon ] ] ] done
@@ -2822,10 +4012,18 @@ here we are ['E'] [['E']] 0 ['E']
 here2 in assign_producer_vals with  E EXPRESSION ['E']
 here3 in assign_producer_vals ['=', ('root', 'val'), (0, 'synval')]
 TP  ['=', ('root', 'val'), (0, 'synval')]
+ENTRYYY EXPRESSION None
+ENTRYYY E l
+{'i': 0}
+y= l
 PARAMS  EXPRESSION val E synval ['E']
 setting = EXPRESSION val None under root  EXPRESSION with rule  ['E'] with symbol E
 EXPRESSION1 [EXPRESSION [E [T [F [identifier ] T' [epsilon ] ] E' [epsilon ] ] ] ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY EXPRESSION None
+ENTRYYY E l
+{'i': 0}
+y= l
 PARAMS  EXPRESSION entry E entry ['E']
 setting = EXPRESSION entry l under root  EXPRESSION with rule  ['E'] with symbol E
 EXPRESSION1 [EXPRESSION [E [T [F [identifier ] T' [epsilon ] ] E' [epsilon ] ] ] ] done
@@ -2836,10 +4034,18 @@ here we are ['EXPRESSION'] [['EXPRESSION']] 0 ['EXPRESSION']
 here2 in assign_producer_vals with  EXPRESSION EXPRESSION1 ['EXPRESSION']
 here3 in assign_producer_vals ['=', ('root', 'val'), (0, 'val')]
 TP  ['=', ('root', 'val'), (0, 'val')]
+ENTRYYY EXPRESSION1 None
+ENTRYYY EXPRESSION l
+{'i': 0}
+y= l
 PARAMS  EXPRESSION1 val EXPRESSION val ['EXPRESSION']
 setting = EXPRESSION1 val None under root  EXPRESSION1 with rule  ['EXPRESSION'] with symbol EXPRESSION
 COND1 [EXPRESSION1 [EXPRESSION [E [T [F [identifier ] T' [epsilon ] ] E' [epsilon ] ] ] ] < EXPRESSION2 ; ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY EXPRESSION1 None
+ENTRYYY EXPRESSION l
+{'i': 0}
+y= l
 PARAMS  EXPRESSION1 entry EXPRESSION entry ['EXPRESSION']
 setting = EXPRESSION1 entry l under root  EXPRESSION1 with rule  ['EXPRESSION'] with symbol EXPRESSION
 COND1 [EXPRESSION1 [EXPRESSION [E [T [F [identifier ] T' [epsilon ] ] E' [epsilon ] ] ] ] < EXPRESSION2 ; ] done
@@ -2932,10 +4138,18 @@ here we are ['identifier'] [['(', 'E', ')'], ['identifier'], ['number']] 1 ['ide
 here2 in assign_producer_vals with  identifier F ['identifier']
 here3 in assign_producer_vals ['=', ('root', 'synval'), (0, 'val')]
 TP  ['=', ('root', 'synval'), (0, 'val')]
+ENTRYYY F None
+ENTRYYY identifier l
+{'i': 0}
+y= l
 PARAMS  F synval identifier val ['identifier']
 setting = F synval None under root  F with rule  ['identifier'] with symbol identifier
 T [F [identifier ] T' ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY F None
+ENTRYYY identifier l
+{'i': 0}
+y= l
 PARAMS  F entry identifier entry ['identifier']
 setting = F entry l under root  F with rule  ['identifier'] with symbol identifier
 T [F [identifier ] T' ] done
@@ -2945,10 +4159,18 @@ T [F [identifier ] T' ] done
 here2 in assign_producer_vals with  F T ['F', "T'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), (0, 'synval')]
 TP  ['=', (1, 'inhval'), (0, 'synval')]
+ENTRYYY T' None
+ENTRYYY F l
+{'i': 0}
+y= l
 PARAMS  T' inhval F synval ['F', "T'"]
 setting = T' inhval None under root  T with rule  ['F', "T'"] with symbol F
 T [F [identifier ] T' ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY T None
+ENTRYYY F l
+{'i': 0}
+y= l
 PARAMS  T entry F entry ['F', "T'"]
 setting = T entry l under root  T with rule  ['F', "T'"] with symbol F
 E [T [F [identifier ] T' ] E' ] 1. temp store = =
@@ -2982,6 +4204,9 @@ done
 here2 in assign_producer_vals with  M T' ['M', "T1'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), ('root', 'inhval')]
 TP  ['=', (1, 'inhval'), ('root', 'inhval')]
+ENTRYYY T1' None
+ENTRYYY T' None
+{'i': 0}
 PARAMS  T1' inhval T' inhval ['M', "T1'"]
 setting = T1' inhval None under root  T' with rule  ['M', "T1'"] with symbol M
 T' [M [epsilon ] T1' ] 1. temp store = =
@@ -3012,6 +4237,9 @@ here we are ['epsilon'] [['*', 'F', "T'"], ['epsilon']] 1 ['epsilon']
 here2 in assign_producer_vals with  epsilon T1' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY T1' None
+ENTRYYY T1' None
+{'i': 0}
 PARAMS  T1' synval T1' inhval ['epsilon']
 setting = T1' synval None under root  T1' with rule  ['epsilon'] with symbol epsilon
 T' [M [epsilon ] T1' [epsilon ] ] done
@@ -3045,6 +4273,9 @@ done
 here2 in assign_producer_vals with  M T' ['M', "T2'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), ('root', 'inhval')]
 TP  ['=', (1, 'inhval'), ('root', 'inhval')]
+ENTRYYY T2' None
+ENTRYYY T' None
+{'i': 0}
 PARAMS  T2' inhval T' inhval ['M', "T2'"]
 setting = T2' inhval None under root  T' with rule  ['M', "T2'"] with symbol M
 T' [M [epsilon ] T2' ] 1. temp store = =
@@ -3075,6 +4306,9 @@ here we are ['epsilon'] [['/', 'F', "T'"], ['epsilon']] 1 ['epsilon']
 here2 in assign_producer_vals with  epsilon T2' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY T2' None
+ENTRYYY T2' None
+{'i': 0}
 PARAMS  T2' synval T2' inhval ['epsilon']
 setting = T2' synval None under root  T2' with rule  ['epsilon'] with symbol epsilon
 T' [M [epsilon ] T2' [epsilon ] ] done
@@ -3095,6 +4329,9 @@ here we are ['epsilon'] [['M', "T1'"], ['M', "T2'"], ['epsilon']] 2 ['epsilon']
 here2 in assign_producer_vals with  epsilon T' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY T' None
+ENTRYYY T' None
+{'i': 0}
 PARAMS  T' synval T' inhval ['epsilon']
 setting = T' synval None under root  T' with rule  ['epsilon'] with symbol epsilon
 T [F [identifier ] T' [epsilon ] ] done
@@ -3105,10 +4342,17 @@ here we are ['F', "T'"] [['F', "T'"]] 0 ['F', "T'"]
 here2 in assign_producer_vals with  T' T ['F', "T'"]
 here3 in assign_producer_vals ['=', ('root', 'synval'), (1, 'synval')]
 TP  ['=', ('root', 'synval'), (1, 'synval')]
+ENTRYYY T l
+ENTRYYY T' None
+{'i': 0}
 PARAMS  T synval T' synval ['F', "T'"]
 setting = T synval None under root  T with rule  ['F', "T'"] with symbol T'
 E [T [F [identifier ] T' [epsilon ] ] E' ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY T l
+ENTRYYY F l
+{'i': 0}
+y= l
 PARAMS  T entry F entry ['F', "T'"]
 setting = T entry l under root  T with rule  ['F', "T'"] with symbol T'
 E [T [F [identifier ] T' [epsilon ] ] E' ] done
@@ -3118,10 +4362,18 @@ E [T [F [identifier ] T' [epsilon ] ] E' ] done
 here2 in assign_producer_vals with  T E ['T', "E'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), (0, 'synval')]
 TP  ['=', (1, 'inhval'), (0, 'synval')]
+ENTRYYY E' None
+ENTRYYY T l
+{'i': 0}
+y= l
 PARAMS  E' inhval T synval ['T', "E'"]
 setting = E' inhval None under root  E with rule  ['T', "E'"] with symbol T
 E [T [F [identifier ] T' [epsilon ] ] E' ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY E None
+ENTRYYY T l
+{'i': 0}
+y= l
 PARAMS  E entry T entry ['T', "E'"]
 setting = E entry l under root  E with rule  ['T', "E'"] with symbol T
 EXPRESSION [E [T [F [identifier ] T' [epsilon ] ] E' ] ] 1. temp store = =
@@ -3155,6 +4407,9 @@ done
 here2 in assign_producer_vals with  M E' ['M', "E1'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), ('root', 'inhval')]
 TP  ['=', (1, 'inhval'), ('root', 'inhval')]
+ENTRYYY E1' None
+ENTRYYY E' None
+{'i': 0}
 PARAMS  E1' inhval E' inhval ['M', "E1'"]
 setting = E1' inhval None under root  E' with rule  ['M', "E1'"] with symbol M
 E' [M [epsilon ] E1' ] 1. temp store = =
@@ -3185,6 +4440,9 @@ here we are ['epsilon'] [['+', 'T', "E'"], ['epsilon']] 1 ['epsilon']
 here2 in assign_producer_vals with  epsilon E1' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY E1' None
+ENTRYYY E1' None
+{'i': 0}
 PARAMS  E1' synval E1' inhval ['epsilon']
 setting = E1' synval None under root  E1' with rule  ['epsilon'] with symbol epsilon
 E' [M [epsilon ] E1' [epsilon ] ] done
@@ -3218,6 +4476,9 @@ done
 here2 in assign_producer_vals with  M E' ['M', "E2'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), ('root', 'inhval')]
 TP  ['=', (1, 'inhval'), ('root', 'inhval')]
+ENTRYYY E2' None
+ENTRYYY E' None
+{'i': 0}
 PARAMS  E2' inhval E' inhval ['M', "E2'"]
 setting = E2' inhval None under root  E' with rule  ['M', "E2'"] with symbol M
 E' [M [epsilon ] E2' ] 1. temp store = =
@@ -3248,6 +4509,9 @@ here we are ['epsilon'] [['-', 'T', "E'"], ['epsilon']] 1 ['epsilon']
 here2 in assign_producer_vals with  epsilon E2' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY E2' None
+ENTRYYY E2' None
+{'i': 0}
 PARAMS  E2' synval E2' inhval ['epsilon']
 setting = E2' synval None under root  E2' with rule  ['epsilon'] with symbol epsilon
 E' [M [epsilon ] E2' [epsilon ] ] done
@@ -3268,6 +4532,9 @@ here we are ['epsilon'] [['M', "E1'"], ['M', "E2'"], ['epsilon']] 2 ['epsilon']
 here2 in assign_producer_vals with  epsilon E' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY E' None
+ENTRYYY E' None
+{'i': 0}
 PARAMS  E' synval E' inhval ['epsilon']
 setting = E' synval None under root  E' with rule  ['epsilon'] with symbol epsilon
 E [T [F [identifier ] T' [epsilon ] ] E' [epsilon ] ] done
@@ -3278,10 +4545,17 @@ here we are ['T', "E'"] [['T', "E'"]] 0 ['T', "E'"]
 here2 in assign_producer_vals with  E' E ['T', "E'"]
 here3 in assign_producer_vals ['=', ('root', 'synval'), (1, 'synval')]
 TP  ['=', ('root', 'synval'), (1, 'synval')]
+ENTRYYY E l
+ENTRYYY E' None
+{'i': 0}
 PARAMS  E synval E' synval ['T', "E'"]
 setting = E synval None under root  E with rule  ['T', "E'"] with symbol E'
 EXPRESSION [E [T [F [identifier ] T' [epsilon ] ] E' [epsilon ] ] ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY E l
+ENTRYYY T l
+{'i': 0}
+y= l
 PARAMS  E entry T entry ['T', "E'"]
 setting = E entry l under root  E with rule  ['T', "E'"] with symbol E'
 EXPRESSION [E [T [F [identifier ] T' [epsilon ] ] E' [epsilon ] ] ] done
@@ -3292,10 +4566,18 @@ here we are ['E'] [['E']] 0 ['E']
 here2 in assign_producer_vals with  E EXPRESSION ['E']
 here3 in assign_producer_vals ['=', ('root', 'val'), (0, 'synval')]
 TP  ['=', ('root', 'val'), (0, 'synval')]
+ENTRYYY EXPRESSION None
+ENTRYYY E l
+{'i': 0}
+y= l
 PARAMS  EXPRESSION val E synval ['E']
 setting = EXPRESSION val None under root  EXPRESSION with rule  ['E'] with symbol E
 EXPRESSION1 [EXPRESSION [E [T [F [identifier ] T' [epsilon ] ] E' [epsilon ] ] ] ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY EXPRESSION None
+ENTRYYY E l
+{'i': 0}
+y= l
 PARAMS  EXPRESSION entry E entry ['E']
 setting = EXPRESSION entry l under root  EXPRESSION with rule  ['E'] with symbol E
 EXPRESSION1 [EXPRESSION [E [T [F [identifier ] T' [epsilon ] ] E' [epsilon ] ] ] ] done
@@ -3306,10 +4588,18 @@ here we are ['EXPRESSION'] [['EXPRESSION']] 0 ['EXPRESSION']
 here2 in assign_producer_vals with  EXPRESSION EXPRESSION1 ['EXPRESSION']
 here3 in assign_producer_vals ['=', ('root', 'val'), (0, 'val')]
 TP  ['=', ('root', 'val'), (0, 'val')]
+ENTRYYY EXPRESSION1 None
+ENTRYYY EXPRESSION l
+{'i': 0}
+y= l
 PARAMS  EXPRESSION1 val EXPRESSION val ['EXPRESSION']
 setting = EXPRESSION1 val None under root  EXPRESSION1 with rule  ['EXPRESSION'] with symbol EXPRESSION
 COND2 [EXPRESSION1 [EXPRESSION [E [T [F [identifier ] T' [epsilon ] ] E' [epsilon ] ] ] ] > EXPRESSION2 ; ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY EXPRESSION1 None
+ENTRYYY EXPRESSION l
+{'i': 0}
+y= l
 PARAMS  EXPRESSION1 entry EXPRESSION entry ['EXPRESSION']
 setting = EXPRESSION1 entry l under root  EXPRESSION1 with rule  ['EXPRESSION'] with symbol EXPRESSION
 COND2 [EXPRESSION1 [EXPRESSION [E [T [F [identifier ] T' [epsilon ] ] E' [epsilon ] ] ] ] > EXPRESSION2 ; ] done
@@ -3402,10 +4692,18 @@ here we are ['identifier'] [['(', 'E', ')'], ['identifier'], ['number']] 1 ['ide
 here2 in assign_producer_vals with  identifier F ['identifier']
 here3 in assign_producer_vals ['=', ('root', 'synval'), (0, 'val')]
 TP  ['=', ('root', 'synval'), (0, 'val')]
+ENTRYYY F None
+ENTRYYY identifier l
+{'i': 0}
+y= l
 PARAMS  F synval identifier val ['identifier']
 setting = F synval None under root  F with rule  ['identifier'] with symbol identifier
 T [F [identifier ] T' ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY F None
+ENTRYYY identifier l
+{'i': 0}
+y= l
 PARAMS  F entry identifier entry ['identifier']
 setting = F entry l under root  F with rule  ['identifier'] with symbol identifier
 T [F [identifier ] T' ] done
@@ -3415,10 +4713,18 @@ T [F [identifier ] T' ] done
 here2 in assign_producer_vals with  F T ['F', "T'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), (0, 'synval')]
 TP  ['=', (1, 'inhval'), (0, 'synval')]
+ENTRYYY T' None
+ENTRYYY F l
+{'i': 0}
+y= l
 PARAMS  T' inhval F synval ['F', "T'"]
 setting = T' inhval None under root  T with rule  ['F', "T'"] with symbol F
 T [F [identifier ] T' ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY T None
+ENTRYYY F l
+{'i': 0}
+y= l
 PARAMS  T entry F entry ['F', "T'"]
 setting = T entry l under root  T with rule  ['F', "T'"] with symbol F
 E [T [F [identifier ] T' ] E' ] 1. temp store = =
@@ -3452,6 +4758,9 @@ done
 here2 in assign_producer_vals with  M T' ['M', "T1'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), ('root', 'inhval')]
 TP  ['=', (1, 'inhval'), ('root', 'inhval')]
+ENTRYYY T1' None
+ENTRYYY T' None
+{'i': 0}
 PARAMS  T1' inhval T' inhval ['M', "T1'"]
 setting = T1' inhval None under root  T' with rule  ['M', "T1'"] with symbol M
 T' [M [epsilon ] T1' ] 1. temp store = =
@@ -3482,6 +4791,9 @@ here we are ['epsilon'] [['*', 'F', "T'"], ['epsilon']] 1 ['epsilon']
 here2 in assign_producer_vals with  epsilon T1' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY T1' None
+ENTRYYY T1' None
+{'i': 0}
 PARAMS  T1' synval T1' inhval ['epsilon']
 setting = T1' synval None under root  T1' with rule  ['epsilon'] with symbol epsilon
 T' [M [epsilon ] T1' [epsilon ] ] done
@@ -3515,6 +4827,9 @@ done
 here2 in assign_producer_vals with  M T' ['M', "T2'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), ('root', 'inhval')]
 TP  ['=', (1, 'inhval'), ('root', 'inhval')]
+ENTRYYY T2' None
+ENTRYYY T' None
+{'i': 0}
 PARAMS  T2' inhval T' inhval ['M', "T2'"]
 setting = T2' inhval None under root  T' with rule  ['M', "T2'"] with symbol M
 T' [M [epsilon ] T2' ] 1. temp store = =
@@ -3545,6 +4860,9 @@ here we are ['epsilon'] [['/', 'F', "T'"], ['epsilon']] 1 ['epsilon']
 here2 in assign_producer_vals with  epsilon T2' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY T2' None
+ENTRYYY T2' None
+{'i': 0}
 PARAMS  T2' synval T2' inhval ['epsilon']
 setting = T2' synval None under root  T2' with rule  ['epsilon'] with symbol epsilon
 T' [M [epsilon ] T2' [epsilon ] ] done
@@ -3565,6 +4883,9 @@ here we are ['epsilon'] [['M', "T1'"], ['M', "T2'"], ['epsilon']] 2 ['epsilon']
 here2 in assign_producer_vals with  epsilon T' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY T' None
+ENTRYYY T' None
+{'i': 0}
 PARAMS  T' synval T' inhval ['epsilon']
 setting = T' synval None under root  T' with rule  ['epsilon'] with symbol epsilon
 T [F [identifier ] T' [epsilon ] ] done
@@ -3575,10 +4896,17 @@ here we are ['F', "T'"] [['F', "T'"]] 0 ['F', "T'"]
 here2 in assign_producer_vals with  T' T ['F', "T'"]
 here3 in assign_producer_vals ['=', ('root', 'synval'), (1, 'synval')]
 TP  ['=', ('root', 'synval'), (1, 'synval')]
+ENTRYYY T l
+ENTRYYY T' None
+{'i': 0}
 PARAMS  T synval T' synval ['F', "T'"]
 setting = T synval None under root  T with rule  ['F', "T'"] with symbol T'
 E [T [F [identifier ] T' [epsilon ] ] E' ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY T l
+ENTRYYY F l
+{'i': 0}
+y= l
 PARAMS  T entry F entry ['F', "T'"]
 setting = T entry l under root  T with rule  ['F', "T'"] with symbol T'
 E [T [F [identifier ] T' [epsilon ] ] E' ] done
@@ -3588,10 +4916,18 @@ E [T [F [identifier ] T' [epsilon ] ] E' ] done
 here2 in assign_producer_vals with  T E ['T', "E'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), (0, 'synval')]
 TP  ['=', (1, 'inhval'), (0, 'synval')]
+ENTRYYY E' None
+ENTRYYY T l
+{'i': 0}
+y= l
 PARAMS  E' inhval T synval ['T', "E'"]
 setting = E' inhval None under root  E with rule  ['T', "E'"] with symbol T
 E [T [F [identifier ] T' [epsilon ] ] E' ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY E None
+ENTRYYY T l
+{'i': 0}
+y= l
 PARAMS  E entry T entry ['T', "E'"]
 setting = E entry l under root  E with rule  ['T', "E'"] with symbol T
 EXPRESSION [E [T [F [identifier ] T' [epsilon ] ] E' ] ] 1. temp store = =
@@ -3625,6 +4961,9 @@ done
 here2 in assign_producer_vals with  M E' ['M', "E1'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), ('root', 'inhval')]
 TP  ['=', (1, 'inhval'), ('root', 'inhval')]
+ENTRYYY E1' None
+ENTRYYY E' None
+{'i': 0}
 PARAMS  E1' inhval E' inhval ['M', "E1'"]
 setting = E1' inhval None under root  E' with rule  ['M', "E1'"] with symbol M
 E' [M [epsilon ] E1' ] 1. temp store = =
@@ -3655,6 +4994,9 @@ here we are ['epsilon'] [['+', 'T', "E'"], ['epsilon']] 1 ['epsilon']
 here2 in assign_producer_vals with  epsilon E1' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY E1' None
+ENTRYYY E1' None
+{'i': 0}
 PARAMS  E1' synval E1' inhval ['epsilon']
 setting = E1' synval None under root  E1' with rule  ['epsilon'] with symbol epsilon
 E' [M [epsilon ] E1' [epsilon ] ] done
@@ -3688,6 +5030,9 @@ done
 here2 in assign_producer_vals with  M E' ['M', "E2'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), ('root', 'inhval')]
 TP  ['=', (1, 'inhval'), ('root', 'inhval')]
+ENTRYYY E2' None
+ENTRYYY E' None
+{'i': 0}
 PARAMS  E2' inhval E' inhval ['M', "E2'"]
 setting = E2' inhval None under root  E' with rule  ['M', "E2'"] with symbol M
 E' [M [epsilon ] E2' ] 1. temp store = =
@@ -3718,6 +5063,9 @@ here we are ['epsilon'] [['-', 'T', "E'"], ['epsilon']] 1 ['epsilon']
 here2 in assign_producer_vals with  epsilon E2' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY E2' None
+ENTRYYY E2' None
+{'i': 0}
 PARAMS  E2' synval E2' inhval ['epsilon']
 setting = E2' synval None under root  E2' with rule  ['epsilon'] with symbol epsilon
 E' [M [epsilon ] E2' [epsilon ] ] done
@@ -3738,6 +5086,9 @@ here we are ['epsilon'] [['M', "E1'"], ['M', "E2'"], ['epsilon']] 2 ['epsilon']
 here2 in assign_producer_vals with  epsilon E' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY E' None
+ENTRYYY E' None
+{'i': 0}
 PARAMS  E' synval E' inhval ['epsilon']
 setting = E' synval None under root  E' with rule  ['epsilon'] with symbol epsilon
 E [T [F [identifier ] T' [epsilon ] ] E' [epsilon ] ] done
@@ -3748,10 +5099,17 @@ here we are ['T', "E'"] [['T', "E'"]] 0 ['T', "E'"]
 here2 in assign_producer_vals with  E' E ['T', "E'"]
 here3 in assign_producer_vals ['=', ('root', 'synval'), (1, 'synval')]
 TP  ['=', ('root', 'synval'), (1, 'synval')]
+ENTRYYY E l
+ENTRYYY E' None
+{'i': 0}
 PARAMS  E synval E' synval ['T', "E'"]
 setting = E synval None under root  E with rule  ['T', "E'"] with symbol E'
 EXPRESSION [E [T [F [identifier ] T' [epsilon ] ] E' [epsilon ] ] ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY E l
+ENTRYYY T l
+{'i': 0}
+y= l
 PARAMS  E entry T entry ['T', "E'"]
 setting = E entry l under root  E with rule  ['T', "E'"] with symbol E'
 EXPRESSION [E [T [F [identifier ] T' [epsilon ] ] E' [epsilon ] ] ] done
@@ -3762,10 +5120,18 @@ here we are ['E'] [['E']] 0 ['E']
 here2 in assign_producer_vals with  E EXPRESSION ['E']
 here3 in assign_producer_vals ['=', ('root', 'val'), (0, 'synval')]
 TP  ['=', ('root', 'val'), (0, 'synval')]
+ENTRYYY EXPRESSION None
+ENTRYYY E l
+{'i': 0}
+y= l
 PARAMS  EXPRESSION val E synval ['E']
 setting = EXPRESSION val None under root  EXPRESSION with rule  ['E'] with symbol E
 EXPRESSION1 [EXPRESSION [E [T [F [identifier ] T' [epsilon ] ] E' [epsilon ] ] ] ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY EXPRESSION None
+ENTRYYY E l
+{'i': 0}
+y= l
 PARAMS  EXPRESSION entry E entry ['E']
 setting = EXPRESSION entry l under root  EXPRESSION with rule  ['E'] with symbol E
 EXPRESSION1 [EXPRESSION [E [T [F [identifier ] T' [epsilon ] ] E' [epsilon ] ] ] ] done
@@ -3776,10 +5142,18 @@ here we are ['EXPRESSION'] [['EXPRESSION']] 0 ['EXPRESSION']
 here2 in assign_producer_vals with  EXPRESSION EXPRESSION1 ['EXPRESSION']
 here3 in assign_producer_vals ['=', ('root', 'val'), (0, 'val')]
 TP  ['=', ('root', 'val'), (0, 'val')]
+ENTRYYY EXPRESSION1 None
+ENTRYYY EXPRESSION l
+{'i': 0}
+y= l
 PARAMS  EXPRESSION1 val EXPRESSION val ['EXPRESSION']
 setting = EXPRESSION1 val None under root  EXPRESSION1 with rule  ['EXPRESSION'] with symbol EXPRESSION
 COND3 [EXPRESSION1 [EXPRESSION [E [T [F [identifier ] T' [epsilon ] ] E' [epsilon ] ] ] ] <= EXPRESSION2 ; ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY EXPRESSION1 None
+ENTRYYY EXPRESSION l
+{'i': 0}
+y= l
 PARAMS  EXPRESSION1 entry EXPRESSION entry ['EXPRESSION']
 setting = EXPRESSION1 entry l under root  EXPRESSION1 with rule  ['EXPRESSION'] with symbol EXPRESSION
 COND3 [EXPRESSION1 [EXPRESSION [E [T [F [identifier ] T' [epsilon ] ] E' [epsilon ] ] ] ] <= EXPRESSION2 ; ] done
@@ -3872,10 +5246,18 @@ here we are ['identifier'] [['(', 'E', ')'], ['identifier'], ['number']] 1 ['ide
 here2 in assign_producer_vals with  identifier F ['identifier']
 here3 in assign_producer_vals ['=', ('root', 'synval'), (0, 'val')]
 TP  ['=', ('root', 'synval'), (0, 'val')]
+ENTRYYY F None
+ENTRYYY identifier l
+{'i': 0}
+y= l
 PARAMS  F synval identifier val ['identifier']
 setting = F synval None under root  F with rule  ['identifier'] with symbol identifier
 T [F [identifier ] T' ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY F None
+ENTRYYY identifier l
+{'i': 0}
+y= l
 PARAMS  F entry identifier entry ['identifier']
 setting = F entry l under root  F with rule  ['identifier'] with symbol identifier
 T [F [identifier ] T' ] done
@@ -3885,10 +5267,18 @@ T [F [identifier ] T' ] done
 here2 in assign_producer_vals with  F T ['F', "T'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), (0, 'synval')]
 TP  ['=', (1, 'inhval'), (0, 'synval')]
+ENTRYYY T' None
+ENTRYYY F l
+{'i': 0}
+y= l
 PARAMS  T' inhval F synval ['F', "T'"]
 setting = T' inhval None under root  T with rule  ['F', "T'"] with symbol F
 T [F [identifier ] T' ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY T None
+ENTRYYY F l
+{'i': 0}
+y= l
 PARAMS  T entry F entry ['F', "T'"]
 setting = T entry l under root  T with rule  ['F', "T'"] with symbol F
 E [T [F [identifier ] T' ] E' ] 1. temp store = =
@@ -3922,6 +5312,9 @@ done
 here2 in assign_producer_vals with  M T' ['M', "T1'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), ('root', 'inhval')]
 TP  ['=', (1, 'inhval'), ('root', 'inhval')]
+ENTRYYY T1' None
+ENTRYYY T' None
+{'i': 0}
 PARAMS  T1' inhval T' inhval ['M', "T1'"]
 setting = T1' inhval None under root  T' with rule  ['M', "T1'"] with symbol M
 T' [M [epsilon ] T1' ] 1. temp store = =
@@ -3952,6 +5345,9 @@ here we are ['epsilon'] [['*', 'F', "T'"], ['epsilon']] 1 ['epsilon']
 here2 in assign_producer_vals with  epsilon T1' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY T1' None
+ENTRYYY T1' None
+{'i': 0}
 PARAMS  T1' synval T1' inhval ['epsilon']
 setting = T1' synval None under root  T1' with rule  ['epsilon'] with symbol epsilon
 T' [M [epsilon ] T1' [epsilon ] ] done
@@ -3985,6 +5381,9 @@ done
 here2 in assign_producer_vals with  M T' ['M', "T2'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), ('root', 'inhval')]
 TP  ['=', (1, 'inhval'), ('root', 'inhval')]
+ENTRYYY T2' None
+ENTRYYY T' None
+{'i': 0}
 PARAMS  T2' inhval T' inhval ['M', "T2'"]
 setting = T2' inhval None under root  T' with rule  ['M', "T2'"] with symbol M
 T' [M [epsilon ] T2' ] 1. temp store = =
@@ -4015,6 +5414,9 @@ here we are ['epsilon'] [['/', 'F', "T'"], ['epsilon']] 1 ['epsilon']
 here2 in assign_producer_vals with  epsilon T2' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY T2' None
+ENTRYYY T2' None
+{'i': 0}
 PARAMS  T2' synval T2' inhval ['epsilon']
 setting = T2' synval None under root  T2' with rule  ['epsilon'] with symbol epsilon
 T' [M [epsilon ] T2' [epsilon ] ] done
@@ -4035,6 +5437,9 @@ here we are ['epsilon'] [['M', "T1'"], ['M', "T2'"], ['epsilon']] 2 ['epsilon']
 here2 in assign_producer_vals with  epsilon T' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY T' None
+ENTRYYY T' None
+{'i': 0}
 PARAMS  T' synval T' inhval ['epsilon']
 setting = T' synval None under root  T' with rule  ['epsilon'] with symbol epsilon
 T [F [identifier ] T' [epsilon ] ] done
@@ -4045,10 +5450,17 @@ here we are ['F', "T'"] [['F', "T'"]] 0 ['F', "T'"]
 here2 in assign_producer_vals with  T' T ['F', "T'"]
 here3 in assign_producer_vals ['=', ('root', 'synval'), (1, 'synval')]
 TP  ['=', ('root', 'synval'), (1, 'synval')]
+ENTRYYY T l
+ENTRYYY T' None
+{'i': 0}
 PARAMS  T synval T' synval ['F', "T'"]
 setting = T synval None under root  T with rule  ['F', "T'"] with symbol T'
 E [T [F [identifier ] T' [epsilon ] ] E' ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY T l
+ENTRYYY F l
+{'i': 0}
+y= l
 PARAMS  T entry F entry ['F', "T'"]
 setting = T entry l under root  T with rule  ['F', "T'"] with symbol T'
 E [T [F [identifier ] T' [epsilon ] ] E' ] done
@@ -4058,10 +5470,18 @@ E [T [F [identifier ] T' [epsilon ] ] E' ] done
 here2 in assign_producer_vals with  T E ['T', "E'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), (0, 'synval')]
 TP  ['=', (1, 'inhval'), (0, 'synval')]
+ENTRYYY E' None
+ENTRYYY T l
+{'i': 0}
+y= l
 PARAMS  E' inhval T synval ['T', "E'"]
 setting = E' inhval None under root  E with rule  ['T', "E'"] with symbol T
 E [T [F [identifier ] T' [epsilon ] ] E' ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY E None
+ENTRYYY T l
+{'i': 0}
+y= l
 PARAMS  E entry T entry ['T', "E'"]
 setting = E entry l under root  E with rule  ['T', "E'"] with symbol T
 EXPRESSION [E [T [F [identifier ] T' [epsilon ] ] E' ] ] 1. temp store = =
@@ -4095,6 +5515,9 @@ done
 here2 in assign_producer_vals with  M E' ['M', "E1'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), ('root', 'inhval')]
 TP  ['=', (1, 'inhval'), ('root', 'inhval')]
+ENTRYYY E1' None
+ENTRYYY E' None
+{'i': 0}
 PARAMS  E1' inhval E' inhval ['M', "E1'"]
 setting = E1' inhval None under root  E' with rule  ['M', "E1'"] with symbol M
 E' [M [epsilon ] E1' ] 1. temp store = =
@@ -4125,6 +5548,9 @@ here we are ['epsilon'] [['+', 'T', "E'"], ['epsilon']] 1 ['epsilon']
 here2 in assign_producer_vals with  epsilon E1' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY E1' None
+ENTRYYY E1' None
+{'i': 0}
 PARAMS  E1' synval E1' inhval ['epsilon']
 setting = E1' synval None under root  E1' with rule  ['epsilon'] with symbol epsilon
 E' [M [epsilon ] E1' [epsilon ] ] done
@@ -4158,6 +5584,9 @@ done
 here2 in assign_producer_vals with  M E' ['M', "E2'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), ('root', 'inhval')]
 TP  ['=', (1, 'inhval'), ('root', 'inhval')]
+ENTRYYY E2' None
+ENTRYYY E' None
+{'i': 0}
 PARAMS  E2' inhval E' inhval ['M', "E2'"]
 setting = E2' inhval None under root  E' with rule  ['M', "E2'"] with symbol M
 E' [M [epsilon ] E2' ] 1. temp store = =
@@ -4188,6 +5617,9 @@ here we are ['epsilon'] [['-', 'T', "E'"], ['epsilon']] 1 ['epsilon']
 here2 in assign_producer_vals with  epsilon E2' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY E2' None
+ENTRYYY E2' None
+{'i': 0}
 PARAMS  E2' synval E2' inhval ['epsilon']
 setting = E2' synval None under root  E2' with rule  ['epsilon'] with symbol epsilon
 E' [M [epsilon ] E2' [epsilon ] ] done
@@ -4208,6 +5640,9 @@ here we are ['epsilon'] [['M', "E1'"], ['M', "E2'"], ['epsilon']] 2 ['epsilon']
 here2 in assign_producer_vals with  epsilon E' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY E' None
+ENTRYYY E' None
+{'i': 0}
 PARAMS  E' synval E' inhval ['epsilon']
 setting = E' synval None under root  E' with rule  ['epsilon'] with symbol epsilon
 E [T [F [identifier ] T' [epsilon ] ] E' [epsilon ] ] done
@@ -4218,10 +5653,17 @@ here we are ['T', "E'"] [['T', "E'"]] 0 ['T', "E'"]
 here2 in assign_producer_vals with  E' E ['T', "E'"]
 here3 in assign_producer_vals ['=', ('root', 'synval'), (1, 'synval')]
 TP  ['=', ('root', 'synval'), (1, 'synval')]
+ENTRYYY E l
+ENTRYYY E' None
+{'i': 0}
 PARAMS  E synval E' synval ['T', "E'"]
 setting = E synval None under root  E with rule  ['T', "E'"] with symbol E'
 EXPRESSION [E [T [F [identifier ] T' [epsilon ] ] E' [epsilon ] ] ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY E l
+ENTRYYY T l
+{'i': 0}
+y= l
 PARAMS  E entry T entry ['T', "E'"]
 setting = E entry l under root  E with rule  ['T', "E'"] with symbol E'
 EXPRESSION [E [T [F [identifier ] T' [epsilon ] ] E' [epsilon ] ] ] done
@@ -4232,10 +5674,18 @@ here we are ['E'] [['E']] 0 ['E']
 here2 in assign_producer_vals with  E EXPRESSION ['E']
 here3 in assign_producer_vals ['=', ('root', 'val'), (0, 'synval')]
 TP  ['=', ('root', 'val'), (0, 'synval')]
+ENTRYYY EXPRESSION None
+ENTRYYY E l
+{'i': 0}
+y= l
 PARAMS  EXPRESSION val E synval ['E']
 setting = EXPRESSION val None under root  EXPRESSION with rule  ['E'] with symbol E
 EXPRESSION1 [EXPRESSION [E [T [F [identifier ] T' [epsilon ] ] E' [epsilon ] ] ] ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY EXPRESSION None
+ENTRYYY E l
+{'i': 0}
+y= l
 PARAMS  EXPRESSION entry E entry ['E']
 setting = EXPRESSION entry l under root  EXPRESSION with rule  ['E'] with symbol E
 EXPRESSION1 [EXPRESSION [E [T [F [identifier ] T' [epsilon ] ] E' [epsilon ] ] ] ] done
@@ -4246,10 +5696,18 @@ here we are ['EXPRESSION'] [['EXPRESSION']] 0 ['EXPRESSION']
 here2 in assign_producer_vals with  EXPRESSION EXPRESSION1 ['EXPRESSION']
 here3 in assign_producer_vals ['=', ('root', 'val'), (0, 'val')]
 TP  ['=', ('root', 'val'), (0, 'val')]
+ENTRYYY EXPRESSION1 None
+ENTRYYY EXPRESSION l
+{'i': 0}
+y= l
 PARAMS  EXPRESSION1 val EXPRESSION val ['EXPRESSION']
 setting = EXPRESSION1 val None under root  EXPRESSION1 with rule  ['EXPRESSION'] with symbol EXPRESSION
 COND4 [EXPRESSION1 [EXPRESSION [E [T [F [identifier ] T' [epsilon ] ] E' [epsilon ] ] ] ] >= EXPRESSION2 ; ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY EXPRESSION1 None
+ENTRYYY EXPRESSION l
+{'i': 0}
+y= l
 PARAMS  EXPRESSION1 entry EXPRESSION entry ['EXPRESSION']
 setting = EXPRESSION1 entry l under root  EXPRESSION1 with rule  ['EXPRESSION'] with symbol EXPRESSION
 COND4 [EXPRESSION1 [EXPRESSION [E [T [F [identifier ] T' [epsilon ] ] E' [epsilon ] ] ] ] >= EXPRESSION2 ; ] done
@@ -4385,6 +5843,9 @@ in match token l identifier identifier
 here2 in assign_producer_vals with  identifier ASSIGN ['identifier', '=', 'EXPRESSION', ';']
 here3 in assign_producer_vals ['=', (0, 'type'), ('root', 'inhval')]
 TP  ['=', (0, 'type'), ('root', 'inhval')]
+ENTRYYY identifier l
+ENTRYYY ASSIGN None
+{'i': 0}
 PARAMS  identifier type ASSIGN inhval ['identifier', '=', 'EXPRESSION', ';']
 setting = identifier type None under root  ASSIGN with rule  ['identifier', '=', 'EXPRESSION', ';'] with symbol identifier
 ASSIGN [identifier = EXPRESSION ; ] matched
@@ -4460,6 +5921,9 @@ here we are ['number'] [['(', 'E', ')'], ['identifier'], ['number']] 2 ['number'
 here2 in assign_producer_vals with  number F ['number']
 here3 in assign_producer_vals ['=', ('root', 'synval'), (0, 'lexval')]
 TP  ['=', ('root', 'synval'), (0, 'lexval')]
+ENTRYYY F None
+ENTRYYY number None
+{'i': 0}
 PARAMS  F synval number lexval ['number']
 setting = F synval 3 under root  F with rule  ['number'] with symbol number
 T [F [number ] T' ] done
@@ -4469,10 +5933,16 @@ T [F [number ] T' ] done
 here2 in assign_producer_vals with  F T ['F', "T'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), (0, 'synval')]
 TP  ['=', (1, 'inhval'), (0, 'synval')]
+ENTRYYY T' None
+ENTRYYY F None
+{'i': 0}
 PARAMS  T' inhval F synval ['F', "T'"]
 setting = T' inhval 3 under root  T with rule  ['F', "T'"] with symbol F
 T [F [number ] T' ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY T None
+ENTRYYY F None
+{'i': 0}
 PARAMS  T entry F entry ['F', "T'"]
 setting = T entry None under root  T with rule  ['F', "T'"] with symbol F
 E [T [F [number ] T' ] E' ] 1. temp store + +
@@ -4506,6 +5976,9 @@ done
 here2 in assign_producer_vals with  M T' ['M', "T1'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), ('root', 'inhval')]
 TP  ['=', (1, 'inhval'), ('root', 'inhval')]
+ENTRYYY T1' None
+ENTRYYY T' None
+{'i': 0}
 PARAMS  T1' inhval T' inhval ['M', "T1'"]
 setting = T1' inhval 3 under root  T' with rule  ['M', "T1'"] with symbol M
 T' [M [epsilon ] T1' ] 1. temp store + +
@@ -4536,6 +6009,9 @@ here we are ['epsilon'] [['*', 'F', "T'"], ['epsilon']] 1 ['epsilon']
 here2 in assign_producer_vals with  epsilon T1' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY T1' None
+ENTRYYY T1' None
+{'i': 0}
 PARAMS  T1' synval T1' inhval ['epsilon']
 setting = T1' synval 3 under root  T1' with rule  ['epsilon'] with symbol epsilon
 T' [M [epsilon ] T1' [epsilon ] ] done
@@ -4569,6 +6045,9 @@ done
 here2 in assign_producer_vals with  M T' ['M', "T2'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), ('root', 'inhval')]
 TP  ['=', (1, 'inhval'), ('root', 'inhval')]
+ENTRYYY T2' None
+ENTRYYY T' None
+{'i': 0}
 PARAMS  T2' inhval T' inhval ['M', "T2'"]
 setting = T2' inhval 3 under root  T' with rule  ['M', "T2'"] with symbol M
 T' [M [epsilon ] T2' ] 1. temp store + +
@@ -4599,6 +6078,9 @@ here we are ['epsilon'] [['/', 'F', "T'"], ['epsilon']] 1 ['epsilon']
 here2 in assign_producer_vals with  epsilon T2' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY T2' None
+ENTRYYY T2' None
+{'i': 0}
 PARAMS  T2' synval T2' inhval ['epsilon']
 setting = T2' synval 3 under root  T2' with rule  ['epsilon'] with symbol epsilon
 T' [M [epsilon ] T2' [epsilon ] ] done
@@ -4619,6 +6101,9 @@ here we are ['epsilon'] [['M', "T1'"], ['M', "T2'"], ['epsilon']] 2 ['epsilon']
 here2 in assign_producer_vals with  epsilon T' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY T' None
+ENTRYYY T' None
+{'i': 0}
 PARAMS  T' synval T' inhval ['epsilon']
 setting = T' synval 3 under root  T' with rule  ['epsilon'] with symbol epsilon
 T [F [number ] T' [epsilon ] ] done
@@ -4629,10 +6114,16 @@ here we are ['F', "T'"] [['F', "T'"]] 0 ['F', "T'"]
 here2 in assign_producer_vals with  T' T ['F', "T'"]
 here3 in assign_producer_vals ['=', ('root', 'synval'), (1, 'synval')]
 TP  ['=', ('root', 'synval'), (1, 'synval')]
+ENTRYYY T None
+ENTRYYY T' None
+{'i': 0}
 PARAMS  T synval T' synval ['F', "T'"]
 setting = T synval 3 under root  T with rule  ['F', "T'"] with symbol T'
 E [T [F [number ] T' [epsilon ] ] E' ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY T None
+ENTRYYY F None
+{'i': 0}
 PARAMS  T entry F entry ['F', "T'"]
 setting = T entry None under root  T with rule  ['F', "T'"] with symbol T'
 E [T [F [number ] T' [epsilon ] ] E' ] done
@@ -4642,10 +6133,16 @@ E [T [F [number ] T' [epsilon ] ] E' ] done
 here2 in assign_producer_vals with  T E ['T', "E'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), (0, 'synval')]
 TP  ['=', (1, 'inhval'), (0, 'synval')]
+ENTRYYY E' None
+ENTRYYY T None
+{'i': 0}
 PARAMS  E' inhval T synval ['T', "E'"]
 setting = E' inhval 3 under root  E with rule  ['T', "E'"] with symbol T
 E [T [F [number ] T' [epsilon ] ] E' ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY E None
+ENTRYYY T None
+{'i': 0}
 PARAMS  E entry T entry ['T', "E'"]
 setting = E entry None under root  E with rule  ['T', "E'"] with symbol T
 EXPRESSION [E [T [F [number ] T' [epsilon ] ] E' ] ] 1. temp store + +
@@ -4679,6 +6176,9 @@ done
 here2 in assign_producer_vals with  M E' ['M', "E1'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), ('root', 'inhval')]
 TP  ['=', (1, 'inhval'), ('root', 'inhval')]
+ENTRYYY E1' None
+ENTRYYY E' None
+{'i': 0}
 PARAMS  E1' inhval E' inhval ['M', "E1'"]
 setting = E1' inhval 3 under root  E' with rule  ['M', "E1'"] with symbol M
 E' [M [epsilon ] E1' ] 1. temp store + +
@@ -4745,6 +6245,9 @@ here we are ['number'] [['(', 'E', ')'], ['identifier'], ['number']] 2 ['number'
 here2 in assign_producer_vals with  number F ['number']
 here3 in assign_producer_vals ['=', ('root', 'synval'), (0, 'lexval')]
 TP  ['=', ('root', 'synval'), (0, 'lexval')]
+ENTRYYY F None
+ENTRYYY number None
+{'i': 0}
 PARAMS  F synval number lexval ['number']
 setting = F synval 2 under root  F with rule  ['number'] with symbol number
 T [F [number ] T' ] done
@@ -4754,10 +6257,16 @@ T [F [number ] T' ] done
 here2 in assign_producer_vals with  F T ['F', "T'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), (0, 'synval')]
 TP  ['=', (1, 'inhval'), (0, 'synval')]
+ENTRYYY T' None
+ENTRYYY F None
+{'i': 0}
 PARAMS  T' inhval F synval ['F', "T'"]
 setting = T' inhval 2 under root  T with rule  ['F', "T'"] with symbol F
 T [F [number ] T' ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY T None
+ENTRYYY F None
+{'i': 0}
 PARAMS  T entry F entry ['F', "T'"]
 setting = T entry None under root  T with rule  ['F', "T'"] with symbol F
 E1' [+ T [F [number ] T' ] E' ] 1. temp store * *
@@ -4791,6 +6300,9 @@ done
 here2 in assign_producer_vals with  M T' ['M', "T1'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), ('root', 'inhval')]
 TP  ['=', (1, 'inhval'), ('root', 'inhval')]
+ENTRYYY T1' None
+ENTRYYY T' None
+{'i': 0}
 PARAMS  T1' inhval T' inhval ['M', "T1'"]
 setting = T1' inhval 2 under root  T' with rule  ['M', "T1'"] with symbol M
 T' [M [epsilon ] T1' ] 1. temp store * *
@@ -4849,6 +6361,9 @@ here we are ['number'] [['(', 'E', ')'], ['identifier'], ['number']] 2 ['number'
 here2 in assign_producer_vals with  number F ['number']
 here3 in assign_producer_vals ['=', ('root', 'synval'), (0, 'lexval')]
 TP  ['=', ('root', 'synval'), (0, 'lexval')]
+ENTRYYY F None
+ENTRYYY number None
+{'i': 0}
 PARAMS  F synval number lexval ['number']
 setting = F synval 5 under root  F with rule  ['number'] with symbol number
 T1' [* F [number ] T' ] done
@@ -4859,8 +6374,9 @@ here2 in assign_producer_vals with  F T1' ['*', 'F', "T'"]
 here3 in assign_producer_vals ['*', (2, 'inhval'), ('root', 'inhval'), (1, 'synval')]
 TP  ['*', (2, 'inhval'), ('root', 'inhval'), (1, 'synval')]
 PARAMS  T' inhval T1' inhval F synval
-vals  2 5
 stak2.
+y_attr inhval
+vals  2 5
 QUAD ('*', 2, 'F', "T'")
 ENTRYYY T' None
 ENTRYYY T1' None
@@ -4868,6 +6384,9 @@ ENTRYYY F None
 setting * T' inhval 10 under root  T1' with rule  ['*', 'F', "T'"] with symbol F
 T1' [* F [number ] T' ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY T1' None
+ENTRYYY * None
+{'i': 0}
 PARAMS  T1' entry * entry ['*', 'F', "T'"]
 setting = T1' entry None under root  T1' with rule  ['*', 'F', "T'"] with symbol F
 T' [M [epsilon ] T1' [* F [number ] T' ] ] 1. temp store ; ;
@@ -4901,6 +6420,9 @@ done
 here2 in assign_producer_vals with  M T' ['M', "T1'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), ('root', 'inhval')]
 TP  ['=', (1, 'inhval'), ('root', 'inhval')]
+ENTRYYY T1' None
+ENTRYYY T' None
+{'i': 0}
 PARAMS  T1' inhval T' inhval ['M', "T1'"]
 setting = T1' inhval 10 under root  T' with rule  ['M', "T1'"] with symbol M
 T' [M [epsilon ] T1' ] 1. temp store ; ;
@@ -4931,6 +6453,9 @@ here we are ['epsilon'] [['*', 'F', "T'"], ['epsilon']] 1 ['epsilon']
 here2 in assign_producer_vals with  epsilon T1' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY T1' None
+ENTRYYY T1' None
+{'i': 0}
 PARAMS  T1' synval T1' inhval ['epsilon']
 setting = T1' synval 10 under root  T1' with rule  ['epsilon'] with symbol epsilon
 T' [M [epsilon ] T1' [epsilon ] ] done
@@ -4964,6 +6489,9 @@ done
 here2 in assign_producer_vals with  M T' ['M', "T2'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), ('root', 'inhval')]
 TP  ['=', (1, 'inhval'), ('root', 'inhval')]
+ENTRYYY T2' None
+ENTRYYY T' None
+{'i': 0}
 PARAMS  T2' inhval T' inhval ['M', "T2'"]
 setting = T2' inhval 10 under root  T' with rule  ['M', "T2'"] with symbol M
 T' [M [epsilon ] T2' ] 1. temp store ; ;
@@ -4994,6 +6522,9 @@ here we are ['epsilon'] [['/', 'F', "T'"], ['epsilon']] 1 ['epsilon']
 here2 in assign_producer_vals with  epsilon T2' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY T2' None
+ENTRYYY T2' None
+{'i': 0}
 PARAMS  T2' synval T2' inhval ['epsilon']
 setting = T2' synval 10 under root  T2' with rule  ['epsilon'] with symbol epsilon
 T' [M [epsilon ] T2' [epsilon ] ] done
@@ -5014,6 +6545,9 @@ here we are ['epsilon'] [['M', "T1'"], ['M', "T2'"], ['epsilon']] 2 ['epsilon']
 here2 in assign_producer_vals with  epsilon T' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY T' None
+ENTRYYY T' None
+{'i': 0}
 PARAMS  T' synval T' inhval ['epsilon']
 setting = T' synval 10 under root  T' with rule  ['epsilon'] with symbol epsilon
 T1' [* F [number ] T' [epsilon ] ] done
@@ -5024,10 +6558,16 @@ here we are ['*', 'F', "T'"] [['*', 'F', "T'"], ['epsilon']] 0 ['*', 'F', "T'"]
 here2 in assign_producer_vals with  T' T1' ['*', 'F', "T'"]
 here3 in assign_producer_vals ['=', ('root', 'synval'), (2, 'synval')]
 TP  ['=', ('root', 'synval'), (2, 'synval')]
+ENTRYYY T1' None
+ENTRYYY T' None
+{'i': 0}
 PARAMS  T1' synval T' synval ['*', 'F', "T'"]
 setting = T1' synval 10 under root  T1' with rule  ['*', 'F', "T'"] with symbol T'
 T' [M [epsilon ] T1' [* F [number ] T' [epsilon ] ] ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY T1' None
+ENTRYYY * None
+{'i': 0}
 PARAMS  T1' entry * entry ['*', 'F', "T'"]
 setting = T1' entry None under root  T1' with rule  ['*', 'F', "T'"] with symbol T'
 T' [M [epsilon ] T1' [* F [number ] T' [epsilon ] ] ] done
@@ -5038,10 +6578,16 @@ here we are ['M', "T1'"] [['M', "T1'"], ['M', "T2'"], ['epsilon']] 0 ['M', "T1'"
 here2 in assign_producer_vals with  T1' T' ['M', "T1'"]
 here3 in assign_producer_vals ['=', ('root', 'synval'), (1, 'synval')]
 TP  ['=', ('root', 'synval'), (1, 'synval')]
+ENTRYYY T' None
+ENTRYYY T1' None
+{'i': 0}
 PARAMS  T' synval T1' synval ['M', "T1'"]
 setting = T' synval 10 under root  T' with rule  ['M', "T1'"] with symbol T1'
 T [F [number ] T' [M [epsilon ] T1' [* F [number ] T' [epsilon ] ] ] ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY T' None
+ENTRYYY M None
+{'i': 0}
 PARAMS  T' entry M entry ['M', "T1'"]
 setting = T' entry None under root  T' with rule  ['M', "T1'"] with symbol T1'
 T [F [number ] T' [M [epsilon ] T1' [* F [number ] T' [epsilon ] ] ] ] done
@@ -5052,10 +6598,16 @@ here we are ['F', "T'"] [['F', "T'"]] 0 ['F', "T'"]
 here2 in assign_producer_vals with  T' T ['F', "T'"]
 here3 in assign_producer_vals ['=', ('root', 'synval'), (1, 'synval')]
 TP  ['=', ('root', 'synval'), (1, 'synval')]
+ENTRYYY T None
+ENTRYYY T' None
+{'i': 0}
 PARAMS  T synval T' synval ['F', "T'"]
 setting = T synval 10 under root  T with rule  ['F', "T'"] with symbol T'
 E1' [+ T [F [number ] T' [M [epsilon ] T1' [* F [number ] T' [epsilon ] ] ] ] E' ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY T None
+ENTRYYY F None
+{'i': 0}
 PARAMS  T entry F entry ['F', "T'"]
 setting = T entry None under root  T with rule  ['F', "T'"] with symbol T'
 E1' [+ T [F [number ] T' [M [epsilon ] T1' [* F [number ] T' [epsilon ] ] ] ] E' ] done
@@ -5066,14 +6618,22 @@ here2 in assign_producer_vals with  T E1' ['+', 'T', "E'"]
 here3 in assign_producer_vals ['+', (2, 'inhval'), ('root', 'inhval'), (1, 'synval')]
 TP  ['+', (2, 'inhval'), ('root', 'inhval'), (1, 'synval')]
 PARAMS  E' inhval E1' inhval T synval
-vals  3 10
 stak2.
+y_attr inhval
+vals  3 10
 QUAD ('+', 3, 'T', "E'")
 ENTRYYY E' None
 ENTRYYY E1' None
 ENTRYYY T None
 setting + E' inhval 13 under root  E1' with rule  ['+', 'T', "E'"] with symbol T
-E1' [+ T [F [number ] T' [M [epsilon ] T1' [* F [number ] T' [epsilon ] ] ] ] E' ] 1. temp store ; ;
+E1' [+ T [F [number ] T' [M [epsilon ] T1' [* F [number ] T' [epsilon ] ] ] ] E' ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
+TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY E1' None
+ENTRYYY + None
+{'i': 0}
+PARAMS  E1' entry + entry ['+', 'T', "E'"]
+setting = E1' entry None under root  E1' with rule  ['+', 'T', "E'"] with symbol T
+E' [M [epsilon ] E1' [+ T [F [number ] T' [M [epsilon ] T1' [* F [number ] T' [epsilon ] ] ] ] E' ] ] 1. temp store ; ;
 SYMBOL  E'
 in symbol E' 		(in rule  ['+', 'T', "E'"] )
 in producer
@@ -5104,6 +6664,9 @@ done
 here2 in assign_producer_vals with  M E' ['M', "E1'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), ('root', 'inhval')]
 TP  ['=', (1, 'inhval'), ('root', 'inhval')]
+ENTRYYY E1' None
+ENTRYYY E' None
+{'i': 0}
 PARAMS  E1' inhval E' inhval ['M', "E1'"]
 setting = E1' inhval 13 under root  E' with rule  ['M', "E1'"] with symbol M
 E' [M [epsilon ] E1' ] 1. temp store ; ;
@@ -5134,6 +6697,9 @@ here we are ['epsilon'] [['+', 'T', "E'"], ['epsilon']] 1 ['epsilon']
 here2 in assign_producer_vals with  epsilon E1' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY E1' None
+ENTRYYY E1' None
+{'i': 0}
 PARAMS  E1' synval E1' inhval ['epsilon']
 setting = E1' synval 13 under root  E1' with rule  ['epsilon'] with symbol epsilon
 E' [M [epsilon ] E1' [epsilon ] ] done
@@ -5167,6 +6733,9 @@ done
 here2 in assign_producer_vals with  M E' ['M', "E2'"]
 here3 in assign_producer_vals ['=', (1, 'inhval'), ('root', 'inhval')]
 TP  ['=', (1, 'inhval'), ('root', 'inhval')]
+ENTRYYY E2' None
+ENTRYYY E' None
+{'i': 0}
 PARAMS  E2' inhval E' inhval ['M', "E2'"]
 setting = E2' inhval 13 under root  E' with rule  ['M', "E2'"] with symbol M
 E' [M [epsilon ] E2' ] 1. temp store ; ;
@@ -5197,6 +6766,9 @@ here we are ['epsilon'] [['-', 'T', "E'"], ['epsilon']] 1 ['epsilon']
 here2 in assign_producer_vals with  epsilon E2' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY E2' None
+ENTRYYY E2' None
+{'i': 0}
 PARAMS  E2' synval E2' inhval ['epsilon']
 setting = E2' synval 13 under root  E2' with rule  ['epsilon'] with symbol epsilon
 E' [M [epsilon ] E2' [epsilon ] ] done
@@ -5217,6 +6789,9 @@ here we are ['epsilon'] [['M', "E1'"], ['M', "E2'"], ['epsilon']] 2 ['epsilon']
 here2 in assign_producer_vals with  epsilon E' ['epsilon']
 here3 in assign_producer_vals ['=', ('root', 'synval'), ('root', 'inhval')]
 TP  ['=', ('root', 'synval'), ('root', 'inhval')]
+ENTRYYY E' None
+ENTRYYY E' None
+{'i': 0}
 PARAMS  E' synval E' inhval ['epsilon']
 setting = E' synval 13 under root  E' with rule  ['epsilon'] with symbol epsilon
 E1' [+ T [F [number ] T' [M [epsilon ] T1' [* F [number ] T' [epsilon ] ] ] ] E' [epsilon ] ] done
@@ -5227,10 +6802,16 @@ here we are ['+', 'T', "E'"] [['+', 'T', "E'"], ['epsilon']] 0 ['+', 'T', "E'"]
 here2 in assign_producer_vals with  E' E1' ['+', 'T', "E'"]
 here3 in assign_producer_vals ['=', ('root', 'synval'), (2, 'synval')]
 TP  ['=', ('root', 'synval'), (2, 'synval')]
+ENTRYYY E1' None
+ENTRYYY E' None
+{'i': 0}
 PARAMS  E1' synval E' synval ['+', 'T', "E'"]
 setting = E1' synval 13 under root  E1' with rule  ['+', 'T', "E'"] with symbol E'
 E' [M [epsilon ] E1' [+ T [F [number ] T' [M [epsilon ] T1' [* F [number ] T' [epsilon ] ] ] ] E' [epsilon ] ] ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY E1' None
+ENTRYYY + None
+{'i': 0}
 PARAMS  E1' entry + entry ['+', 'T', "E'"]
 setting = E1' entry None under root  E1' with rule  ['+', 'T', "E'"] with symbol E'
 E' [M [epsilon ] E1' [+ T [F [number ] T' [M [epsilon ] T1' [* F [number ] T' [epsilon ] ] ] ] E' [epsilon ] ] ] done
@@ -5241,10 +6822,16 @@ here we are ['M', "E1'"] [['M', "E1'"], ['M', "E2'"], ['epsilon']] 0 ['M', "E1'"
 here2 in assign_producer_vals with  E1' E' ['M', "E1'"]
 here3 in assign_producer_vals ['=', ('root', 'synval'), (1, 'synval')]
 TP  ['=', ('root', 'synval'), (1, 'synval')]
+ENTRYYY E' None
+ENTRYYY E1' None
+{'i': 0}
 PARAMS  E' synval E1' synval ['M', "E1'"]
 setting = E' synval 13 under root  E' with rule  ['M', "E1'"] with symbol E1'
 E [T [F [number ] T' [epsilon ] ] E' [M [epsilon ] E1' [+ T [F [number ] T' [M [epsilon ] T1' [* F [number ] T' [epsilon ] ] ] ] E' [epsilon ] ] ] ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY E' None
+ENTRYYY M None
+{'i': 0}
 PARAMS  E' entry M entry ['M', "E1'"]
 setting = E' entry None under root  E' with rule  ['M', "E1'"] with symbol E1'
 E [T [F [number ] T' [epsilon ] ] E' [M [epsilon ] E1' [+ T [F [number ] T' [M [epsilon ] T1' [* F [number ] T' [epsilon ] ] ] ] E' [epsilon ] ] ] ] done
@@ -5255,10 +6842,16 @@ here we are ['T', "E'"] [['T', "E'"]] 0 ['T', "E'"]
 here2 in assign_producer_vals with  E' E ['T', "E'"]
 here3 in assign_producer_vals ['=', ('root', 'synval'), (1, 'synval')]
 TP  ['=', ('root', 'synval'), (1, 'synval')]
+ENTRYYY E None
+ENTRYYY E' None
+{'i': 0}
 PARAMS  E synval E' synval ['T', "E'"]
 setting = E synval 13 under root  E with rule  ['T', "E'"] with symbol E'
 EXPRESSION [E [T [F [number ] T' [epsilon ] ] E' [M [epsilon ] E1' [+ T [F [number ] T' [M [epsilon ] T1' [* F [number ] T' [epsilon ] ] ] ] E' [epsilon ] ] ] ] ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY E None
+ENTRYYY T None
+{'i': 0}
 PARAMS  E entry T entry ['T', "E'"]
 setting = E entry None under root  E with rule  ['T', "E'"] with symbol E'
 EXPRESSION [E [T [F [number ] T' [epsilon ] ] E' [M [epsilon ] E1' [+ T [F [number ] T' [M [epsilon ] T1' [* F [number ] T' [epsilon ] ] ] ] E' [epsilon ] ] ] ] ] done
@@ -5269,10 +6862,16 @@ here we are ['E'] [['E']] 0 ['E']
 here2 in assign_producer_vals with  E EXPRESSION ['E']
 here3 in assign_producer_vals ['=', ('root', 'val'), (0, 'synval')]
 TP  ['=', ('root', 'val'), (0, 'synval')]
+ENTRYYY EXPRESSION None
+ENTRYYY E None
+{'i': 0}
 PARAMS  EXPRESSION val E synval ['E']
 setting = EXPRESSION val 13 under root  EXPRESSION with rule  ['E'] with symbol E
 ASSIGN [identifier = EXPRESSION [E [T [F [number ] T' [epsilon ] ] E' [M [epsilon ] E1' [+ T [F [number ] T' [M [epsilon ] T1' [* F [number ] T' [epsilon ] ] ] ] E' [epsilon ] ] ] ] ] ; ] here3 in assign_producer_vals ['=', ('root', 'entry'), (0, 'entry')]
 TP  ['=', ('root', 'entry'), (0, 'entry')]
+ENTRYYY EXPRESSION None
+ENTRYYY E None
+{'i': 0}
 PARAMS  EXPRESSION entry E entry ['E']
 setting = EXPRESSION entry None under root  EXPRESSION with rule  ['E'] with symbol E
 ASSIGN [identifier = EXPRESSION [E [T [F [number ] T' [epsilon ] ] E' [M [epsilon ] E1' [+ T [F [number ] T' [M [epsilon ] T1' [* F [number ] T' [epsilon ] ] ] ] E' [epsilon ] ] ] ] ] ; ] done
@@ -5282,9 +6881,13 @@ ASSIGN [identifier = EXPRESSION [E [T [F [number ] T' [epsilon ] ] E' [M [epsilo
 here2 in assign_producer_vals with  EXPRESSION ASSIGN ['identifier', '=', 'EXPRESSION', ';']
 here3 in assign_producer_vals ['=', (0, 'val'), (2, 'val')]
 TP  ['=', (0, 'val'), (2, 'val')]
+ENTRYYY identifier l
+ENTRYYY EXPRESSION None
+{'i': 0}
+y_val 13
+QUAD  ('=', 'EXPRESSION', '_', 'l')
 PARAMS  identifier val EXPRESSION val ['identifier', '=', 'EXPRESSION', ';']
 setting = identifier val 13 under root  ASSIGN with rule  ['identifier', '=', 'EXPRESSION', ';'] with symbol EXPRESSION
-QUAD  ('=', 'EXPRESSION', '_', 'l')
 ASSIGN [identifier = EXPRESSION [E [T [F [number ] T' [epsilon ] ] E' [M [epsilon ] E1' [+ T [F [number ] T' [M [epsilon ] T1' [* F [number ] T' [epsilon ] ] ] ] E' [epsilon ] ] ] ] ] ; ] here3 in assign_producer_vals ['addToST', (0, 'entry'), (0, 'val')]
 in add Symbol ['addToST', (0, 'entry'), (0, 'val')]
 TP  ['addToST', (0, 'entry'), (0, 'val')]
@@ -6702,6 +8305,67 @@ here we are ['FOR_LOOP_ST'] [['FOR_LOOP_ST'], ['COND_ST'], ['IF_COND_ST'], ['DEF
 2. LAST ['FOR_LOOP_ST']
 1. prod  STATEMENT not in assign
 done
+1.SYMBOL in RULE STATEMENT ['STATEMENT', "STMT'"]
+1. updated  eof eof
+1. NOT LAST
+1. prod  STATEMENT_ST not in assign
+1. temp store eof eof
+SYMBOL  STMT'
+in symbol STMT' 		(in rule  ['STATEMENT', "STMT'"] )
+in producer
+check is now  for
+in match rule with  STMT' : [[';', 'ST'], ['epsilon']]
+in rule  [';', 'ST']  with  eof
+TREE
+STMT' [; ST ] 
+SYMBOL  ;
+in symbol ; 		(in rule  [';', 'ST'] )
+else eof ;
+5. unmatched ; eof
+TREE
+STMT' 
+returned false  [';', 'ST'] [[';', 'ST'], ['epsilon']]
+in rule  ['epsilon']  with  eof
+TREE
+STMT' [epsilon ] 
+SYMBOL  epsilon
+in symbol epsilon 		(in rule  ['epsilon'] )
+else eof epsilon
+epsilon matched
+here we are ['epsilon'] [[';', 'ST'], ['epsilon']] 1 ['epsilon']
+2. LAST ['epsilon']
+1. prod  STMT' not in assign
+done
+1.SYMBOL in RULE STMT' ['STATEMENT', "STMT'"]
+1. temp store eof eof
+here we are ['STATEMENT', "STMT'"] [['STATEMENT', "STMT'"]] 0 ['STATEMENT', "STMT'"]
+2. LAST ['STATEMENT', "STMT'"]
+1. prod  STATEMENT_ST not in assign
+done
+1.SYMBOL in RULE STATEMENT_ST ['STATEMENT_ST']
+1. temp store for eof
+here we are ['STATEMENT_ST'] [['STATEMENT_ST']] 0 ['STATEMENT_ST']
+2. LAST ['STATEMENT_ST']
+1. prod  ST not in assign
+done
+1.SYMBOL in RULE ST ['ST']
+1. temp store for eof
+here we are ['ST'] [['ST'], ['epsilon']] 0 ['ST']
+2. LAST ['ST']
+1. prod  ST' not in assign
+done
+1.SYMBOL in RULE ST' ['DECL', "ST'"]
+1. temp store for eof
+here we are ['DECL', "ST'"] [['DECL', "ST'"]] 0 ['DECL', "ST'"]
+2. LAST ['DECL', "ST'"]
+1. prod  DECL_ST not in assign
+done
+1.SYMBOL in RULE DECL_ST ['DECL_ST']
+1. temp store int eof
+here we are ['DECL_ST'] [['FOR_LOOP_ST'], ['COND_ST'], ['IF_COND_ST'], ['DEFN_ST'], ['ASSIGN_ST'], ['DECL_ST']] 5 ['DECL_ST']
+2. LAST ['DECL_ST']
+1. prod  STATEMENT not in assign
+done
 1.SYMBOL in RULE STATEMENT ['STATEMENT', 'eof']
 1. updated  eof eof
 1. NOT LAST
@@ -6715,34 +8379,39 @@ here we are ['STATEMENT', 'eof'] [['STATEMENT', 'eof']] 0 ['STATEMENT', 'eof']
 2. LAST ['STATEMENT', 'eof']
 1. prod  PROG not in assign
 done
-VALID for eof
+VALID int eof
 TREE
-PROG [STATEMENT [FOR_LOOP_ST [FOR_LOOP [for ( ASSIGN [identifier = EXPRESSION [E [T [F [number ] T' [epsilon ] ] E' [epsilon ] ] ] ; ] COND [COND1 [EXPRESSION1 [EXPRESSION [E [T [F [identifier ] T' [epsilon ] ] E' [epsilon ] ] ] ] < EXPRESSION2 [EXPRESSION [E [T [F [number ] T' [epsilon ] ] E' [epsilon ] ] ] ] ; ] ] INCREMENT [I_ASSIGN [identifier = EXPRESSION [E [T [F [number ] T' [epsilon ] ] E' [M [epsilon ] E1' [+ T [F [number ] T' [epsilon ] ] E' [epsilon ] ] ] ] ] ] ] ) { STATEMENT [ASSIGN_ST [ASSIGN [identifier = EXPRESSION [E [T [F [number ] T' [epsilon ] ] E' [M [epsilon ] E1' [+ T [F [number ] T' [M [epsilon ] T1' [* F [number ] T' [epsilon ] ] ] ] E' [epsilon ] ] ] ] ] ; ] ST' [epsilon ] ] ] } ] ST' [epsilon ] ] ] eof ] 
-TSTRING PROG  [STATEMENT  [FOR_LOOP_ST  [FOR_LOOP  [for ( ASSIGN  [identifier = EXPRESSION  [E  [T  [F  [number ] T'  [epsilon ] ] E'  [epsilon ] ] ] ; ] COND  [COND1  [EXPRESSION1  [EXPRESSION  [E  [T  [F  [identifier ] T'  [epsilon ] ] E'  [epsilon ] ] ] ] < EXPRESSION2  [EXPRESSION  [E  [T  [F  [number ] T'  [epsilon ] ] E'  [epsilon ] ] ] ] ; ] ] INCREMENT  [I_ASSIGN  [identifier = EXPRESSION  [E  [T  [F  [number ] T'  [epsilon ] ] E'  [M  [epsilon ] E1'  [+ T  [F  [number ] T'  [epsilon ] ] E'  [epsilon ] ] ] ] ] ] ] ) { STATEMENT  [ASSIGN_ST  [ASSIGN  [identifier = EXPRESSION  [E  [T  [F  [number ] T'  [epsilon ] ] E'  [M  [epsilon ] E1'  [+ T  [F  [number ] T'  [M  [epsilon ] T1'  [* F  [number ] T'  [epsilon ] ] ] ] E'  [epsilon ] ] ] ] ] ; ] ST'  [epsilon ] ] ] } ] ST'  [epsilon ] ] ] eof ] 
+PROG [STATEMENT [DECL_ST [DECL [type ID [identifier ID' [epsilon ] ] ; ] ST' [ST [STATEMENT_ST [STATEMENT [FOR_LOOP_ST [FOR_LOOP [for ( ASSIGN [identifier = EXPRESSION [E [T [F [number ] T' [epsilon ] ] E' [epsilon ] ] ] ; ] COND [COND1 [EXPRESSION1 [EXPRESSION [E [T [F [identifier ] T' [epsilon ] ] E' [epsilon ] ] ] ] < EXPRESSION2 [EXPRESSION [E [T [F [number ] T' [epsilon ] ] E' [epsilon ] ] ] ] ; ] ] INCREMENT [I_ASSIGN [identifier = EXPRESSION [E [T [F [identifier ] T' [epsilon ] ] E' [M [epsilon ] E1' [+ T [F [number ] T' [epsilon ] ] E' [epsilon ] ] ] ] ] ] ] ) { STATEMENT [ASSIGN_ST [ASSIGN [identifier = EXPRESSION [E [T [F [number ] T' [epsilon ] ] E' [M [epsilon ] E1' [+ T [F [number ] T' [M [epsilon ] T1' [* F [number ] T' [epsilon ] ] ] ] E' [epsilon ] ] ] ] ] ; ] ST' [epsilon ] ] ] } ] ST' [epsilon ] ] ] STMT' [epsilon ] ] ] ] ] ] eof ] 
+TSTRING PROG  [STATEMENT  [DECL_ST  [DECL  [type ID  [identifier ID'  [epsilon ] ] ; ] ST'  [ST  [STATEMENT_ST  [STATEMENT  [FOR_LOOP_ST  [FOR_LOOP  [for ( ASSIGN  [identifier = EXPRESSION  [E  [T  [F  [number ] T'  [epsilon ] ] E'  [epsilon ] ] ] ; ] COND  [COND1  [EXPRESSION1  [EXPRESSION  [E  [T  [F  [identifier ] T'  [epsilon ] ] E'  [epsilon ] ] ] ] < EXPRESSION2  [EXPRESSION  [E  [T  [F  [number ] T'  [epsilon ] ] E'  [epsilon ] ] ] ] ; ] ] INCREMENT  [I_ASSIGN  [identifier = EXPRESSION  [E  [T  [F  [identifier ] T'  [epsilon ] ] E'  [M  [epsilon ] E1'  [+ T  [F  [number ] T'  [epsilon ] ] E'  [epsilon ] ] ] ] ] ] ] ) { STATEMENT  [ASSIGN_ST  [ASSIGN  [identifier = EXPRESSION  [E  [T  [F  [number ] T'  [epsilon ] ] E'  [M  [epsilon ] E1'  [+ T  [F  [number ] T'  [M  [epsilon ] T1'  [* F  [number ] T'  [epsilon ] ] ] ] E'  [epsilon ] ] ] ] ] ; ] ST'  [epsilon ] ] ] } ] ST'  [epsilon ] ] ] STMT'  [epsilon ] ] ] ] ] ] eof ] 
 step 1
-PROG [STATEMENT [FOR_LOOP_ST [FOR_LOOP [for ( ASSIGN [identifier = EXPRESSION [E [T [F [number ] ] ] ] ; ] COND [COND1 [EXPRESSION1 [EXPRESSION [E [T [F [identifier ] ] ] ] ] < EXPRESSION2 [EXPRESSION [E [T [F [number ] ] ] ] ] ; ] ] INCREMENT [I_ASSIGN [identifier = EXPRESSION [E [T [F [number ] ] E' [E1' [+ T [F [number ] ] ] ] ] ] ] ] ) { STATEMENT [ASSIGN_ST [ASSIGN [identifier = EXPRESSION [E [T [F [number ] ] E' [E1' [+ T [F [number ] T' [T1' [* F [number ] ] ] ] ] ] ] ] ; ] ] ] } ] ] ] eof ] 
+PROG [STATEMENT [DECL_ST [DECL [type ID [identifier ] ; ] ST' [ST [STATEMENT_ST [STATEMENT [FOR_LOOP_ST [FOR_LOOP [for ( ASSIGN [identifier = EXPRESSION [E [T [F [number ] ] ] ] ; ] COND [COND1 [EXPRESSION1 [EXPRESSION [E [T [F [identifier ] ] ] ] ] < EXPRESSION2 [EXPRESSION [E [T [F [number ] ] ] ] ] ; ] ] INCREMENT [I_ASSIGN [identifier = EXPRESSION [E [T [F [identifier ] ] E' [E1' [+ T [F [number ] ] ] ] ] ] ] ] ) { STATEMENT [ASSIGN_ST [ASSIGN [identifier = EXPRESSION [E [T [F [number ] ] E' [E1' [+ T [F [number ] T' [T1' [* F [number ] ] ] ] ] ] ] ] ; ] ] ] } ] ] ] ] ] ] ] ] eof ] 
 step 2
-PROG [STATEMENT [for ( ASSIGN [identifier = EXPRESSION [number ] ; ] COND [EXPRESSION1 [identifier ] < EXPRESSION2 [number ] ; ] INCREMENT [identifier = EXPRESSION [T [number ] E' [+ T [number ] ] ] ] ) { STATEMENT [identifier = EXPRESSION [T [number ] E' [+ T [F [number ] T' [* F [number ] ] ] ] ] ; ] } ] eof ] 
+PROG [STATEMENT [DECL [type ID [identifier ] ; ] ST' [for ( ASSIGN [identifier = EXPRESSION [number ] ; ] COND [EXPRESSION1 [identifier ] < EXPRESSION2 [number ] ; ] INCREMENT [identifier = EXPRESSION [T [identifier ] E' [+ T [number ] ] ] ] ) { STATEMENT [identifier = EXPRESSION [T [number ] E' [+ T [F [number ] T' [* F [number ] ] ] ] ] ; ] } ] ] eof ] 
 step 3
-PROG [STATEMENT [for ( = [identifier EXPRESSION [number ] ; ] < [EXPRESSION1 [identifier ] EXPRESSION2 [number ] ; ] = [identifier EXPRESSION [+ [number T [number ] ] ] ] ) { = [identifier EXPRESSION [+ [number T [F [number ] T' [* F [number ] ] ] ] ] ; ] } ] eof ] 
+PROG [STATEMENT [DECL [type ID [identifier ] ; ] ST' [for ( = [identifier EXPRESSION [number ] ; ] < [EXPRESSION1 [identifier ] EXPRESSION2 [number ] ; ] = [identifier EXPRESSION [+ [identifier T [number ] ] ] ] ) { = [identifier EXPRESSION [+ [number T [F [number ] T' [* F [number ] ] ] ] ] ; ] } ] ] eof ] 
 AST
-PROG [STATEMENT [for ( = [identifier EXPRESSION [number ] ; ] < [EXPRESSION1 [identifier ] EXPRESSION2 [number ] ; ] = [identifier EXPRESSION [+ [number T [number ] ] ] ] ) { = [identifier EXPRESSION [+ [number T [F [number ] T' [* F [number ] ] ] ] ] ; ] } ] eof ] inserting c ('=', 'EXPRESSION', '_', 'i')
-inserting c ('<', 0, 10, 'COND1')
+PROG [STATEMENT [DECL [type ID [identifier ] ; ] ST' [for ( = [identifier EXPRESSION [number ] ; ] < [EXPRESSION1 [identifier ] EXPRESSION2 [number ] ; ] = [identifier EXPRESSION [+ [identifier T [number ] ] ] ] ) { = [identifier EXPRESSION [+ [number T [F [number ] T' [* F [number ] ] ] ] ] ; ] } ] ] eof ] inserting c ('=', 0, '_', 'i')
+inserting c ('<', 'i', 10, 'COND1')
 inserting c ('=', 'EXPRESSION', '_', 'l')
-inserting c ('+', 1, 'T', "E'")
+inserting c ('+', 0, 'T', "E'")
 inserting c ('+', 3, 'T', "E'")
 inserting c ('*', 2, 'F', "T'")
-stack [('t1', True), ('t2', 2), ('t3', 10), ('t4', 13)]
+stack [('t1', True), ('t2', 1), ('t3', 10), ('t4', 13)]
 
 
 Quad
-('=', 'EXPRESSION', '_', 'i')
+('=', 0, '_', 'i')
 ('Label', '_', '_', 'L0')
-('<', 0, 10, 'COND1')
+('<', 'i', 10, 'COND1')
 ('ifFalse', 'COND', '_', 'L1')
 ('*', 2, 'F', "T'")
 ('+', 3, 'T', "E'")
 ('=', 'EXPRESSION', '_', 'l')
-('+', 1, 'T', "E'")
+('+', 0, 'T', "E'")
 ('goto', '_', '_', 'L0')
 ('Label', '_', '_', 'L1')
+
+ SYMTAB
+{'l': 13, 'i': 0}
+l 13
+i 0

@@ -1,6 +1,5 @@
 import pickle
 import itertools
-import operator
 import copy
 from classes import *
 from data_structures import *
@@ -81,19 +80,45 @@ def assign_producer_vals(symbol, rule, root, quadruples, stack):
 				op = vals[0]
 				if op == '=':		
 					node_x, x_attr, node_y, y_attr = get_params(vals, root, children)			
-					print("PARAMS ", node_x.name, x_attr, node_y.name, y_attr, rule)
+					print("ENTRYYY", node_x.name, getattr(node_x, 'entry'))					
+					print("ENTRYYY", node_y.name, getattr(node_y, 'entry'))
+					print(symtab)
 					y_val = get_val(node_y, y_attr)
+					if getattr(node_y, 'entry'):
+						y = getattr(node_y, 'entry')
+						print("y=", y)						
+						if x_attr == 'entry':
+							y_val = y
+						else:
+							if y in symtab:
+								y_val = symtab[y]
+
 					setattr(node_x, x_attr, y_val)
-					print("setting =", node_x.name, x_attr, y_val, "under root ", root.name, "with rule ", rule, "with symbol", symbol)
+					if x_attr in ['val']:
+						if node_x.entry in symtab:
+							print("nodex entry", node_x.entry, x_attr, y_val)
+							symtab[node_x.entry] = y_val						
+
 					if x_attr in ['val']:
 						if root.name not in ['EXPRESSION2', 'EXPRESSION1','EXPRESSION']:
 							if node_x.name == 'identifier':
-								tup = ('=', node_y.name,'_', node_x.entry)
+								if (is_empty(stack)):
+									y = getattr(node_y, y_attr)
+								else:
+									y = node_y.name
+			
+								if getattr(node_y, 'entry'):
+									y = getattr(node_y, 'entry')
+									y_val = symtab[y]
+								print("y_val", y_val)
+								tup = ('=', y,'_', node_x.entry)
 							else:
-								tup = ('=', node_y.name, '_', node_x.name)#, rule, root.name)
+								tup = ('=', y, '_', node_x.name)#, rule, root.name)
 							print("QUAD ", tup)
 							quadruples.append(tup)
 							root.code.append(tup)
+					print("PARAMS ", node_x.name, x_attr, node_y.name, y_attr, rule)
+					print("setting =", node_x.name, x_attr, y_val, "under root ", root.name, "with rule ", rule, "with symbol", symbol)
 					print_tree(node_x.parent)
 				
 				elif op in ['+', '-', '*', '/', '<', '>', '<=', '>=', '==', '!=']:
@@ -102,7 +127,6 @@ def assign_producer_vals(symbol, rule, root, quadruples, stack):
 					y_val, z_val = get_val(node_y, y_attr), get_val(node_z, z_attr)
 
 					print("PARAMS ", node_x.name, x_attr, node_y.name, y_attr, node_z.name, z_attr)
-					print("vals ", y_val, z_val)
 					
 					if is_empty(stack):
 						y, z = getattr(node_y, y_attr), getattr(node_z, z_attr)					
@@ -111,15 +135,25 @@ def assign_producer_vals(symbol, rule, root, quadruples, stack):
 						y, z = getattr(node_y, y_attr), node_z.name
 						print("stak2.")
 					
-					if y_attr == 'val' and getattr(node_y, 'entry'):
-						y = y_val = symtab[getattr(node_y, 'entry')]
-					if z_attr == 'val' and getattr(node_z, 'entry'):
-						z = z_val = symtab[getattr(node_z, 'entry')]
+					print("y_attr", y_attr)
+					if(getattr(node_y, 'entry')):
+						print('true', getattr(node_y, 'entry'))
+					
+					#if y_attr == 'val' and getattr(node_y, 'entry'):						
+					if getattr(node_y, 'entry'):
+						y = getattr(node_y, 'entry')
+						y_val = symtab[y]
+					#if z_attr == 'val' and getattr(node_z, 'entry'):
+					if getattr(node_z, 'entry'):
+						z =getattr(node_z, 'entry')
+						z_val = symtab[z]
+					print("vals ", y_val, z_val)
+					
 
 					global t
 					stack.append((node_x, x_attr, temps[t]))
 					t += 1
-					tup = (op, y, z, node_x.name)#, rule, root.name)
+					tup = (op, y, z, node_x.name)
 					print("QUAD", tup)
 					print("ENTRYYY", node_x.name, getattr(node_x, 'entry'))					
 					print("ENTRYYY", node_y.name, getattr(node_y, 'entry'))
@@ -127,6 +161,9 @@ def assign_producer_vals(symbol, rule, root, quadruples, stack):
 
 
 					setattr(node_x, x_attr, ops[op](y_val, z_val))
+					if node_x.entry in symtab:
+						print("nodex entry", node_x.entry, x_attr, ops[op](y_val, z_val))
+						symtab[node_x.entry] = ops[op](y_val, z_val)
 					print("setting", op, node_x.name, x_attr, ops[op](y_val, z_val), "under root ", root.name, "with rule ", rule, "with symbol", symbol)		
 
 					quadruples.append(tup)
@@ -443,51 +480,4 @@ def init_rules():
 	for rule in rules:
 		symbol, prod = rule.split(":")
 		for p in prod.split("|"):
-			add(productions, symbol, p.strip())
-
-init_rules()
-			
-for item in sorted(productions.items()):
-	print(item)
-print("\n")
-print([(tok.val, tok.type) for tok in token_list])
-print("\n")
-print("\n")
-
-
-tree, quadruples, stack = start(token_list)
-print("TREE")
-print_tree(tree)
-print("")
-
-print("TSTRING", stringify(tree))
-
-ast_tree = abstract_syntax_tree(tree)
-print ("AST")
-print_tree(ast_tree)
-
-code = get_code([tree], [])
-
-print("stack", [(s[2], getattr(s[0], s[1])) for s in stack])
-
-if ('dummy1') in quadruples:
-	quadruples[quadruples.index('dummy1')+1:quadruples.index('dummy2')], quadruples[quadruples.index('dummy2')+1:quadruples.index('dummy3')] = quadruples[quadruples.index('dummy2')+1:quadruples.index('dummy3')],quadruples[quadruples.index('dummy1')+1:quadruples.index('dummy2')]
-	quadruples.remove(('dummy1'))
-	quadruples.remove(('dummy2'))
-	quadruples.remove(('dummy3'))
-
-print("\n\nQuad")
-for q in quadruples:
-	print(q)
-
-with open("icg.txt", "w") as fp:
-	 fp.write('\n'.join('%s\t%s\t%s\t%s' % x for x in quadruples))
-fp.close()
-
-with open("parse_tree.txt", "w") as fp:
-	fp.write(stringify(tree))
-fp.close()
-
-with open("astree.txt", "w") as fp:
-	fp.write(stringify(ast_tree))
-fp.close()
+			add(productions, symbol, p.strip())			

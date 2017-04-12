@@ -1,5 +1,8 @@
 import operator
 
+temps = ['t1','t2','t3','t4','t5','t6','t7','t8','t9']
+t = 0
+
 ops = {
 	'+' : operator.add,
 	'-' : operator.sub,
@@ -113,7 +116,7 @@ assign = {
 		'epsilon': [['=', ('root', 'synval'), ('root','inhval')]] 
 	},
 	'E1\'' : {
-		'T' : [['+',(2,'inhval'),('root','inhval'),(1,'synval')]],
+		'T' : [['+',(2,'inhval'),('root','inhval'),(1,'synval')], ['=', ('root', 'entry'),(0, 'entry')]],
 		'E\'' : [['=',('root','synval'),(2,'synval')], ['=', ('root', 'entry'),(0, 'entry')]],	
 		'epsilon' : [['=', ('root', 'synval'), ('root', 'inhval')]]
 	},
@@ -127,7 +130,7 @@ assign = {
 		'T\'' : [['=', ('root','synval'),(1,'synval')], ['=', ('root', 'entry'),(0, 'entry')]]
 	},
 	'T\'': {
-		'M': [['=',(1,'inhval'),('root','inhval')]], # Changed all 0 to root here and 1 to 0
+		'M': [['=',(1,'inhval'),('root','inhval')]],
 		'T1\'': [['=',('root','synval'),(1,'synval')], ['=', ('root', 'entry'),(0, 'entry')]],
 		'T2\'': [['=',('root','synval'),(1,'synval')], ['=', ('root', 'entry'),(0, 'entry')]],
 		'epsilon': [['=', ('root', 'synval'), ('root','inhval')]] 
