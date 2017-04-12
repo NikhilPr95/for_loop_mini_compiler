@@ -1,7 +1,9 @@
-	import pickle
+import pickle
 import itertools
+import operator
 import copy
 from classes import *
+from data_structures import *
 
 with open('tokens.pkl', 'rb') as fp:
 		token_list = pickle.load(fp)
@@ -9,142 +11,9 @@ with open('tokens.pkl', 'rb') as fp:
 with open('token_types.pkl', 'rb') as fp:
 		token_types = pickle.load(fp)
 
-rules = [
-			"PROG: STATEMENT eof",
-			"STATEMENT: FOR_LOOP_ST | COND_ST | IF_COND_ST | DEFN_ST | ASSIGN_ST | DECL_ST",
-			"FOR_LOOP_ST: FOR_LOOP ST' ",
-			"IF_COND_ST: IF_COND ST' ",
-			"COND_ST: COND ST'",
-			"ASSIGN_ST: ASSIGN ST' ",
-			"ST': ST | epsilon",
-			"DECL_ST: DECL ST' ",
-			"DEFN_ST: DEFN ST' ",
-			"ST: STATEMENT_ST ",
-			"STATEMENT_ST: STATEMENT STMT' ",
-			"STMT': ; ST | epsilon",
-			"FOR_LOOP: for ( ASSIGN COND INCREMENT ) { STATEMENT }",
-			"INCREMENT: I_ASSIGN | I_COND | EXPRESSION",
-			"IF_COND: if ( COND ) { STATEMENT ; } OP_ELSE | if ( COND ) { STATEMENT }",
-			"OP_ELSE: else { STATEMENT } ",
-			"ASSIGN: identifier = EXPRESSION ;",
-			"DECL: type ID ;",
-			"ID: identifier ID'",
-			"ID': , identifier ID' | epsilon ", 			
-			"DEFN: type ASSIGN",
-			"COND: COND1 | COND2 | COND3 | COND4",
-			"COND1: EXPRESSION1 < EXPRESSION2 ;",
-			"COND2: EXPRESSION1 > EXPRESSION2 ;",
-			"COND3: EXPRESSION1 <= EXPRESSION2 ;",
-			"COND4: EXPRESSION1 >= EXPRESSION2 ;",
-			"I_ASSIGN: identifier = EXPRESSION",
-			"I_COND: EXPRESSION1 < EXPRESSION2 ; | EXPRESSION1 > EXPRESSION2 ; | EXPRESSION1 <= EXPRESSION2 ; | EXPRESSION1 >= EXPRESSION2 ;",
-			"EXPRESSION1: EXPRESSION",
-			"EXPRESSION2: EXPRESSION",
-			"EXPRESSION: E",			
- 			"E: T E'",
-			"E': M E1' | M E2' | epsilon",
-			"M: epsilon",
-			"E1': + T E' | epsilon",
-			"E2': - T E' | epsilon",
-			"T: F T'",
-			"T': M T1' | M T2' | epsilon",
-			"T1': * F T' | epsilon",
-			"T2': / F T' | epsilon",
-			"F: ( E ) | identifier | number ",
-		]
+temps = ['t1','t2','t3','t4','t5','t6','t7','t8','t9']
+t = 0
 
-assign = {
-	'DECL' : {
-		'type' : [['=',(1, 'type'), (0, 'type')]],
-		'identifier' : [[['enter', (1, 'type')]]]
-	},
-	'ASSIGN' : {
-		'identifier' : [['=',(0,'type'),('root','inhval')]], # is this correct?
-		'EXPRESSION' : [['=',(0,'val'),(2,'val')]]
-	},
-	'D*ECL': {
-		'type' : [['=',(1, 'inhval'),(0, 'type')]]
-	},
-	'ID': {
-		'identifier' : [['=', (0, 'type'),('root', 'type')]]
-	},
-	'ID\'' : {
-		'identifier' : [['=', (1,'type'),('root','type')], ['=',(2,'type'),('root','type')]]
-	},
-	'DEFN' : {
-		'type' : [['=',(1, 'inhval'), (0, 'type')]]
-	},
-	'EXPRESSION1' : {
-		'EXPRESSION' : [['=',('root','val'),(0,'val')]]
-	},
-	'EXPRESSION2' : {
-		'EXPRESSION' : [['=',('root','val'),(0,'val')]]
-	},
-	'EXPRESSION' : {
-		'E' : [['=',('root','val'),(0,'synval')]]
-	},
-	'COND1' : {
-		'EXPRESSION2' : [['<',('root','val'),(0, 'val'),(2, 'val')]]
-	},
-	'COND2' : {
-		'EXPRESSION2' : [['>',('root','val'),(0, 'val'),(2, 'val')]]
-	},
-	'COND3' : {
-		'EXPRESSION2' : [['<=',('root','val'),(0, 'val'),(2, 'val')]]
-	},
-	'COND4' : {
-		'EXPRESSION2' : [['>=',('root','val'),(0, 'val'),(2, 'val')]]
-	},
-	'E' : {
-		'T' : [['=',(1,'inhval'),(0,'synval')]],
-		'E\'' : [['=', ('root','synval'),(1,'synval')]]
-	},
-	'E\'': {
-		'M': [['=',(1,'inhval'),('root','inhval')]],  # Changed all 0 to root here and  1 to 0
-		'E1\'': [['=',('root','synval'),(1,'synval')]],
-		'E2\'': [['=',('root','synval'),(1,'synval')]],
-		'epsilon': [['=', ('root', 'synval'), ('root','inhval')]] 
-	},
-	'E1\'' : {
-		'T' : [['+=',(2,'inhval'),('root','inhval'),(1,'synval')]],
-		'E\'' : [['=',('root','synval'),(2,'synval')]],	
-		'epsilon' : [['=', ('root', 'synval'), ('root', 'inhval')]]
-	},
-	'E2\'' : {
-		'T' : [['-=',(2,'inhval'),('root','inhval'),(1,'synval')]],
-		'E\'' : [['=',('root','synval'),(2,'synval')]],
-		'epsilon' : [['=', ('root', 'synval'), ('root', 'inhval')]]
-	},
-	'T' : {
-		'F' : [['=',(1,'inhval'),(0,'synval')]],
-		'T\'' : [['=', ('root','synval'),(1,'synval')]]
-	},
-	'T\'': {
-		'M': [['=',(1,'inhval'),('root','inhval')]], # Changed all 0 to root here and 1 to 0
-		'T1\'': [['=',('root','synval'),(1,'synval')]],
-		'T2\'': [['=',('root','synval'),(1,'synval')]],
-		'epsilon': [['=', ('root', 'synval'), ('root','inhval')]] 
-	},
-	'T1\'' : {
-		'F' : [['*=',(2,'inhval'),('root','inhval'),(1,'synval')]],
-		'T\'' : [['=',('root','synval'),(2,'synval')]],	
-		'epsilon' : [['=', ('root', 'synval'), ('root', 'inhval')]]
-	},
-	'T2\'' : {
-		'F' : [['/=',(2,'inhval'),('root','inhval'),(1,'synval')]],
-		'T\'' : [['=',('root','synval'),(1,'synval')]],
-		'epsilon' : [['=', ('root', 'synval'), ('root', 'inhval')]]
-	},
-	'F' : {
-		'(' : [['=',(0,'inhval'),('root','inhval')]],
-		')' : [['=',('root','synval'),(0,'synval')]],
-		'identifier' : [['=',('root','synval'),(0,'val')]],
-		'number' : [['=',('root','synval'),(0,'lexval')]]
-	}
-	
-}
-
-productions = dict()
 
 def add(dict, key, val):
 	sym_list = []
@@ -175,12 +44,9 @@ def assign_token_vals(token, node, quadruples):
 	else:
 		node.lexval = token.val
 		print("TOKENSET ", node.name, node.lexval)
-		#tup = ('=', node.lexval, '_', node.name)
-		#print("QUAD ", tup)
-		#quadruples.append(tup)
 
 def get_params(vals, root, children):
-	tuples = vals[0][1:]
+	tuples = vals[1:]
 	num = len(tuples)
 	params = []
 	print("TP ", vals)
@@ -196,7 +62,7 @@ def get_params(vals, root, children):
 
 def get_val(node, attr):
 	val = getattr(node, attr)
-	if type(val) == str:
+	if type(val) == str and attr not in ['entry']:
 		return eval(val)
 	return val
 
@@ -207,135 +73,79 @@ def is_empty(li):
 def assign_producer_vals(symbol, rule, root, quadruples, stack):
 	if root.name in assign:
 		if symbol in assign[root.name]:
-			vals = assign[root.name][symbol]
+			values = assign[root.name][symbol]
 			children = root.get_children()
 			print("here2 in assign_producer_vals with ", symbol, root.name, rule)
-			print("here3 in assign_producer_vals", vals[0])
-			op = vals[0][0]
-			if op == '=':
-				node_x, x_attr, node_y, y_attr = get_params(vals, root, children)			
-				print("PARAMS ", node_x.name, x_attr, node_y.name, y_attr, rule)
-				y_val = get_val(node_y, y_attr)
-				setattr(node_x, x_attr, y_val)
-				print("setting =", node_x.name, x_attr, y_val, "under root ", root.name, "with rule ", rule, "with symbol", symbol)
-				if x_attr in ['val']:
-					tup = ('=', node_y.name, '_', node_x.name, rule, root.name)
-					print("QUAD ", tup)
+			for vals in values:
+				print("here3 in assign_producer_vals", vals)
+				op = vals[0]
+				if op == '=':		
+					node_x, x_attr, node_y, y_attr = get_params(vals, root, children)			
+					print("PARAMS ", node_x.name, x_attr, node_y.name, y_attr, rule)
+					y_val = get_val(node_y, y_attr)
+					setattr(node_x, x_attr, y_val)
+					print("setting =", node_x.name, x_attr, y_val, "under root ", root.name, "with rule ", rule, "with symbol", symbol)
+					if x_attr in ['val']:
+						if root.name not in ['EXPRESSION2', 'EXPRESSION1','EXPRESSION']:
+							if node_x.name == 'identifier':
+								tup = ('=', node_y.name,'_', node_x.entry)
+							else:
+								tup = ('=', node_y.name, '_', node_x.name)#, rule, root.name)
+							print("QUAD ", tup)
+							quadruples.append(tup)
+							root.code.append(tup)
+					print_tree(node_x.parent)
+				
+				elif op in ['+', '-', '*', '/', '<', '>', '<=', '>=', '==', '!=']:
+
+					node_x, x_attr, node_y, y_attr, node_z, z_attr = get_params(vals, root, children)
+					y_val, z_val = get_val(node_y, y_attr), get_val(node_z, z_attr)
+
+					print("PARAMS ", node_x.name, x_attr, node_y.name, y_attr, node_z.name, z_attr)
+					print("vals ", y_val, z_val)
+					
+					if is_empty(stack):
+						y, z = getattr(node_y, y_attr), getattr(node_z, z_attr)					
+						print("stak1.")
+					else:
+						y, z = getattr(node_y, y_attr), node_z.name
+						print("stak2.")
+					
+					if y_attr == 'val' and getattr(node_y, 'entry'):
+						y = y_val = symtab[getattr(node_y, 'entry')]
+					if z_attr == 'val' and getattr(node_z, 'entry'):
+						z = z_val = symtab[getattr(node_z, 'entry')]
+
+					global t
+					stack.append((node_x, x_attr, temps[t]))
+					t += 1
+					tup = (op, y, z, node_x.name)#, rule, root.name)
+					print("QUAD", tup)
+					print("ENTRYYY", node_x.name, getattr(node_x, 'entry'))					
+					print("ENTRYYY", node_y.name, getattr(node_y, 'entry'))
+					print("ENTRYYY", node_z.name, getattr(node_z, 'entry'))
+
+
+					setattr(node_x, x_attr, ops[op](y_val, z_val))
+					print("setting", op, node_x.name, x_attr, ops[op](y_val, z_val), "under root ", root.name, "with rule ", rule, "with symbol", symbol)		
+
 					quadruples.append(tup)
 					root.code.append(tup)
-				print_tree(node_x.parent)
-				
-			elif op == '+=':
-				node_x, x_attr, node_y, y_attr, node_z, z_attr = get_params(vals, root, children)
-				y_val, z_val = get_val(node_y, y_attr), get_val(node_z, z_attr)
+					print_tree(node_x.parent)
 
-				print("PARAMS ", node_x.name, x_attr, node_y.name, y_attr, node_z.name, z_attr)
-				print("vals ", y_val, z_val)
-				
-				if is_empty(stack):
-					y, z = getattr(node_y, y_attr), getattr(node_z, z_attr)					
-					print("stak1.")
-				else:
-					y, z = getattr(node_y, y_attr), node_z.name
-					print("stak2.")
-				
-				stack.append((node_x, x_attr))
-				tup = ('+', y, z, node_x.name, rule, root.name)
+				elif op == 'code':
+					print("in CODE", vals)
+					for code in vals[2]:
+						quadruples.append(code)	
 
-				print("QUAD", tup)
-				root.code.append(tup)
-				setattr(node_x, x_attr, (y_val + z_val))
-				print("setting +=", node_x.name, x_attr, (y_val + z_val), "under root ", root.name, "with rule ", rule, "with symbol", symbol)
+				elif op == 'addToST':
+					print("in add Symbol", vals)
+					node_y, y_attr, node_z, z_attr = get_params(vals, root, children)
+					print("PARAMS ", node_y.name, y_attr, node_z.name, z_attr)
+					y_val, z_val = get_val(node_y, y_attr), get_val(node_z, z_attr)
+					print("vals ", y_val, z_val)
+					symtab[y_val] = z_val
 
-				print_tree(node_x.parent)
-				
-			elif op == '-=':
-				node_x, x_attr, node_y, y_attr, node_z, z_attr = get_params(vals, root, children)
-				y_val, z_val = get_val(node_y, y_attr), get_val(node_z, z_attr)
-
-				print("PARAMS ", node_x.name, x_attr, node_y.name, y_attr, node_z.name, z_attr)
-				print("vals ", y_val, z_val)
-				
-				if is_empty(stack):
-					y, z = getattr(node_y, y_attr), getattr(node_z, z_attr)					
-					print("stak1.")
-				else:
-					y, z = getattr(node_y, y_attr), node_z.name
-					print("stak2.")
-				
-				stack.append((node_x, x_attr))
-				tup = ('+', y, z, node_x.name, rule, root.name)
-
-				print("QUAD", tup)
-				root.code.append(tup)
-				setattr(node_x, x_attr, (y_val - z_val))
-				print("setting -=", node_x.name, x_attr, (y_val - z_val), "under root ", root.name, "with rule ", rule, "with symbol", symbol)
-
-				print_tree(node_x.parent)
-				
-			elif op == '*=':
-				node_x, x_attr, node_y, y_attr, node_z, z_attr = get_params(vals, root, children)
-				y_val, z_val = get_val(node_y, y_attr), get_val(node_z, z_attr)
-
-				print("PARAMS ", node_x.name, x_attr, node_y.name, y_attr, node_z.name, z_attr)
-				print("vals ", y_val, z_val)
-				
-				if is_empty(stack):
-					y, z = getattr(node_y, y_attr), getattr(node_z, z_attr)					
-					print("stak1.")
-				else:
-					y, z = getattr(node_y, y_attr), node_z.name
-					print("stak2.")
-				
-				stack.append((node_x, x_attr))
-				tup = ('+', y, z, node_x.name, rule, root.name)
-
-				print("QUAD", tup)
-				root.code.append(tup)
-				setattr(node_x, x_attr, (y_val * z_val))
-				print("setting *=", node_x.name, x_attr, (y_val * z_val), "under root ", root.name, "with rule ", rule, "with symbol", symbol)
-
-				print_tree(node_x.parent)
-				
-			elif op == '/=':
-				node_x, x_attr, node_y, y_attr, node_z, z_attr = get_params(vals, root, children)
-				y_val, z_val = get_val(node_y, y_attr), get_val(node_z, z_attr)
-
-				print("PARAMS ", node_x.name, x_attr, node_y.name, y_attr, node_z.name, z_attr)
-				print("vals ", y_val, z_val)
-				
-				if is_empty(stack):
-					y, z = getattr(node_y, y_attr), getattr(node_z, z_attr)					
-					print("stak1.")
-				else:
-					y, z = getattr(node_y, y_attr), node_z.name
-					print("stak2.")
-				
-				stack.append((node_x, x_attr))
-				tup = ('+', y, z, node_x.name, rule, root.name)
-
-				print("QUAD", tup)
-				root.code.append(tup)
-				setattr(node_x, x_attr, (y_val / z_val))
-				print("setting /=", node_x.name, x_attr, (y_val / z_val), "under root ", root.name, "with rule ", rule, "with symbol", symbol)
-
-				print_tree(node_x.parent)
-			elif op == 'relational_operator':
-				node_x, x_attr, node_y, y_attr, node_z, z_attr = get_params(vals, root, children)
-				y_val, z_val = get_val(node_y, y_attr), get_val(node_z, z_attr)
-				print("PARAMS ", node_x.name, x_attr, node_y.name, y_attr, node_z.name, z_attr)
-				print("vals ", (y_val, z_val))
-				if is_empty(stack):
-					y, z = getattr(node_y, y_attr), getattr(node_z, z_attr)
-					print("stak1.")
-					tup = ('*', y, z, node_x.name, rule, root.name)
-				else:
-					y, z = getattr(node_y, y_attr), node_z.name
-					print("stak2.")
-					tup = ('*', y, z, node_x.name, rule, root.name)
-				root.code.append(tup)
-				stack.append((node_x, x_attr))
-				
 		else:
 			print("2. prod", symbol, "not in ", assign[root.name])
 	else:
@@ -361,6 +171,20 @@ def is_tuple(symbol):
 def print_tabs(n):
 	print(n*' ', end = " ")
 
+
+def stringify(root):
+	return string_the_tree(root, "")
+
+def string_the_tree(root, string):
+	string += root.name +" "
+	if root.children:
+		string += " ["
+	for child in root.children:
+		string = string_the_tree(child, string)
+	if root.children:
+		string += "] "
+	
+	return string
 
 def print_tree(root):
 	print_the_tree(root)
@@ -579,25 +403,13 @@ def abstract_syntax_tree(root):
 	print("step 3")
 	print_tree(ast_root2)
 	print("")	
-	#remove_redundant_number_producers(ast_root2)
 	return ast_root2
 
-"""
-def get_code(node, code):
-	print("getcode", node.name)
-	if len(node.code):
-		for c in node.code:
-			code.insert(0,c)
-			print("inserting c", c)
-	for ch in node.children:
-		get_code(ch, code)
-	return code
-"""
 def get_code(node_queue, code):
 	if node_queue:
 		children = []
 		for node in node_queue:
-			print("getcode", node.name)
+			#print("getcode", node.name)
 			if len(node.code):
 				for c in node.code:
 					code.insert(0,c)
@@ -648,14 +460,34 @@ print("TREE")
 print_tree(tree)
 print("")
 
+print("TSTRING", stringify(tree))
+
 ast_tree = abstract_syntax_tree(tree)
 print ("AST")
 print_tree(ast_tree)
 
 code = get_code([tree], [])
 
-print("\n\n\nCode")
-for c in code:
-	print(c)
-#print ("productions", productions)
-print("stack", [(s[0].name, getattr(s[0], s[1])) for s in stack])
+print("stack", [(s[2], getattr(s[0], s[1])) for s in stack])
+
+if ('dummy1') in quadruples:
+	quadruples[quadruples.index('dummy1')+1:quadruples.index('dummy2')], quadruples[quadruples.index('dummy2')+1:quadruples.index('dummy3')] = quadruples[quadruples.index('dummy2')+1:quadruples.index('dummy3')],quadruples[quadruples.index('dummy1')+1:quadruples.index('dummy2')]
+	quadruples.remove(('dummy1'))
+	quadruples.remove(('dummy2'))
+	quadruples.remove(('dummy3'))
+
+print("\n\nQuad")
+for q in quadruples:
+	print(q)
+
+with open("icg.txt", "w") as fp:
+	 fp.write('\n'.join('%s\t%s\t%s\t%s' % x for x in quadruples))
+fp.close()
+
+with open("parse_tree.txt", "w") as fp:
+	fp.write(stringify(tree))
+fp.close()
+
+with open("astree.txt", "w") as fp:
+	fp.write(stringify(ast_tree))
+fp.close()
