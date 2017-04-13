@@ -40,19 +40,19 @@ print(symtab)
 for key,val in symtab.items():
 	print(key,val)
 
-with open("symtab.txt", "w") as fp:
-	fp.write('\n'.join('%s\t%s' % x for x in symtab.items()))
-fp.close()
+#with open("symtab.txt", "w") as fp:
+#	fp.write('\n'.join('%s\t%s' % x for x in symtab.items()))
+#fp.close()
 
-with open("icg.txt", "w") as fp:
-	 fp.write('\n'.join('%s\t%s\t%s\t%s' % x for x in quadruples))
-fp.close()
+#with open("icg.txt", "w") as fp:
+#	 fp.write('\n'.join('%s\t%s\t%s\t%s' % x for x in quadruples))
+#fp.close()
 
-with open("parse_tree.txt", "w") as fp:
-	fp.write(stringify(tree))
-fp.close()
+#with open("parse_tree.txt", "w") as fp:
+#	fp.write(stringify(tree))
+#fp.close()
 
-with open("astree.txt", "w") as fp:
-	fp.write(stringify(ast_tree))
-fp.close()
+#with open("astree.txt", "w") as fp:
+#	fp.write(stringify(ast_tree))
+#fp.close()
 
