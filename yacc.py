@@ -13,6 +13,10 @@ with open('token_types.pkl', 'rb') as fp:
 temps = ['t1','t2','t3','t4','t5','t6','t7','t8','t9']
 t = 0
 
+def tempGen():
+	global t
+	t += 1
+	return ("t"+str(t))
 
 def add(dict, key, val):
 	sym_list = []
@@ -61,7 +65,8 @@ def get_params(vals, root, children):
 
 def get_val(node, attr):
 	val = getattr(node, attr)
-	if type(val) == str and attr not in ['entry']:
+	print("val", val)
+	if type(val) == str and attr not in ['entry','tempname']:
 		return eval(val)
 	return val
 
@@ -99,17 +104,24 @@ def assign_producer_vals(symbol, rule, root, quadruples, stack):
 							print("nodex entry", node_x.entry, x_attr, y_val)
 							symtab[node_x.entry] = y_val						
 
+					#if True:#
 					if x_attr in ['val']:
+						#if True:#
 						if root.name not in ['EXPRESSION2', 'EXPRESSION1','EXPRESSION']:
-							if node_x.name == 'identifier':
+							if True:#if node_x.name == 'identifier':
 								if (is_empty(stack)):
 									y = getattr(node_y, y_attr)
 								else:
 									y = node_y.name
-			
-								if getattr(node_y, 'entry'):
-									y = getattr(node_y, 'entry')
-									y_val = symtab[y]
+
+								if getattr(node_y, 'tempname') == None:					
+									if getattr(node_y, 'entry'):
+										y = getattr(node_y, 'entry')
+										y_val = symtab[y]
+								else:
+									y = getattr(node_y, 'tempname')
+								
+								#y = node_y.name		
 								print("y_val", y_val)
 								tup = ('=', y,'_', node_x.entry)
 							else:
@@ -128,6 +140,8 @@ def assign_producer_vals(symbol, rule, root, quadruples, stack):
 
 					print("PARAMS ", node_x.name, x_attr, node_y.name, y_attr, node_z.name, z_attr)
 					
+					global t
+					
 					if is_empty(stack):
 						y, z = getattr(node_y, y_attr), getattr(node_z, z_attr)					
 						print("stak1.")
@@ -135,25 +149,35 @@ def assign_producer_vals(symbol, rule, root, quadruples, stack):
 						y, z = getattr(node_y, y_attr), node_z.name
 						print("stak2.")
 					
+					#y, z = node_y.name, node_z.name
+
 					print("y_attr", y_attr)
 					if(getattr(node_y, 'entry')):
 						print('true', getattr(node_y, 'entry'))
 					
-					#if y_attr == 'val' and getattr(node_y, 'entry'):						
-					if getattr(node_y, 'entry'):
-						y = getattr(node_y, 'entry')
-						y_val = symtab[y]
-					#if z_attr == 'val' and getattr(node_z, 'entry'):
-					if getattr(node_z, 'entry'):
-						z =getattr(node_z, 'entry')
-						z_val = symtab[z]
-					print("vals ", y_val, z_val)
-					
+					if getattr(node_y, 'tempname') == None:					
+						if getattr(node_y, 'entry'):
+							y = getattr(node_y, 'entry')
+							y_val = symtab[y]
+					else:
+						y = getattr(node_y, 'tempname')
 
-					global t
-					stack.append((node_x, x_attr, temps[t]))
-					t += 1
-					tup = (op, y, z, node_x.name)
+					if getattr(node_z, 'tempname') == None:
+						if getattr(node_z, 'entry'):
+							z =getattr(node_z, 'entry')
+							z_val = symtab[z]
+					else:
+						z = getattr(node_z, 'tempname')
+
+					print("vals ", y_val, z_val)
+						
+					
+					node_x.tempname = tempGen()
+					x = node_x.tempname
+					root.tempname = x
+					print("TEMPSET", node_x.name, x)
+					print("TEMPSET", root.name, x)
+					tup = (op, y, z, x)
 					print("QUAD", tup)
 					print("ENTRYYY", node_x.name, getattr(node_x, 'entry'))					
 					print("ENTRYYY", node_y.name, getattr(node_y, 'entry'))
@@ -173,6 +197,9 @@ def assign_producer_vals(symbol, rule, root, quadruples, stack):
 				elif op == 'code':
 					print("in CODE", vals)
 					for code in vals[2]:
+						#if code[0] == 'ifFalse':
+							#code = (code[0], root.tempname, code[2], code[3])
+							#code[1] = root.tempname
 						quadruples.append(code)	
 
 				elif op == 'addToST':
@@ -239,7 +266,7 @@ def print_the_tree(root):
 def is_epsiloned():
 	x=1
 
-def is_valid(rule, productions, token, store, root, quadruples, stack):
+def is_valid(rule, productions, token, token_list, store, root, quadruples, stack):
 	temp = TokenList(token_list,0)
 	update(temp, token)
 	matched = True
@@ -254,7 +281,7 @@ def is_valid(rule, productions, token, store, root, quadruples, stack):
 			if is_producer(symbol):
 				print("in producer")
 				print("check is now ", check.val)
-				if match_rule(temp, store, productions, symbol, child, quadruples, stack): # add back rule - if not epsilon has to have proceeded or invalid
+				if match_rule(temp, token_list, store, productions, symbol, child, quadruples, stack): # add back rule - if not epsilon has to have proceeded or invalid
 					if has_proceeded(check, store) or symbol == 'M':
 						print("1.SYMBOL in RULE", symbol, rule)
 						if not symbol == rule[-1]: #don't progress token if the symbol is the last in the list -> Error
@@ -311,7 +338,7 @@ def is_valid(rule, productions, token, store, root, quadruples, stack):
 			
 	return matched
 			
-def match_rule(token, store, productions, producer, root, quadruples, stack):
+def match_rule(token, token_list, store, productions, producer, root, quadruples, stack):
 	print("in match rule with ", producer, ":", productions[producer])
 	for rule in productions[producer]:
 		print("in rule ", rule, " with ", token.val)
@@ -319,14 +346,12 @@ def match_rule(token, store, productions, producer, root, quadruples, stack):
 		print("TREE")
 		print_tree(root)
 		print("")
-		if (is_valid(rule, productions, token, store, root, quadruples, stack)):
-			#children = root.get_children()
+
+		if (is_valid(rule, productions, token, token_list, store, root, quadruples, stack)):
 			print("here we are", rule, productions[producer], productions[producer].index(rule), rule)
 			symbol = rule[-1]
 			print("2. LAST", rule)
 			assign_producer_vals(symbol, rule, root, quadruples, stack)
-			#update(temp, store)
-			#print("1. updated ", temp.val, store.val)			
 			print("done")
 			return True
 		else:
@@ -455,9 +480,22 @@ def get_code(node_queue, code):
 		get_code(children, code)
 	return code
 
+def remove_comments(li):
+	
+	for t in li:
+		print(t.type)
+	print ([(t.type, t.val) for t in li])
+	print ([(t.type, t.val) for t in li if t.type != 'comment'])
+
+	print("remove ocmment")
+
+	return [t for t in li if t.type != 'comment']
+
 def start(token_list):
 	eof = Token('eof', 'eof')
 	token_list.append(eof)
+	token_list = remove_comments(token_list)
+	print("tokenlist", [t.type for t in token_list])
 	token = TokenList(token_list, 0)
 	store = TokenList(token_list,0)
 	root = Tree("PROG")
@@ -469,11 +507,12 @@ def start(token_list):
 	print_tree(root)
 	print("")
 	
-	if match_rule(token, store, productions, "PROG", root, quadruples, stack):
+	if match_rule(token, token_list, store, productions, "PROG", root, quadruples, stack):
 		print("VALID", token.val, store.val)
 	else:
 		print("ERROR", token.val, store.val)
 	
+	print("stack", stack)
 	return root, quadruples, stack
 		
 def init_rules():	

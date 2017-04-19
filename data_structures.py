@@ -85,39 +85,45 @@ assign = {
 		'type' : [['=',(1, 'inhval'), (0, 'type')]]
 	},
 	'EXPRESSION1' : {
-		'EXPRESSION' : [['=',('root','val'),(0,'val')], ['=', ('root', 'entry'),(0, 'entry')]]
+		'EXPRESSION' : [['=',('root','val'),(0,'val')], ['=', ('root', 'entry'),(0, 'entry')], ['=', ('root', 'tempname'),(0, 'tempname')]]
 	},
 	'EXPRESSION2' : {
-		'EXPRESSION' : [['=',('root','val'),(0,'val')], ['=', ('root', 'entry'),(0, 'entry')]]
+		'EXPRESSION' : [['=',('root','val'),(0,'val')], ['=', ('root', 'entry'),(0, 'entry')], ['=', ('root', 'tempname'),(0, 'tempname')]]
 	},
 	'EXPRESSION' : {
-		'E' : [['=',('root','val'),(0,'synval')], ['=', ('root', 'entry'),(0, 'entry')]]
+		'E' : [['=',('root','val'),(0,'synval')], ['=', ('root', 'entry'),(0, 'entry')], ['=', ('root', 'tempname'),(0, 'tempname')]]
+	},
+	'COND' : {
+		'COND1' :[[['=', ('root', 'tempname'),(0, 'tempname')]]],
+		'COND2' :[[['=', ('root', 'tempname'),(0, 'tempname')]]],
+		'COND3' :[[['=', ('root', 'tempname'),(0, 'tempname')]]],
+		'COND4' :[[['=', ('root', 'tempname'),(0, 'tempname')]]]
 	},
 	'COND1' : {
-		'EXPRESSION2' : [['<',('root','val'),(0, 'val'),(2, 'val')]]
+		'EXPRESSION2' : [['<',('root','val'),(0, 'val'),(2, 'val')], ['=', ('root', 'tempname'),(0, 'tempname')]]
 	},
 	'COND2' : {
-		'EXPRESSION2' : [['>',('root','val'),(0, 'val'),(2, 'val')]]
+		'EXPRESSION2' : [['>',('root','val'),(0, 'val'),(2, 'val')], ['=', ('root', 'tempname'),(0, 'tempname')]]
 	},
 	'COND3' : {
-		'EXPRESSION2' : [['<=',('root','val'),(0, 'val'),(2, 'val')]]
+		'EXPRESSION2' : [['<=',('root','val'),(0, 'val'),(2, 'val')], ['=', ('root', 'tempname'),(0, 'tempname')]]
 	},
 	'COND4' : {
-		'EXPRESSION2' : [['>=',('root','val'),(0, 'val'),(2, 'val')]]
+		'EXPRESSION2' : [['>=',('root','val'),(0, 'val'),(2, 'val')], ['=', ('root', 'tempname'),(0, 'tempname')]]
 	},
 	'E' : {
-		'T' : [['=',(1,'inhval'),(0,'synval')], ['=', ('root', 'entry'),(0, 'entry')]],
-		'E\'' : [['=', ('root','synval'),(1,'synval')], ['=', ('root', 'entry'),(0, 'entry')]]
+		'T' : [['=',(1,'inhval'),(0,'synval')], ['=', ('root', 'entry'),(0, 'entry')], ['=', (1, 'tempname'),(0, 'tempname')]],
+		'E\'' : [['=', ('root','synval'),(1,'synval')], ['=', ('root', 'entry'),(0, 'entry')], ['=', ('root', 'tempname'),(1, 'tempname')]]
 	},
 	'E\'': {
-		'M': [['=',(1,'inhval'),('root','inhval')]],  # Changed all 0 to root here and  1 to 0
-		'E1\'': [['=',('root','synval'),(1,'synval')], ['=', ('root', 'entry'),(0, 'entry')]],
-		'E2\'': [['=',('root','synval'),(1,'synval')], ['=', ('root', 'entry'),(0, 'entry')]],
+		'M': [['=',(1,'inhval'),('root','inhval')], ['=', (1, 'tempname'),('root', 'tempname')]], 
+		'E1\'': [['=',('root','synval'),(1,'synval')], ['=', ('root', 'entry'),(0, 'entry')], ['=', ('root', 'tempname'),(1, 'tempname')]],
+		'E2\'': [['=',('root','synval'),(1,'synval')], ['=', ('root', 'entry'),(0, 'entry')], ['=', ('root', 'tempname'),(1, 'tempname')]],
 		'epsilon': [['=', ('root', 'synval'), ('root','inhval')]] 
 	},
 	'E1\'' : {
 		'T' : [['+',(2,'inhval'),('root','inhval'),(1,'synval')], ['=', ('root', 'entry'),(0, 'entry')]],
-		'E\'' : [['=',('root','synval'),(2,'synval')], ['=', ('root', 'entry'),(0, 'entry')]],	
+		'E\'' : [['=',('root','synval'),(2,'synval')], ['=', ('root', 'entry'),(0, 'entry')], ['=', ('root', 'entry'),(1, 'entry')]],	
 		'epsilon' : [['=', ('root', 'synval'), ('root', 'inhval')]]
 	},
 	'E2\'' : {
@@ -127,12 +133,12 @@ assign = {
 	},
 	'T' : {
 		'F' : [['=',(1,'inhval'),(0,'synval')], ['=', ('root', 'entry'),(0, 'entry')]],
-		'T\'' : [['=', ('root','synval'),(1,'synval')], ['=', ('root', 'entry'),(0, 'entry')]]
+		'T\'' : [['=', ('root','synval'),(1,'synval')], ['=', ('root', 'entry'),(0, 'entry')], ['=', ('root', 'tempname'),(1, 'tempname')]]
 	},
 	'T\'': {
-		'M': [['=',(1,'inhval'),('root','inhval')]],
-		'T1\'': [['=',('root','synval'),(1,'synval')], ['=', ('root', 'entry'),(0, 'entry')]],
-		'T2\'': [['=',('root','synval'),(1,'synval')], ['=', ('root', 'entry'),(0, 'entry')]],
+		'M': [['=',(1,'inhval'),('root','inhval')], ['=', (1, 'tempname'),('root', 'tempname')]],
+		'T1\'': [['=',('root','synval'),(1,'synval')], ['=', ('root', 'entry'),(0, 'entry')], ['=', ('root', 'tempname'),(1, 'tempname')]],
+		'T2\'': [['=',('root','synval'),(1,'synval')], ['=', ('root', 'entry'),(0, 'entry')], ['=', ('root', 'tempname'),(1, 'tempname')]],
 		'epsilon': [['=', ('root', 'synval'), ('root','inhval')]] 
 	},
 	'T1\'' : {
@@ -161,5 +167,5 @@ assign = {
 	}
 	
 }
-
+	
 productions = dict()

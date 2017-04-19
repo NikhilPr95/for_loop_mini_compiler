@@ -69,6 +69,7 @@ class Tree:
 		self.type = None
 		self.inhtype = None
 		self.entry = None
+		self.tempname = None
 		self.code = []
 		
 	def set_synthval(self, synthval):
