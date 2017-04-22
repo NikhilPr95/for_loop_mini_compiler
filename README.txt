@@ -16,7 +16,9 @@ the outputs are in files:
 		parse_tree.txt
 	2.AST
 		astree.txt
+		to see indented ast for forteststruct.c check pretty_astree.txt
 	3.Symbol table
 		symtab.txt
 	4.Intermediate Code Generation(Quadriple):
 		icg.txt
+	

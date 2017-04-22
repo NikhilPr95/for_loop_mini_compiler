@@ -1,58 +1,53 @@
 PROG  
-	[STATEMENT  
-		[DECL  
-			[type ID  
-				[identifier ] 
-				; 
-			] 
-			ST'  
-				[for 
-					(
-					=  
-						[identifier 	
-						EXPRESSION  
-							[number ] 
+	[
+		int 
+		main 
+		( 
+		) 
+		{ 
+		STATEMENT  
+			[
+				for 
+				( 
+				=  
+					[
+						identifier 
+						number 
 						; 
-						]
-						<  
-							[EXPRESSION1  
-								[identifier ] 
-							EXPRESSION2  
-								[number ] 
-							; 
-							] 
-						=  
-							[identifier 
-								EXPRESSION  
-									[+  
-										[identifier 
-										T  
-											[number ] 
-										] 
-									] 
-							] 
-					) 
-					{ 
-					=  
-						[identifier 
-						EXPRESSION  
-							[+  
-								[number 
-								T  
-									[F  
-										[number ] 
-									T'  
-										[* 
-										F  
-											[number ] 
-										] 
-									] 
-								] 
-							] 
-							; 
+					] 
+				<  
+					[
+						identifier 
+						number 
+						; 
+					] 
+				=  
+					[
+					identifier 
+					+  
+						[
+						identifier 
+						number 
 						] 
-					} 
-				] 
-		] 
+					] 
+				) 
+				{ 
+				=  
+					[
+					identifier 
+					+  
+						[
+						*  
+							[
+							number 
+							number 
+							] 
+						number 
+						] 
+					; 
+					] 
+				} 
+			] 
+		} 
 		eof 
-	]
+	] 
