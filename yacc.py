@@ -431,6 +431,31 @@ def elevate_operators(node):
 			niece.parent = node
 			node.parent.delete_child(node.parent.children[0])
 		elevate_operators(child)
+        
+def remove_single_node_tree(node):
+	if len(node.children) == 1:
+		print("hello")
+		print("Parent",node.name)
+		for i in node.children:
+			print("Children",i.name)
+	
+		if is_producer(node.name):
+			print("im here")
+			x = node.name
+			node.name = node.children[0].name
+			print("changing name to ", x, node.name)
+			for i in node.children[0].children:
+				node.set_child(i)
+				remove_single_node_tree(i)
+			node.delete_child(node.children[0])
+			for i in node.children:
+				print("Children",i.name)
+		else:
+			remove_single_node_tree(node.children[0])
+	else:
+		for i in node.children:
+			remove_single_node_tree(i)
+
 
 def apply_equal(node):
 	for child in node.children:
@@ -465,6 +490,9 @@ def abstract_syntax_tree(root):
 	print("step 3")
 	print_tree(ast_root2)
 	print("")	
+	remove_single_node_tree(ast_root2)
+	print("step4")
+	print_tree(ast_root2)	
 	return ast_root2
 
 def get_code(node_queue, code):

@@ -20,7 +20,7 @@ ops = {
 symtab = dict()
 
 rules = [
-			"PROG: STATEMENT eof",
+			"PROG: int main ( ) { STATEMENT } eof",
 			"STATEMENT: FOR_LOOP_ST | COND_ST | IF_COND_ST | DEFN_ST | ASSIGN_ST | DECL_ST",
 			"FOR_LOOP_ST: FOR_LOOP ST' ",
 			"IF_COND_ST: IF_COND ST' ",

@@ -1,1 +1,1 @@
-PROG  [STATEMENT  [for ( =  [identifier EXPRESSION  [number ] ; ] <  [EXPRESSION1  [identifier ] EXPRESSION2  [number ] ; ] =  [identifier EXPRESSION  [+  [identifier T  [number ] ] ] ] ) { =  [identifier EXPRESSION  [+  [number T  [F  [number ] T'  [* F  [number ] ] ] ] ] ; ] } ] eof ] 
+PROG  [int main ( ) { STATEMENT  [for ( =  [identifier number ; ] <  [identifier number ; ] =  [identifier +  [identifier number ] ] ) { =  [identifier +  [*  [number number ] number ] ; ] } ] } eof ] 

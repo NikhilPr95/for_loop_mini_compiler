@@ -169,6 +169,8 @@ def keyword(index, store):
 		return store.index
 	elif match_string_with_lookahead(ch, store, 'while', spaces + ['(']):
 		return store.index
+	elif match_string_with_lookahead(ch, store, 'main', spaces + ['(']):
+		return store.index
 	else:
 		return -1
 

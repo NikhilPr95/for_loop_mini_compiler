@@ -83,7 +83,12 @@ class Tree:
 			child_node = Tree(child_name)
 			child_node.set_parent(self)
 			self.children.append(child_node)
+
+	def  set_child(self,c):
+		c.set_parent(self)
+		self.children.append(c)
 		
+	
 	def set_parent(self, parent):
 		self.parent = parent
 
