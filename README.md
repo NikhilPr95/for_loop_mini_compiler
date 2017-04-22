@@ -3,13 +3,16 @@ Read ME
 --------
 STEP 1:
 	run:
+		
 		$python3 lex.py test/forteststruct.c
+	
 	for generating the tokens in the file
 	2nd argument is the input c program
 STEP 2:
 	run:
-		$python3 run_yacc.py
 		
+		$python3 run_yacc.py	
+	
 	to generate the outputs
 	
 the outputs are in files:
